@@ -451,7 +451,7 @@
                     const latency = Math.round(endTime - startTime); // Still show time taken before error
                     console.error(`Error pinging ${host}:`, error);
                     const el = document.getElementById(elementId);
-                    el.textContent = `Offline · ${latency} ms`;
+                    el.textContent = 'Offline';
                     el.style.color = 'var(--bad)';
                 }
             }
