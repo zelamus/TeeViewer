@@ -311,6 +311,32 @@ body:has(#skin-display-container) {
 .stats-container .stats:nth-child(2) .value { font-size: clamp(32px, 4.2vw, 42px) !important; }
 .stats-container .stats { cursor: pointer; }
 
-/* ---- Table readability bump ---- */
+/* ---- Consistent page container widths for data pages ---- */
+#serversBrowser, #mapsBrowser, .servers-container, .maps-container, .clans-container {
+    max-width: 1240px !important;
+    margin: 10px auto !important;
+    padding: 0 clamp(16px, 4vw, 32px) !important;
+    width: 100% !important;
+}
+
+/* ---- Players landing: centered, intentional empty state ---- */
+.player-search-container { min-height: 60vh; display: flex; flex-direction: column; justify-content: center; }
+.player-empty { padding: 40px 16px !important; }
+.player-empty .chips .chip { font-size: 14px !important; padding: 8px 16px !important; }
+
+/* ---- Skin controls ---- */
+.skin-controls {
+    display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end;
+    margin-bottom: 18px; padding: 16px; background: var(--surface-2);
+    border: 1px solid var(--border); border-radius: var(--r-md);
+}
+.skin-controls .field { display: flex; flex-direction: column; gap: 6px; font-size: 13px; color: var(--muted); }
+.skin-controls .field input {
+    height: 40px; width: 160px; padding: 0 12px;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--r-sm); color: var(--text); font-size: 14px;
+}
+.skin-controls .field input:focus { outline: none; border-color: var(--accent-line); box-shadow: var(--ring); }
+.skin-controls .button { height: 40px !important; }
 tbody td, #serversTable td, #mapsTable td, #clansTable td, #playertable td { font-size: 14px !important; }
 tbody tr { height: 46px !important; }

@@ -51,6 +51,18 @@
     </div>
 
     <div class="section-card skin-card">
+        <div class="skin-controls">
+            <label class="field">Skin name
+                <input id="skinName" type="text" value="default" spellcheck="false">
+            </label>
+            <label class="field">Body color
+                <input id="bodyColor" type="number" value="65535">
+            </label>
+            <label class="field">Feet color
+                <input id="feetColor" type="number" value="16711680">
+            </label>
+            <button id="applySkin" class="button primary">Update preview</button>
+        </div>
         <div id="skin-display-container">
             <div class="teeassembler-tee"></div>
         </div>
@@ -74,32 +86,51 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const statusElement = document.getElementById('status');
-            const urlParams = new URLSearchParams(window.location.search);
-            const skinname = urlParams.get('skinname') || 'default';
-            const bodyColor = urlParams.get('color_body') ? parseInt(urlParams.get('color_body'), 10) : 65535;
-            const feetColor = urlParams.get('color_feet') ? parseInt(urlParams.get('color_feet'), 10) : 16711680;
+            const nameEl = document.getElementById('skinName');
+            const bodyEl = document.getElementById('bodyColor');
+            const feetEl = document.getElementById('feetColor');
+            let currentTee = null;
 
-            try {
-                if (typeof TeeAssembler === 'undefined' || !TeeAssembler.Tee) {
-                    throw new Error('TeeAssembler library not loaded');
+            function render() {
+                const skinname = (nameEl.value || 'default').trim() || 'default';
+                const bodyColor = parseInt(bodyEl.value, 10);
+                const feetColor = parseInt(feetEl.value, 10);
+                const container = document.querySelector('.teeassembler-tee');
+                try {
+                    if (typeof TeeAssembler === 'undefined' || !TeeAssembler.Tee) {
+                        throw new Error('TeeAssembler library not loaded');
+                    }
+                    if (currentTee && currentTee.api && currentTee.api.functions && currentTee.api.functions.unbindContainer) {
+                        try { currentTee.api.functions.unbindContainer(); } catch (e) {}
+                    }
+                    container.innerHTML = '';
+                    currentTee = new TeeAssembler.Tee({
+                        container: container,
+                        imageLink: 'https://ddstats.tw/skins/' + encodeURIComponent(skinname) + '.png',
+                        bodyColor: String(isNaN(bodyColor) ? 65535 : bodyColor),
+                        feetColor: String(isNaN(feetColor) ? 16711680 : feetColor),
+                        colorFormat: 'code'
+                    });
+                    if (currentTee.api && currentTee.api.functions && currentTee.api.functions.lookAtCursor) {
+                        currentTee.api.functions.lookAtCursor();
+                    }
+                    statusElement.textContent = 'Skin: ' + skinname + ' · Body: ' + (isNaN(bodyColor) ? 65535 : bodyColor) + ' · Feet: ' + (isNaN(feetColor) ? 16711680 : feetColor);
+                    statusElement.style.color = '';
+                } catch (error) {
+                    console.error('TeeAssembler init failed:', error);
+                    statusElement.textContent = 'Could not load the skin preview.';
+                    statusElement.style.color = 'var(--bad)';
                 }
-                const teeContainer = document.querySelector('.teeassembler-tee');
-                const tee = new TeeAssembler.Tee({
-                    container: teeContainer,
-                    imageLink: 'https://ddstats.tw/skins/' + skinname + '.png',
-                    bodyColor: String(bodyColor),
-                    feetColor: String(feetColor),
-                    colorFormat: 'code'
-                });
-                if (tee.api && tee.api.functions && tee.api.functions.lookAtCursor) {
-                    tee.api.functions.lookAtCursor();
-                }
-                statusElement.textContent = 'Skin: ' + skinname + ' · Body: ' + bodyColor + ' · Feet: ' + feetColor;
-            } catch (error) {
-                console.error('TeeAssembler init failed:', error);
-                statusElement.textContent = 'Could not load the skin preview.';
-                statusElement.style.color = 'var(--bad)';
             }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('skinname')) nameEl.value = urlParams.get('skinname');
+            if (urlParams.get('color_body')) bodyEl.value = urlParams.get('color_body');
+            if (urlParams.get('color_feet')) feetEl.value = urlParams.get('color_feet');
+
+            document.getElementById('applySkin').addEventListener('click', render);
+            [nameEl, bodyEl, feetEl].forEach(el => el.addEventListener('keydown', e => { if (e.key === 'Enter') render(); }));
+            render();
         });
     </script>
     <script src="nav.js" defer></script>
