@@ -37,10 +37,12 @@
     --text:          #e9edf3;
     --text-2:        #c2cad6;
     --muted:         #8d97a7;
-    --faint:         #626c7b;
+    --faint:         #7b8595;
 
     /* accent (brand orange, refined) */
     --accent:        #ff8a3d;
+    --accent-color:  var(--accent);
+    --accent-hover:  var(--accent-2);
     --accent-2:      #ffb27a;
     --accent-ink:    #1a0f05;
     --accent-soft:   rgba(255, 138, 61, 0.13);

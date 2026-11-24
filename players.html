@@ -626,13 +626,20 @@
     </div>
 
     <div class="player-search-container">
-        <h2 style="text-align: center; color: var(--primary-color); font-size: 36px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 138, 61, 0.3);">Player Search</h2>
+        <header class="page-head"><h1>Players</h1><p class="page-sub">Search any player for their stats, ranks and recent activity.</p></header>
         <div class="search-area">
-            <input type="text" id="playerSearchInput" class="search-input" placeholder="Enter player name">
-            <br>
-            <button id="searchPlayerButton"  class="categories">Search Player</button>
+            <input type="text" id="playerSearchInput" class="search-input" placeholder="Enter player name…">
+            <button id="searchPlayerButton" class="button primary">Search</button>
         </div>
-        <div id="loadingIndicator" class="loading-indicator">Loading player data...</div>
+        <div id="playerEmpty" class="player-empty">
+            <p>Try a well-known player:</p>
+            <div class="chips">
+                <button class="chip" onclick="document.getElementById('playerSearchInput').value='nameless'; searchPlayer();">nameless</button>
+                <button class="chip" onclick="document.getElementById('playerSearchInput').value='DDNet'; searchPlayer();">DDNet</button>
+                <button class="chip" onclick="document.getElementById('playerSearchInput').value='S Ettin'; searchPlayer();">S Ettin</button>
+            </div>
+        </div>
+        <div id="loadingIndicator" class="loading-indicator" style="display:none;">Loading player data...</div>
         <div id="errorMessage" class="error-message"></div>
     </div>
 
@@ -1540,10 +1547,13 @@
 
         async function searchPlayer() {
             const playerName = playerSearchInput.value.trim();
+            const emptyEl = document.getElementById('playerEmpty');
             if (!playerName) {
-                displayError("Please enter a player name.");
+                if (emptyEl) emptyEl.style.display = 'flex';
+                document.getElementById('errorMessage').style.display = 'none';
                 return;
             }
+            if (emptyEl) emptyEl.style.display = 'none';
 
             currentPlayerName = playerName;
 
@@ -2243,7 +2253,8 @@
                 searchPlayer();
             } else {
                 playerSearchInput.value = '';
-                searchPlayer(); 
+                const emptyEl = document.getElementById('playerEmpty');
+                if (emptyEl) emptyEl.style.display = 'flex';
             }
         });
     </script>
