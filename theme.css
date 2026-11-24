@@ -348,4 +348,5 @@ body:has(#skin-display-container) {
 .skin-controls .field input:focus { outline: none; border-color: var(--accent-line); box-shadow: var(--ring); }
 .skin-controls .button { height: 40px !important; }
 tbody td, #serversTable td, #mapsTable td, #clansTable td, #playertable td { font-size: 14px !important; }
-tbody tr { height: 46px !important; }
+tbody tr { height: 46px !important; transition: background 0.14s ease; }
+tbody tr:nth-child(even) td { background: rgba(255, 255, 255, 0.018) !important; }
