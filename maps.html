@@ -39,7 +39,7 @@
             .search-input:focus {
                 outline: none;
                 border-color: var(--primary-color);
-                box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
+                box-shadow: 0 0 15px rgba(255, 138, 61, 0.3);
             }
 
             .filter-select {
@@ -97,7 +97,7 @@
             }
 
             #mapsTable th {
-                background: rgba(255, 69, 0, 0.1);
+                background: rgba(255, 138, 61, 0.1);
                 color: var(--primary-color);
                 padding: 15px;
                 font-weight: 600;
@@ -107,7 +107,7 @@
             }
 
             #mapsTable th:hover {
-                background: rgba(255, 69, 0, 0.2);
+                background: rgba(255, 138, 61, 0.2);
             }
 
             #mapsTable td {
@@ -123,17 +123,17 @@
             }
 
             .map-row:hover {
-                background: rgba(255, 69, 0, 0.05);
+                background: rgba(255, 138, 61, 0.05);
             }
 
             .map-row.expanded {
-                background: rgba(255, 69, 0, 0.08);
+                background: rgba(255, 138, 61, 0.08);
             }
 
             .map-details {
                 display: none;
-                background: rgba(255, 69, 0, 0.03);
-                border-top: 1px solid rgba(255, 69, 0, 0.2);
+                background: rgba(255, 138, 61, 0.03);
+                border-top: 1px solid rgba(255, 138, 61, 0.2);
             }
 
             .map-details.show {
@@ -239,7 +239,7 @@
             }
 
             .maximize-btn:hover {
-                background: #ff3300;
+                background: #ff8a3d;
                 transform: scale(1.1);
             }
 
@@ -275,7 +275,7 @@
             }
 
             .active-servers-btn:hover {
-                background: #ff3300;
+                background: #ff8a3d;
                 transform: scale(1.05);
             }
 
@@ -323,7 +323,7 @@
             .server-item {
                 padding: 10px;
                 margin: 5px 0;
-                background: rgba(255, 69, 0, 0.1);
+                background: rgba(255, 138, 61, 0.1);
                 border-radius: 6px;
                 cursor: pointer;
                 transition: all 0.3s ease;
@@ -331,7 +331,7 @@
             }
 
             .server-item:hover {
-                background: rgba(255, 69, 0, 0.2);
+                background: rgba(255, 138, 61, 0.2);
                 border-color: var(--primary-color);
                 transform: translateX(5px);
             }
@@ -362,7 +362,7 @@
                 display: inline-block;
                 width: 20px;
                 height: 20px;
-                border: 3px solid rgba(255, 69, 0, 0.3);
+                border: 3px solid rgba(255, 138, 61, 0.3);
                 border-radius: 50%;
                 border-top-color: var(--primary-color);
                 animation: spin 1s ease-in-out infinite;
@@ -447,7 +447,7 @@
             }
 
             .back-button:hover {
-                background: rgba(255, 69, 0, 0.1);
+                background: rgba(255, 138, 61, 0.1);
                 border-color: var(--primary-color);
                 transform: translateX(-5px);
             }
@@ -505,9 +505,9 @@
                 justify-content: space-between;
                 align-items: center;
                 padding: 15px 20px;
-                background: rgba(255, 69, 0, 0.05);
+                background: rgba(255, 138, 61, 0.05);
                 border-radius: 8px;
-                border: 1px solid rgba(255, 69, 0, 0.1);
+                border: 1px solid rgba(255, 138, 61, 0.1);
                 margin-bottom: 15px;
             }
 
@@ -567,15 +567,15 @@
 
             .large-server-item {
                 padding: 15px;
-                background: rgba(255, 69, 0, 0.1);
+                background: rgba(255, 138, 61, 0.1);
                 border-radius: 8px;
                 cursor: pointer;
                 transition: all 0.3s ease;
-                border: 1px solid rgba(255, 69, 0, 0.2);
+                border: 1px solid rgba(255, 138, 61, 0.2);
             }
 
             .large-server-item:hover {
-                background: rgba(255, 69, 0, 0.2);
+                background: rgba(255, 138, 61, 0.2);
                 border-color: var(--primary-color);
                 transform: translateY(-2px);
             }
@@ -707,7 +707,11 @@
                 }
             }
         </style>
-    </head>
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
+</head>
     <body>
         <div class="topbar">
             <img onclick="navigateToPage('index.html')" class="logo" src="logo.png" alt="TeeViewer Logo">
@@ -1581,5 +1585,6 @@
                 checkUrlParams();
             });
         </script>
-    </body>
+        <script src="nav.js" defer></script>
+</body>
     </html>

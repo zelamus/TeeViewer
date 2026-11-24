@@ -7,383 +7,320 @@
     <title>Servers - TeeViewer</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* General styling from your first code snippet (for filters) */
-        .servers-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
+        /* ---- Servers page ---- */
+        .page {
+            width: 100%;
+            max-width: var(--maxw);
+            margin: 0 auto;
+            padding: 32px clamp(16px, 4vw, 32px) 48px;
+        }
+        .page-head { margin-bottom: 24px; }
+        .page-title {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text);
+        }
+        .page-sub {
+            margin-top: 4px;
+            font-size: 13.5px;
+            color: var(--muted);
         }
 
-        .search-filters {
+        /* ---- Filter bar ---- */
+        .filters {
             display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
             flex-wrap: wrap;
             align-items: center;
-            justify-content: center; /* Center the filter elements */
+            gap: 12px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-2);
+        }
+        .filters .search-input {
+            flex: 1 1 260px;
+            width: auto;
+            min-width: 0;
+        }
+        .filters .filter-select {
+            flex: 0 0 190px;
+            width: 190px;
         }
 
-        .search-input {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 12px 20px;
-            color: var(--text-color);
-            font-family: 'SF Pro Rounded', sans-serif;
-            font-size: 16px;
-            min-width: 300px;
-            transition: all 0.3s ease;
+        /* ---- Servers table ---- */
+        .table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-2);
+            overflow-x: auto;
         }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
-        }
-
-        .filter-select {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 12px 15px;
-            color: var(--text-color);
-            font-family: 'SF Pro Rounded', sans-serif;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        /* Existing styles from your second code snippet */
         #serversTable {
-            border-spacing: 0px;
-            border-collapse: collapse;
-            margin: 30px auto;
-            width: 95%;
-            text-align: center;
-            max-width: 1200px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            color: var(--text-color);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            font-size: 16px;
-            animation: fadeInUp 1s ease-out 0.3s both;
+            width: 100%;
+            min-width: 820px;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13.5px;
         }
-
-        #serversTable th {
-            background: rgba(255, 69, 0, 0.1);
-            color: var(--primary-color);
-            padding: 15px;
-            font-weight: 600;
-            border-style: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #serversTable th:hover {
-            background: rgba(255, 69, 0, 0.2);
-        }
-
-        #serversTable td {
-            padding: 15px;
-            transition: background-color 0.2s ease;
-            border-style: none;
-            color: var(--primary-color);
-        }
-
-        .server-row {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .server-row:hover {
-            background: rgba(255, 69, 0, 0.05);
-        }
-
-        .type-badge {
-            padding: 4px 8px;
-            border-radius: 12px;
+        #serversTable thead th {
+            padding: 12px 16px;
+            background: var(--bg-2);
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
             font-size: 12px;
             font-weight: 600;
-            color: white;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            text-align: left;
+            white-space: nowrap;
         }
-
-        .type-official { background: linear-gradient(135deg, #4CAF50, #45a049); } /* Green for official */
-        .type-community { background: linear-gradient(135deg, #FF9800, #f57c00); } /* Orange for community */
-        .type-private { background: linear-gradient(135deg, #f44336, #d32f2f); } /* Red for private */
-        .type-unknown { background: linear-gradient(135deg, #607D8B, #455a64); } /* Grey for unknown */
-
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 69, 0, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Individual Server Page Styles */
-        .individual-server-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-            display: none; /* Hidden by default */
-        }
-
-        .individual-server-container.show {
-            display: block;
-        }
-
-        .back-button {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 12px 20px;
-            color: var(--primary-color);
-            font-family: 'SF Pro Rounded', sans-serif;
-            font-size: 16px;
+        #serversTable th.sortable {
             cursor: pointer;
-            transition: all 0.3s ease;
-            margin-bottom: 20px;
+            user-select: none;
+            transition: color 0.14s ease, background 0.14s ease;
+        }
+        #serversTable th.sortable:hover { color: var(--text-2); background: var(--surface-2); }
+        #serversTable th[aria-sort="ascending"]::after { content: " \2191"; color: var(--text-2); }
+        #serversTable th[aria-sort="descending"]::after { content: " \2193"; color: var(--text-2); }
+        #serversTable th.num,
+        #serversTable td.num {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        #serversTable td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-2);
+            vertical-align: middle;
+        }
+        #serversTable tbody tr:last-child td { border-bottom: none; }
+        #serversTable tbody tr { transition: background 0.14s ease; }
+        #serversTable tbody tr.server-row { cursor: pointer; }
+        #serversTable tbody tr:hover { background: var(--surface-2); }
+        #serversTable .server-name { color: var(--text); font-weight: 600; }
+        #serversTable a { color: var(--accent-2); text-decoration: none; }
+        #serversTable a:hover { text-decoration: underline; }
+        #serversTable .table-empty td { padding: 32px 16px; color: var(--muted); }
+
+        .badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: var(--r-pill);
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text-2);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .lock { color: var(--muted); }
+        .btn-sm {
+            min-height: 32px;
+            padding: 0 12px;
+            font-size: 13.5px;
+            font-weight: 600;
+        }
+        .show-more-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
         }
 
-        .back-button:hover {
-            background: rgba(255, 69, 0, 0.1);
-            border-color: var(--primary-color);
-            transform: translateX(-5px);
-        }
-
+        /* ---- Individual server view ---- */
+        .individual-server-container { display: none; }
+        .individual-server-container.show { display: block; }
+        .back-button { margin-bottom: 16px; color: var(--text-2); }
+        .back-button:hover { background: var(--surface-3); border-color: var(--border-strong); }
         .server-header {
-            text-align: center;
-            margin-bottom: 40px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            text-align: left;
         }
-
         .server-title {
-            font-size: 48px;
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 10px;
-            text-shadow: 0 0 20px rgba(255, 137, 27, 0.6);
-            animation: glow 2s ease-in-out infinite alternate;
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--text);
         }
-
         .server-subtitle {
-            font-size: 18px;
-            color: rgba(255, 255, 255, 0.7);
-            margin-bottom: 20px;
+            margin-top: 4px;
+            font-size: 13.5px;
+            color: var(--muted);
         }
-
+        .share-button { flex: 0 0 auto; }
         .server-main-content {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-            margin-bottom: 40px;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 24px;
         }
-
-        .server-info-section, .server-stats-section, .server-client-section {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
+        .server-info-section,
+        .server-stats-section,
         .server-client-section {
-            grid-column: 1 / -1; /* Span full width */
+            min-width: 0;
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--r-lg);
+            box-shadow: var(--shadow-2);
         }
-
+        .server-client-section { grid-column: 1 / -1; }
         .section-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            text-align: center;
+            margin-bottom: 16px;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            text-align: left;
         }
-
         .large-stat-item {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            padding: 15px 20px;
-            background: rgba(255, 69, 0, 0.05);
-            border-radius: 8px;
-            border: 1px solid rgba(255, 69, 0, 0.1);
-            margin-bottom: 15px;
+            align-items: baseline;
+            gap: 16px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            background: none;
+            border-radius: 0;
         }
-
+        .large-stat-item:last-child { border-bottom: none; }
         .large-stat-label {
-            color: var(--primary-color);
-            font-weight: 600;
-            font-size: 16px;
+            color: var(--muted);
+            font-size: 13.5px;
+            font-weight: 500;
         }
-
         .large-stat-value {
-            color: var(--text-color);
-            font-size: 16px;
+            color: var(--text);
+            font-size: 13.5px;
+            text-align: right;
+            overflow-wrap: anywhere;
         }
+        .large-stat-value a { color: var(--accent-2); }
 
-        .server-client-list-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        .server-client-list-table th, .server-client-list-table td {
-            padding: 8px 5px;
-            text-align: center;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-            font-size: 14px;
-            color: var(--text-color);
-        }
-        .server-client-list-table th {
-            color: var(--primary-color);
+        .chart-title {
+            margin: 24px 0 8px;
+            font-size: 15px;
             font-weight: 600;
-            background-color: rgba(255, 255, 255, 0.05);
-            text-align: center;
+            color: var(--text);
+            text-align: left;
         }
-        .server-client-list-table tr:last-child td {
-            border-bottom: none;
+        .chart-range {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
         }
-        .server-client-list-table img {
-            vertical-align: middle;
-            margin-right: 5px;
-            width: 18px; /* Adjust flag size */
-            height: auto;
-            border-radius: 2px;
-        }
-        .server-client-list-table td:nth-child(2) { /* For player name */
+        .chart-range-btn {
+            min-height: 32px;
+            padding: 0 12px;
+            font-family: var(--font-sans);
+            font-size: 13.5px;
             font-weight: 600;
-        }
-
-        /* Show More Button Styling */
-        .show-more-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .show-more-button {
-            background: var(--primary-color);
-            border: none;
-            border-radius: 8px;
-            padding: 12px 25px;
-            color: white;
-            font-family: 'SF Pro Rounded', sans-serif;
-            font-size: 16px;
+            color: var(--text-2);
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: var(--r-sm);
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(255, 69, 0, 0.3);
+            transition: background 0.14s ease, border-color 0.14s ease, color 0.14s ease;
         }
-
-        .show-more-button:hover {
-            background: #ff3300;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(255, 69, 0, 0.4);
+        .chart-range-btn:hover { background: var(--surface-3); border-color: var(--border-strong); }
+        .chart-range-btn.active {
+            background: var(--accent-soft);
+            border-color: var(--accent-line);
+            color: var(--accent-2);
         }
-
-        .show-more-button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-
-        .share-button {
-            background: #007bff; /* A blue color for share */
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            color: white;
-            font-family: 'SF Pro Rounded', sans-serif;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
-            margin-top: 15px; /* Adjust spacing as needed */
-            display: inline-block; /* For proper spacing */
-        }
-
-        .share-button:hover {
-            background: #0056b3;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
-        }
-
-        /* Chart container styling */
         .chart-container {
+            position: relative;
             width: 100%;
-            height: 300px; /* Fixed height for the chart */
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 8px;
-            padding: 10px;
-            margin-top: 10px;
-            position: relative; /* For positioning canvas */
+            height: 300px;
+            margin-top: 8px;
         }
-
         .chart-container canvas {
             display: block;
             width: 100% !important;
             height: 100% !important;
         }
 
-        /* Removed specific heatmap styling, ApexCharts will handle it */
-        #apexHeatmapChart {
-            display: none; /* Hide heatmap container */
+        .team-title {
+            margin: 24px 0 8px;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text);
+            text-align: left;
+        }
+        .team-title:first-child { margin-top: 0; }
+        #serverClientsListContainer { overflow-x: auto; }
+        .server-client-list-table {
+            width: 100%;
+            min-width: 480px;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 13.5px;
+        }
+        .server-client-list-table thead th {
+            padding: 10px 12px;
+            background: var(--bg-2);
+            border-bottom: 1px solid var(--border);
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            text-align: left;
+        }
+        .server-client-list-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-2);
+        }
+        .server-client-list-table tbody tr:last-child td { border-bottom: none; }
+        .server-client-list-table tbody tr:hover { background: var(--surface-2); }
+        .server-client-list-table th:nth-child(2),
+        .server-client-list-table td:nth-child(2) {
+            text-align: right;
+            font-variant-numeric: tabular-nums;
+        }
+        .server-client-list-table td:first-child { color: var(--text); font-weight: 600; }
+        .server-client-list-table a { color: var(--accent-2); text-decoration: none; }
+        .server-client-list-table a:hover { text-decoration: underline; }
+        .server-client-list-table img {
+            width: 18px;
+            height: 13px;
+            object-fit: cover;
+            border-radius: 2px;
+            margin-right: 6px;
+            vertical-align: -2px;
+        }
+        .empty-note {
+            padding: 24px 0;
+            color: var(--muted);
+            font-size: 13.5px;
         }
 
-        @media (max-width: 768px) {
-            .search-filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .search-input, .filter-select {
-                min-width: unset;
+        @media (max-width: 860px) {
+            .server-main-content { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 720px) {
+            .page { padding-top: 24px; }
+            .filters { padding: 12px; }
+            .filters .search-input,
+            .filters .filter-select {
+                flex: 1 1 100%;
                 width: 100%;
             }
-            #serversTable th, #serversTable td {
-                padding: 10px 5px;
-                font-size: 14px;
-            }
-            .server-main-content {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-            .server-title {
-                font-size: 36px;
-            }
-            .server-client-list-table th, .server-client-list-table td {
-                padding: 6px 3px;
-                font-size: 12px;
-            }
-            .server-client-list-table img {
-                width: 14px;
-            }
+            .server-client-list-table { min-width: 420px; }
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <div class="topbar">
@@ -1110,8 +1047,8 @@
                         {
                             label: 'Players', // Renamed from 'Max Players'
                             data: chartMaxDataPoints,
-                            borderColor: '#ff891b56', // Blue color
-                            backgroundColor: '#ff891b56', // Filled area color
+                            borderColor: '#ff8a3d56', // Blue color
+                            backgroundColor: '#ff8a3d56', // Filled area color
                             fill: true, // Chart is filled
                             tension: 0.3, // Smoothness
                             pointRadius: 0, // Display dots
@@ -1237,5 +1174,6 @@
             document.getElementById('showMoreServersBtn').addEventListener('click', loadMoreServers);
         });
     </script>
+    <script src="nav.js" defer></script>
 </body>
 </html>

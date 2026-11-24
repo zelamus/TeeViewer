@@ -3,145 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teeworlds Dynamic Skin Renderer</title>
-    
-    <link href="TeeAssembler/css/teejquery.css" rel="stylesheet">
-    <link href="TeeAssembler/css/teeassembler.css" rel="stylesheet">
-    <link href="TeeAssembler/css/slider.css" rel="stylesheet">
-
+    <title>Skin Preview — TeeViewer</title>
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="TeeAssembler/css/Tee.css">
+    <link rel="stylesheet" href="theme.css">
     <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
+        .skin-card { max-width: 720px; margin: 24px auto; padding: 28px; }
         #skin-display-container {
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 220px; margin: 8px 0 16px;
+            border: 1px dashed var(--border-strong);
+            border-radius: var(--r-lg);
+            background: var(--bg-2);
         }
-        #skin-display-container .teeassembler-tee {
-            /* TeeAssembler will put the canvas here */
-            display: inline-block; /* To center it */
-            vertical-align: middle;
-        }
-        #status {
-            margin-top: 10px;
-            font-style: italic;
-            color: #555;
-        }
-        .instructions {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e9ecef;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 600px;
-            text-align: left;
-        }
+        #skin-display-container .teeassembler-tee { display: inline-block; }
+        #status { color: var(--muted); text-align: center; margin-top: 10px; font-size: 14px; }
+        .instructions { max-width: 720px; margin: 0 auto 40px; padding: 22px 26px; }
+        .instructions h2 { font-size: 17px; margin-bottom: 10px; }
+        .instructions ul { margin: 8px 0 12px 18px; color: var(--text-2); font-size: 14px; }
         .instructions code {
-            background-color: #e0e0e0;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-family: monospace;
+            background: var(--surface-2); color: var(--accent-2);
+            padding: 2px 6px; border-radius: 5px; font-family: var(--mono); font-size: 13px;
         }
+        .page-head { max-width: 720px; margin: 22px auto 0; padding: 0 2px; }
     </style>
 </head>
 <body>
-    <h1>Your Custom Teeworlds Skin</h1>
+    <header class="topbar">
+        <a href="index.html"><img class="logo" src="logo.png" alt="TeeViewer"></a>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <a class="categories" href="players.html">Players</a>
+            <a class="categories" href="clans.html">Clans</a>
+            <a class="categories" href="maps.html">Maps</a>
+            <a class="categories" href="servers.html">Servers</a>
+            <a class="categories" href="status.html">Status</a>
+            <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&permissions=117760&scope=bot+applications.commands">Discord Bot</a>
+        </nav>
+    </header>
 
-    <div id="skin-display-container">
-        <div class="teeassembler-tee"></div>
-        <p id="status">Loading skin...</p>
+    <div class="page-head">
+        <h1>Skin Preview</h1>
+        <p class="page-sub" style="color:var(--muted)">Render any Teeworlds skin with custom body and foot colors.</p>
     </div>
 
-    <div class="instructions">
-        <h2>How to Use:</h2>
-        <p>You can change the skin and colors by modifying the URL parameters:</p>
+    <div class="section-card skin-card">
+        <div id="skin-display-container">
+            <div class="teeassembler-tee"></div>
+        </div>
+        <p id="status">Loading skin…</p>
+    </div>
+
+    <div class="instructions section-card">
+        <h2>How to use</h2>
+        <p style="color:var(--text-2)">Change the skin and colors with URL parameters:</p>
         <ul>
-            <li><code>skinname=</code>: The name of the skin (e.g., <code>default</code>, <code>chinese_by_whis</code>).</li>
-            <li><code>color_body=</code>: Teeworlds integer color code for the body (e.g., <code>13149440</code> for a specific blue).</li>
-            <li><code>color_feet=</code>: Teeworlds integer color code for the feet (e.g., <code>323531</code> for a specific red).</li>
+            <li><code>skinname=</code> the skin name, e.g. <code>default</code>.</li>
+            <li><code>color_body=</code> integer Teeworlds body color.</li>
+            <li><code>color_feet=</code> integer Teeworlds feet color.</li>
         </ul>
-        <p>Example URL:</p>
-        <p><code>https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/skin.html?skinname=chinese_by_whis&color_body=13149440&color_feet=323531</code></p>
-        <p>If no colors are specified, the default Teeworlds colors will be used.</p>
+        <p style="color:var(--text-2)">Example:</p>
+        <p><code>https://zelamus.github.io/TeeViewer/skin.html?skinname=default&amp;color_body=65535&amp;color_feet=16711680</code></p>
     </div>
 
-    <script src="TeeAssembler/js/lib.js"></script>
     <script src="TeeAssembler/js/color.js"></script>
-    <script src="TeeAssembler/js/skins.js"></script>
     <script src="TeeAssembler/js/TeeAssembler.js"></script>
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const statusElement = document.getElementById('status');
             const urlParams = new URLSearchParams(window.location.search);
-
-            // Get parameters from URL, with defaults if not present
-            const skinname = urlParams.get('skinname') || 'default'; // Default skin if none specified
-            const colorBodyParam = urlParams.get('color_body');
-            const colorFeetParam = urlParams.get('color_feet');
-
-            // Teeworlds default colors (blue body, red feet)
-            const DEFAULT_BODY_COLOR_CODE = 65535; // Blue
-            const DEFAULT_FEET_COLOR_CODE = 16711680; // Red
-
-            // Parse colors as integers, use defaults if parsing fails or not provided
-            const bodyColor = colorBodyParam ? parseInt(colorBodyParam, 10) : DEFAULT_BODY_COLOR_CODE;
-            const feetColor = colorFeetParam ? parseInt(colorFeetParam, 10) : DEFAULT_FEET_COLOR_CODE;
-
-            // Base URL for skins. TeeAssembler usually fetches from ddnet.org or similar.
-            const SKIN_BASE_URL = "https://ddnet.org/skins/skin/";
+            const skinname = urlParams.get('skinname') || 'default';
+            const bodyColor = urlParams.get('color_body') ? parseInt(urlParams.get('color_body'), 10) : 65535;
+            const feetColor = urlParams.get('color_feet') ? parseInt(urlParams.get('color_feet'), 10) : 16711680;
 
             try {
-                // Initialize TeeAssembler.Tee with the retrieved parameters
-                // The container is the div where TeeAssembler will place the canvas
+                if (typeof TeeAssembler === 'undefined' || !TeeAssembler.Tee) {
+                    throw new Error('TeeAssembler library not loaded');
+                }
                 const teeContainer = document.querySelector('.teeassembler-tee');
-                
-                // TeeAssembler.Tee expects string representations of colors for the API calls
                 const tee = new TeeAssembler.Tee({
                     container: teeContainer,
-                    imageLink: SKIN_BASE_URL + skinname + '.png',
-                    bodyColor: bodyColor.toString(),
-                    feetColor: feetColor.toString(),
-                    colorFormat: 'code' // Specify the color format
+                    imageLink: 'https://ddstats.tw/skins/' + skinname + '.png',
+                    bodyColor: String(bodyColor),
+                    feetColor: String(feetColor),
+                    colorFormat: 'code'
                 });
-
-                // Render the tee. TeeAssembler handles the image loading and drawing.
-                // It's asynchronous, but the TeeAssembler.Tee constructor handles the render
-                // internally. We just need to wait for it to be ready.
-                tee.onReady(function() {
-                    statusElement.textContent = `Skin: ${skinname}, Body: ${bodyColor}, Feet: ${feetColor}`;
-                });
-
-                // Handle potential errors during image loading by TeeAssembler
-                // (This might require looking into TeeAssembler's error handling, 
-                // but generally it will just fail to draw the image if link is bad)
-                tee.onError(function(error) {
-                    statusElement.textContent = `Error loading or rendering skin: ${error.message || error}`;
-                    console.error("TeeAssembler Error:", error);
-                });
-
+                if (tee.api && tee.api.functions && tee.api.functions.lookAtCursor) {
+                    tee.api.functions.lookAtCursor();
+                }
+                statusElement.textContent = 'Skin: ' + skinname + ' · Body: ' + bodyColor + ' · Feet: ' + feetColor;
             } catch (error) {
-                statusElement.textContent = `Initialization Error: ${error.message}`;
-                console.error("TeeAssembler Initialization Failed:", error);
+                console.error('TeeAssembler init failed:', error);
+                statusElement.textContent = 'Could not load the skin preview.';
+                statusElement.style.color = 'var(--bad)';
             }
         });
     </script>
+    <script src="nav.js" defer></script>
 </body>
 </html>

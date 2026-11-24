@@ -254,33 +254,39 @@
             }
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <div class="topbar">
-        <img onclick="navigateToPage('index.html')" class="logo" src="logo.png" alt="DDNet Logo">
-        <div class="nav-buttons">
-            <button onclick="navigateToPage('players.html')" class="categories" id="players">Players</button>
-            <button onclick="navigateToPage('clans.html')" class="categories" id="clans">Clans</button>
-            <button onclick="navigateToPage('maps.html')" class="categories" id="maps">Maps</button>
-            <button onclick="navigateToPage('servers.html')" class="categories" id="servers">Servers</button>
-            <button onclick="window.location.href='https://discord.com/oauth2/authorize?client_id=1391161122714943528&permissions=117760&scope=bot+applications.commands'" class="categories" id="servers">Discord Bot</button>
-            <button class="categories" id="status">Status</button>
-        </div>
+        <a href="index.html"><img class="logo" src="logo.png" alt="TeeViewer"></a>
+        <nav class="nav-buttons" aria-label="Main navigation">
+            <a class="categories" href="players.html">Players</a>
+            <a class="categories" href="clans.html">Clans</a>
+            <a class="categories" href="maps.html">Maps</a>
+            <a class="categories" href="servers.html">Servers</a>
+            <a class="categories" href="status.html">Status</a>
+            <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&permissions=117760&scope=bot+applications.commands">Discord Bot</a>
+        </nav>
     </div>
 
     <!-- Main content container, consistent with players.html's playerStatsContainer -->
     <div class="status-main-content">
+        <header class="page-head">
+            <h1>Network Status</h1>
+            <p class="page-sub">Live DDNet network health, uptime and history.</p>
+        </header>
         <!-- Grouping for Region Data and Server Pings -->
         <div class="top-status-grid">
             <!-- Website Region Data Section -->
             <div class="section-card">
                 <h2>Your Current Region</h2>
-                <p>Fetching your location based on your IP address.</p>
-                <ul id="region-data" class="ping-list">
-                    
-                    <li><strong>Country:</strong> <span id="country">Loading...</span></li>
-                    <li><strong>City:</strong> <span id="city">Loading...</span></li>
-                </ul>
+                <div id="region-data" class="region-chips">
+                    <span class="chip">Country: <span id="country">Loading…</span></span>
+                    <span class="chip">City: <span id="city">Loading…</span></span>
+                </div>
             </div>
 
             <!-- Server Pings Section -->
@@ -320,6 +326,14 @@
                     <div class="value" id="stat-maps">Loading...</div>
                     <div class="label">Total Maps</div>
                 </div>
+                <div class="stat-item">
+                    <div class="value" id="stat-gamemodes">Loading...</div>
+                    <div class="label">Game Types</div>
+                </div>
+                <div class="stat-item">
+                    <div class="value" id="stat-versions">Loading...</div>
+                    <div class="label">Client Versions</div>
+                </div>
             </div>
         </div>
 
@@ -341,7 +355,8 @@
         <div class="section-card">
             <h2>Server Statistics Over Time</h2>
             <div class="chart-buttons" id="server-buttons">
-                <button id="server-week-btn" class="active">Week</button>
+                <button id="server-day-btn" class="active">Day</button>
+                <button id="server-week-btn">Week</button>
                 <button id="server-month-btn">Month</button>
             </div>
             <div class="chart-container">
@@ -425,16 +440,19 @@
                         cache: 'no-store'
                     });
                     const endTime = performance.now();
-                    const latency = (endTime - startTime).toFixed(2);
+                    const latency = Math.round(endTime - startTime);
                     // For no-cors, we can't check response.ok, so we assume success if fetch doesn't throw.
-                    document.getElementById(elementId).textContent = `${latency} ms (Online)`;
-                    document.getElementById(elementId).style.color = 'lightgreen';
+                    const el = document.getElementById(elementId);
+                    el.textContent = `${latency} ms`;
+                    // threshold colors: fast=good, medium=warn, slow=bad
+                    el.style.color = latency < 100 ? 'var(--good)' : latency < 250 ? 'var(--warn)' : 'var(--bad)';
                 } catch (error) {
                     const endTime = performance.now();
-                    const latency = (endTime - startTime).toFixed(2); // Still show time taken before error
+                    const latency = Math.round(endTime - startTime); // Still show time taken before error
                     console.error(`Error pinging ${host}:`, error);
-                    document.getElementById(elementId).textContent = `Offline (${latency} ms)`;
-                    document.getElementById(elementId).style.color = 'red';
+                    const el = document.getElementById(elementId);
+                    el.textContent = `Offline · ${latency} ms`;
+                    el.style.color = 'var(--bad)';
                 }
             }
 
@@ -450,6 +468,10 @@
                     document.getElementById('stat-servers').textContent = data.numServers.toLocaleString();
                     document.getElementById('stat-clans').textContent = data.numClans.toLocaleString();
                     document.getElementById('stat-maps').textContent = data.numMaps.toLocaleString();
+                    const gm = document.getElementById('stat-gamemodes');
+                    if (gm && data.numGameTypes != null) gm.textContent = data.numGameTypes.toLocaleString();
+                    const vr = document.getElementById('stat-versions');
+                    if (vr && data.numVersions != null) vr.textContent = data.numVersions.toLocaleString();
                 } catch (error) {
                     console.error('Error fetching overall stats:', error);
                     document.getElementById('overall-stats').innerHTML = '<p style="color:red;">Error loading overall stats.</p>';
@@ -508,8 +530,8 @@
                             datasets: [{
                                 label: 'Average Players',
                                 data: avgPlayers,
-                                borderColor: '#ff891b56', // Consistent color with servers.html
-                                backgroundColor: '#ff891b56', // Consistent color with servers.html
+                                borderColor: '#ff8a3d56', // Consistent color with servers.html
+                                backgroundColor: '#ff8a3d56', // Consistent color with servers.html
                                 fill: true,
                                 tension: 0.3,
                                 pointRadius: 0, /* Make graph points invisible */
@@ -620,6 +642,7 @@
             let serverStatsChart;
             const serverChartCtx = document.getElementById('serverStatsChart').getContext('2d');
             const serverApiEndpoints = {
+                day: 'https://api.status.tw/stats/servers/day',
                 week: 'https://api.status.tw/stats/servers/week',
                 month: 'https://api.status.tw/stats/servers/month'
             };
@@ -642,7 +665,9 @@
 
                     data.forEach(item => {
                         const date = new Date(item.timestamp);
-                        if (period === 'week') {
+                        if (period === 'day') {
+                            labels.push(date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+                        } else if (period === 'week') {
                             labels.push(date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }));
                         } else if (period === 'month') {
                             labels.push(date.toLocaleDateString([], { month: 'short', day: 'numeric' }));
@@ -664,8 +689,8 @@
                             datasets: [{
                                 label: 'Average Servers',
                                 data: avgServers,
-                                borderColor: '#ff891b56', // Consistent color with servers.html
-                                backgroundColor: '#ff891b56', // Consistent color with servers.html
+                                borderColor: '#ff8a3d56', // Consistent color with servers.html
+                                backgroundColor: '#ff8a3d56', // Consistent color with servers.html
                                 fill: true,
                                 tension: 0.3,
                                 pointRadius: 0, /* Make graph points invisible */
@@ -746,6 +771,10 @@
                 }
             }
 
+            document.getElementById('server-day-btn').addEventListener('click', () => {
+                fetchServerStats('day');
+                toggleActiveClass('server-buttons', 'server-day-btn');
+            });
             document.getElementById('server-week-btn').addEventListener('click', () => {
                 fetchServerStats('week');
                 toggleActiveClass('server-buttons', 'server-week-btn');
@@ -756,7 +785,7 @@
             });
 
             // Initial load for server stats
-            fetchServerStats('week');
+            fetchServerStats('day');
 
             // Function to toggle active class on buttons
             function toggleActiveClass(parentClass, activeBtnId) {
@@ -795,5 +824,6 @@
             fetchApiStatusCodes();
         });
     </script>
+    <script src="nav.js" defer></script>
 </body>
 </html>

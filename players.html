@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Players - TeeViewer</title>
-    <script src="api.js" type="module"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="TeeAssembler/css/Tee.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
@@ -311,7 +310,7 @@
         .search-input:focus {
             outline: none;
             border-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
+            box-shadow: 0 0 15px rgba(255, 138, 61, 0.3);
         }
 
         .loading-indicator {
@@ -608,6 +607,10 @@
             }
         }
     </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="theme.css">
 </head>
 <body>
     <div class="topbar">
@@ -623,7 +626,7 @@
     </div>
 
     <div class="player-search-container">
-        <h2 style="text-align: center; color: var(--primary-color); font-size: 36px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 69, 0, 0.3);">Player Search</h2>
+        <h2 style="text-align: center; color: var(--primary-color); font-size: 36px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 138, 61, 0.3);">Player Search</h2>
         <div class="search-area">
             <input type="text" id="playerSearchInput" class="search-input" placeholder="Enter player name">
             <br>
@@ -644,7 +647,7 @@
 
             </div>
             <div class="player-info">
-                <h1 style="text-align: center; color: var(--primary-color); font-size: 36px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 69, 0, 0.3);" id="playerName"></h1>
+                <h1 style="text-align: center; color: var(--primary-color); font-size: 36px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 138, 61, 0.3);" id="playerName"></h1>
                 <p>Points: <span id="playerPoints"></span></p>
                 <p>Clan: <span id="playerClan"><a href="#" id="playerClanLink">N/A</a></span></p>
                 <p>Country: <span id="playerCountry"></span></p> <p>Skin Name: <span id="playerSkinName"></span></p>
@@ -2247,5 +2250,6 @@
     <script type="module">
 
     </script>
+    <script src="nav.js" defer></script>
 </body>
 </html>

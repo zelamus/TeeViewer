@@ -1,4 +1,4 @@
-import { COUNTRY_CODES } from './country_codes.js';
+const COUNTRY_CODES = (typeof window !== 'undefined' && window.COUNTRY_CODES) || {};
 
 
 
