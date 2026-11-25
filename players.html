@@ -146,8 +146,8 @@
                         <div>
                             <h2 class="identity-name" id="playerName">Player</h2>
                             <div class="identity-badges">
-                                <span class="badge" id="playerClan" data-state="empty"><span class="badge-label">Clan</span><a id="playerClanLink" href="#">No clan</a></span>
-                                <span class="identity-country">
+                                <span class="badge clan-chip" id="playerClan" data-state="empty"><span class="badge-label">Clan</span><a id="playerClanLink" href="#">No clan</a></span>
+                                <span class="identity-country country-chip">
                                     <span class="badge-label">Country</span>
                                     <img class="identity-flag" id="countryFlag" alt="" width="22" height="15" hidden>
                                     <span id="playerCountry"></span>
@@ -861,7 +861,7 @@
                 document.getElementById("playerCountry").textContent = countryName;
                 countryFlag.src = "countryflags/" + (window.COUNTRY_CODES ? window.COUNTRY_CODES[countryCode] || "default" : "default") + ".png";
                 countryFlag.alt = countryName + " flag";
-                countryFlag.hidden = !profile.clan || countryCode === "-1" || countryName === "Default";
+                countryFlag.hidden = countryCode === "-1" || countryName === "Default";
 
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
@@ -993,14 +993,27 @@
 
                 if (typeof TeeAssembler !== "undefined" && TeeAssembler.Tee) {
                     try {
-                        currentTeeInstance = new TeeAssembler.Tee({
-                            container: teeContainer,
+                        var teeInstance = new TeeAssembler.Tee({
                             imageLink: "https://ddstats.tw/skins/" + skinName + ".png",
                             bodyColor: effectiveBodyColor,
                             feetColor: effectiveFeetColor,
                             colorFormat: "code"
                         });
-                        currentTeeInstance.api.functions.lookAtCursor();
+                        currentTeeInstance = teeInstance;
+                        teeInstance.api.functions.setContainer(teeContainer).then(function () {
+                            if (currentTeeInstance !== teeInstance) {
+                                return;
+                            }
+                            try {
+                                teeInstance.api.functions.lookAtCursor();
+                            } catch (error) {
+                                return;
+                            }
+                        }).catch(function () {
+                            if (currentTeeInstance === teeInstance) {
+                                teeContainer.textContent = "Tee preview not available.";
+                            }
+                        });
                     } catch (error) {
                         teeContainer.textContent = "Tee preview not available.";
                     }

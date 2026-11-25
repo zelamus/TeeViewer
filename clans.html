@@ -190,7 +190,7 @@
                                 <th scope="col">
                                     <button class="th-sort" type="button" data-sort="created">Created</button>
                                 </th>
-                                <th scope="col" class="num">AFK</th>
+                                <th scope="col" class="num" title="Away from keyboard">AFK</th>
                                 <th scope="col">Top members</th>
                             </tr>
                         </thead>
@@ -234,7 +234,7 @@
                     <dd id="clanDialogOnline"></dd>
                 </div>
                 <div class="detail-item">
-                    <dt>AFK</dt>
+                    <dt title="Away from keyboard">AFK</dt>
                     <dd id="clanDialogAfk"></dd>
                 </div>
             </div>
@@ -605,6 +605,7 @@
                     var createdText = document.createElement("span");
                     createdText.textContent = "Created " + created;
                     var afkText = document.createElement("span");
+                    afkText.title = "Away from keyboard";
                     afkText.textContent = "AFK ";
                     var afkValue = document.createElement("strong");
                     afkValue.textContent = clan.afkPlayers;

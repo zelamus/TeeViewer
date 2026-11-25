@@ -128,7 +128,7 @@
         <section class="stat-section preview-section" aria-labelledby="live-servers-title">
             <div class="section-head">
                 <h2 id="live-servers-title">Live servers</h2>
-                <p class="section-note">Top five by players</p>
+                <p class="section-note" id="liveServersNote">Top five by players</p>
             </div>
             <div class="table-wrap">
                 <table class="table preview-table live-servers-table">
@@ -144,7 +144,7 @@
         <section class="stat-section preview-section" aria-labelledby="top-maps-title">
             <div class="section-head">
                 <h2 id="top-maps-title">Top maps</h2>
-                <p class="section-note">Highest points</p>
+                <p class="section-note" id="topMapsNote">Highest points</p>
             </div>
             <div class="table-wrap">
                 <table class="table preview-table">
@@ -203,6 +203,33 @@
             var timeout = window.setTimeout(function () {
                 controller.abort();
             }, 8000);
+            var liveLoaded = false;
+
+            fetch("snapshot.json")
+                .then(function (response) {
+                    return response.ok ? response.json() : null;
+                })
+                .then(function (snapshot) {
+                    if (!snapshot || !snapshot.stats || liveLoaded) {
+                        return;
+                    }
+
+                    fields.forEach(function (field) {
+                        writeValue(field.key, snapshot.stats[field.source]);
+                    });
+                    settle("Snapshot values shown. Live data loading.");
+
+                    if (asOfLine) {
+                        asOfLine.textContent = "Snapshot";
+                        asOfLine.hidden = false;
+                    }
+                    if (asOfSep) {
+                        asOfSep.hidden = false;
+                    }
+                })
+                .catch(function () {
+                    return;
+                });
 
             function writeValue(key, value) {
                 var target = grid.querySelector('[data-stat="' + key + '"]');
@@ -244,6 +271,7 @@
 
             window.fetchJSON("https://api.status.tw/stats")
                 .then(function (data) {
+                    liveLoaded = true;
                     fields.forEach(function (field) {
                         writeValue(field.key, data[field.source]);
                     });
@@ -251,16 +279,11 @@
                     markAsOf();
                 })
                 .catch(function () {
-                    fields.forEach(function (field) {
-                        writeValue(field.key, null);
-                    });
-                    settle("Live network statistics are unavailable.");
-                    if (asOfLine) {
-                        asOfLine.hidden = true;
+                    settle("Showing bundled snapshot. Live data unavailable.");
+                    if (!asOfLine || asOfLine.hidden) {
+                        return;
                     }
-                    if (asOfSep) {
-                        asOfSep.hidden = true;
-                    }
+                    asOfLine.textContent = "Snapshot";
                 })
                 .finally(function () {
                     window.clearTimeout(timeout);
@@ -375,8 +398,54 @@
                 }
             }
 
+            var liveServersLoaded = false;
+            var liveMapsLoaded = false;
+            var serversNote = document.getElementById("liveServersNote");
+            var mapsNote = document.getElementById("topMapsNote");
+
+            fetch("snapshot.json")
+                .then(function (response) {
+                    return response.ok ? response.json() : null;
+                })
+                .then(function (snapshot) {
+                    if (!snapshot) {
+                        return;
+                    }
+
+                    if (!liveServersLoaded && Array.isArray(snapshot.servers)) {
+                        render("liveServersBody", "liveServersStatus", snapshot.servers, [
+                            function (s) { return s.name || "Unnamed server"; },
+                            function (s) { return s.map || "Unknown"; },
+                            function (s) {
+                                return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
+                            }
+                        ]);
+                        if (serversNote) {
+                            serversNote.textContent = "Top five by players · Snapshot";
+                        }
+                    }
+
+                    if (!liveMapsLoaded && Array.isArray(snapshot.maps)) {
+                        render("topMapsBody", "topMapsStatus", snapshot.maps, [
+                            function (m) { return m.map || "Unnamed map"; },
+                            function (m) { return starsElement(m.stars); },
+                            function (m) { return numberFormat.format(Number(m.points) || 0); }
+                        ]);
+                        if (mapsNote) {
+                            mapsNote.textContent = "Highest points · Snapshot";
+                        }
+                    }
+                })
+                .catch(function () {
+                    return;
+                });
+
             fetchWithRetry("https://api.status.tw/server/list")
                 .then(function (data) {
+                    liveServersLoaded = true;
+                    if (serversNote) {
+                        serversNote.textContent = "Top five by players";
+                    }
                     var servers = Array.isArray(data) ? data.slice().sort(function (a, b) {
                         return (Number(b.numPlayers) || 0) - (Number(a.numPlayers) || 0);
                     }).slice(0, 5) : [];
@@ -395,6 +464,10 @@
 
             fetchWithRetry("https://ddstats.tw/maps/json")
                 .then(function (data) {
+                    liveMapsLoaded = true;
+                    if (mapsNote) {
+                        mapsNote.textContent = "Highest points";
+                    }
                     var list = Array.isArray(data) ? data
                         : data && Array.isArray(data.maps) ? data.maps
                         : data && Array.isArray(data.data) ? data.data

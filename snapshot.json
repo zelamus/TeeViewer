@@ -1,0 +1,22 @@
+{
+  "stats": {
+    "numPlayers": 4381,
+    "numServers": 1371,
+    "numClans": 828,
+    "numMaps": 773
+  },
+  "servers": [
+    { "name": "DDNet RUS - Event", "map": "2 Days in the back", "numPlayers": 113, "maxPlayers": 127 },
+    { "name": "DDNet RUS - Novice", "map": "Linear", "numPlayers": 113, "maxPlayers": 127 },
+    { "name": "DDNet GER - Novice", "map": "Multeasymap", "numPlayers": 95, "maxPlayers": 127 },
+    { "name": "DDNet RUS - BLOCKER #3", "map": "Copy Love Box", "numPlayers": 82, "maxPlayers": 127 },
+    { "name": "DDNet RUS - Novice", "map": "Multeasymap", "numPlayers": 79, "maxPlayers": 127 }
+  ],
+  "maps": [
+    { "map": "Adorenarine", "stars": 5, "points": 50 },
+    { "map": "Heartcore II", "stars": 5, "points": 50 },
+    { "map": "Tentrom", "stars": 5, "points": 50 },
+    { "map": "Grim Reaper", "stars": 5, "points": 50 },
+    { "map": "Adrenaline 4", "stars": 5, "points": 50 }
+  ]
+}

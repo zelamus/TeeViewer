@@ -117,12 +117,27 @@
    -------------------------------------------------------------------------- */
 
 .result-bar {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
     gap: var(--space-2) var(--space-3);
     padding: var(--space-2) 0;
+}
+
+.result-bar .result-count {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.result-bar .filter-legend {
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.result-bar .pager-top {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin: 0;
 }
 
 .result-count {
@@ -1036,6 +1051,21 @@ body.map-modal-open {
    -------------------------------------------------------------------------- */
 
 @media (max-width: 560px) {
+    .result-bar {
+        grid-template-columns: 1fr;
+    }
+
+    .result-bar .result-count,
+    .result-bar .filter-legend,
+    .result-bar .pager-top {
+        grid-column: 1;
+        grid-row: auto;
+    }
+
+    .result-bar .pager-top {
+        justify-content: flex-start;
+    }
+
     .filter-panel {
         padding: var(--space-3);
     }
