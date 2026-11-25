@@ -71,7 +71,7 @@
                 <p class="page-sub">Search a Teeworlds player to see their profile, playtime, and points history.</p>
             </div>
             <div class="page-head-actions">
-                <a class="button ghost" href="#playerComparisonSection">Compare players</a>
+                <a class="button ghost" href="#playerComparisonSection">Compare two players</a>
             </div>
         </header>
 
@@ -83,7 +83,7 @@
                     <input class="input" id="playerSearchInput" name="player" type="search" placeholder="Enter a player name" autocomplete="off" spellcheck="false">
                 </div>
                 <div class="search-actions">
-                    <button class="button primary" id="searchPlayerButton" type="submit">Search player</button>
+                    <button class="button primary" id="searchPlayerButton" type="submit">Search</button>
                 </div>
             </form>
             <div class="example-row">
@@ -103,9 +103,6 @@
             </span>
             <p class="state-title">Search a player to see their profile</p>
             <p class="state-hint">Enter a Teeworlds name above. Profiles include playtime, points history, finishes, and clan.</p>
-            <div class="state-actions">
-                <button class="button ghost" type="button" data-focus-search>Search a player</button>
-            </div>
         </div>
 
         <div class="loading-panel" id="loadingIndicator" role="status" aria-live="polite" hidden>
@@ -440,8 +437,8 @@
 
         <section class="panel" id="playerComparisonSection" aria-labelledby="compare-title">
             <div class="panel-head">
-                <h2 class="panel-title" id="compare-title">Compare players</h2>
-                <span class="panel-note">Two profiles side by side</span>
+                <h2 class="panel-title" id="compare-title">Side-by-side comparison</h2>
+                <span class="panel-note">Two profiles at once</span>
             </div>
             <form class="comparison-form" id="comparisonForm">
                 <div class="field">
@@ -919,9 +916,13 @@
                         row.insertCell().textContent = finish.time ? formatTime(finish.time.toFixed(2)) : "N/A";
                         row.cells[2].className = "num";
                         row.insertCell().textContent = finish.timestamp ? new Date(finish.timestamp).toLocaleDateString() : "N/A";
-                        row.insertCell().textContent = finish.rank || "N/A";
+                        row.insertCell().textContent = finish.rank
+                            ? finish.rank.rank || finish.rank
+                            : "N/A";
                         row.cells[4].className = "num";
-                        row.insertCell().textContent = finish.team_rank || "N/A";
+                        row.insertCell().textContent = finish.team_rank
+                            ? finish.team_rank.rank || finish.team_rank
+                            : "N/A";
                         row.cells[5].className = "num";
 
                         var mapLink = document.createElement("a");
@@ -1016,6 +1017,8 @@
                                 borderWidth: 2,
                                 pointRadius: 0,
                                 pointHoverRadius: 3,
+                                pointBackgroundColor: accentColor,
+                                pointBorderColor: accentColor,
                                 tension: 0.3,
                                 fill: true
                             }]
@@ -1117,6 +1120,8 @@
                                 borderWidth: 2,
                                 pointRadius: 0,
                                 pointHoverRadius: 3,
+                                pointBackgroundColor: accentColor,
+                                pointBorderColor: accentColor,
                                 tension: 0.3,
                                 fill: true
                             }]

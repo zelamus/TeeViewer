@@ -93,7 +93,7 @@
                 <p class="section-note">Live from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             </div>
 
-            <div class="loading-panel" id="clansLoading" role="status" aria-live="polite">
+            <div class="loading-panel" id="clansLoading" role="status" aria-live="polite" hidden>
                 <div class="loading-head">
                     <span class="spinner" aria-hidden="true"></span>
                     <span class="visually-hidden">Loading clans</span>
@@ -450,7 +450,7 @@
 
                     var rankCell = document.createElement("td");
                     rankCell.className = "clan-rank";
-                    rankCell.textContent = rank;
+                    rankCell.textContent = clan.name ? rank : "—";
 
                     var nameCell = document.createElement("td");
                     var name = document.createElement("span");
@@ -502,7 +502,7 @@
                     cardName.textContent = clan.name;
                     var cardRank = document.createElement("span");
                     cardRank.className = "clan-card-rank";
-                    cardRank.textContent = "#" + rank;
+                    cardRank.textContent = clan.name ? "#" + rank : "Unnamed";
                     cardHead.appendChild(cardName);
                     cardHead.appendChild(cardRank);
 

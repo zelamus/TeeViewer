@@ -69,10 +69,11 @@
                 <p class="page-meta">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             </header>
 
-            <section class="filter-panel" aria-labelledby="serverFiltersTitle">
+            <section class="filter-panel" id="serverFilterPanel" aria-labelledby="serverFiltersTitle">
                 <div class="section-head filter-panel-head">
                     <p class="section-title" id="serverFiltersTitle">Filter servers</p>
                     <p class="section-note">Filters apply to the loaded list</p>
+                    <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel">Filters</button>
                 </div>
 
                 <div class="filter-grid">
@@ -147,7 +148,7 @@
 
             <div class="result-bar">
                 <p class="result-count" id="serverCount" role="status" aria-live="polite">Loading servers…</p>
-                <p class="result-hint">Select a row or card for details</p>
+                <p class="result-hint">Select a server for details</p>
             </div>
 
             <div class="table-shell" id="serversTableWrap">
@@ -797,7 +798,7 @@
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</td>" +
-                    '<td class="mono cell-version">' + (version ? escapeHtml(version) : "—") + "</td>" +
+                    '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(version) : "—") + "</td>" +
                     '<td class="icon-col">' + passwordIcon(server) + "</td>" +
                     '<td class="action-col"><button class="button ghost button-sm" type="button" data-open-server>Details</button></td>' +
                     "</tr>";
@@ -1575,6 +1576,17 @@
 
             function init() {
                 getDom();
+
+                var filterToggle = document.getElementById("filterToggle");
+                var filterPanel = document.getElementById("serverFilterPanel");
+
+                if (filterToggle && filterPanel) {
+                    filterToggle.addEventListener("click", function () {
+                        var open = filterPanel.classList.toggle("is-open");
+                        filterToggle.setAttribute("aria-expanded", open ? "true" : "false");
+                        filterToggle.textContent = open ? "Hide filters" : "Filters";
+                    });
+                }
 
                 document.addEventListener("click", onDocumentClick);
                 document.addEventListener("keydown", onDocumentKeydown);

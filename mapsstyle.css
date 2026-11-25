@@ -329,6 +329,24 @@
     margin-left: auto;
 }
 
+.pager {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-left: auto;
+}
+
+.pager-status {
+    color: var(--muted);
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
+}
+
+.pager button[disabled] {
+    cursor: not-allowed;
+    opacity: 0.45;
+}
+
 /* --------------------------------------------------------------------------
    Map modal
    -------------------------------------------------------------------------- */

@@ -1184,6 +1184,58 @@
         display: none;
     }
 
+    section[aria-labelledby="recent-finishes-title"] table,
+    #recentTop10sTable,
+    #allTop10sTable {
+        table-layout: fixed;
+    }
+
+    section[aria-labelledby="recent-finishes-title"] th,
+    section[aria-labelledby="recent-finishes-title"] td,
+    #recentTop10sTable th,
+    #recentTop10sTable td,
+    #allTop10sTable th,
+    #allTop10sTable td {
+        padding: var(--space-2);
+        font-size: var(--text-xs);
+    }
+
+    section[aria-labelledby="recent-finishes-title"] td:first-child,
+    #recentTop10sTable td:nth-child(2),
+    #allTop10sTable td:first-child {
+        overflow-wrap: anywhere;
+    }
+
+    section[aria-labelledby="recent-finishes-title"] th,
+    #recentTop10sTable th,
+    #allTop10sTable th {
+        white-space: normal;
+    }
+
+    section[aria-labelledby="recent-finishes-title"] th:first-child,
+    section[aria-labelledby="recent-finishes-title"] td:first-child,
+    #recentTop10sTable th:nth-child(2),
+    #recentTop10sTable td:nth-child(2),
+    #allTop10sTable th:first-child,
+    #allTop10sTable td:first-child {
+        width: 34%;
+    }
+
+    section[aria-labelledby="recent-finishes-title"] th:nth-child(2),
+    section[aria-labelledby="recent-finishes-title"] td:nth-child(2),
+    section[aria-labelledby="recent-finishes-title"] th:nth-child(4),
+    section[aria-labelledby="recent-finishes-title"] td:nth-child(4),
+    #recentTop10sTable th:nth-child(5),
+    #recentTop10sTable td:nth-child(5),
+    #recentTop10sTable th:nth-child(6),
+    #recentTop10sTable td:nth-child(6),
+    #allTop10sTable th:nth-child(4),
+    #allTop10sTable td:nth-child(4),
+    #allTop10sTable th:nth-child(5),
+    #allTop10sTable td:nth-child(5) {
+        display: none;
+    }
+
     .dialog-table-wrap .table th,
     .dialog-table-wrap .table td {
         padding: var(--space-2);

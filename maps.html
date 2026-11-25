@@ -72,7 +72,7 @@
             <section class="filter-panel" aria-labelledby="mapFiltersTitle">
                 <div class="section-head filter-panel-head">
                     <p class="section-title" id="mapFiltersTitle">Filter maps</p>
-                    <p class="section-note">Filters apply to the loaded index</p>
+                    <p class="section-note">Narrows the maps below</p>
                 </div>
 
                 <div class="filter-grid">
@@ -185,7 +185,11 @@
 
             <div class="list-footer">
                 <p class="result-note" id="mapResultNote"></p>
-                <button class="button ghost" type="button" id="showMoreMapsBtn" hidden>Show more</button>
+                <nav class="pager" id="mapPager" aria-label="Map pages">
+                    <button class="button ghost button-sm" type="button" id="mapPrevBtn">Previous</button>
+                    <span class="pager-status" id="mapPageStatus" role="status"></span>
+                    <button class="button ghost button-sm" type="button" id="mapNextBtn">Next</button>
+                </nav>
             </div>
         </div>
 
@@ -426,7 +430,10 @@
                 dom.state = document.getElementById("mapsState");
                 dom.count = document.getElementById("mapCount");
                 dom.resultNote = document.getElementById("mapResultNote");
-                dom.showMore = document.getElementById("showMoreMapsBtn");
+                dom.showMore = document.getElementById("mapNextBtn");
+            dom.pager = document.getElementById("mapPager");
+            dom.prevPage = document.getElementById("mapPrevBtn");
+            dom.pageStatus = document.getElementById("mapPageStatus");
                 dom.search = document.getElementById("mapSearch");
                 dom.mapper = document.getElementById("mapperFilter");
                 dom.type = document.getElementById("typeFilter");
@@ -699,6 +706,7 @@
 
             function filterAndSortMaps() {
                 currentMapPage = 1;
+                dom.grid.innerHTML = "";
 
                 var search = dom.search.value.trim().toLowerCase();
                 var mapper = dom.mapper.value.trim().toLowerCase();
@@ -784,7 +792,7 @@
                 dom.state.hidden = true;
                 dom.grid.hidden = false;
 
-                if (currentMapPage === 1) {
+                if (currentMapPage === 1 || dom.grid.children.length === 0) {
                     dom.grid.innerHTML = "";
                 }
 
@@ -796,22 +804,40 @@
                     dom.grid.insertAdjacentHTML("beforeend", mapCard(item));
                 });
 
-                var shown = Math.min(endIndex, mapsToDisplay.length);
-                dom.count.textContent = "Showing " + formatNumber(shown) + " of " + formatNumber(mapsToDisplay.length) + " maps";
-                dom.resultNote.textContent = mapsToDisplay.length === allMaps.length
+                var total = mapsToDisplay.length;
+                var lastPage = Math.max(1, Math.ceil(total / mapPageSize));
+                var firstShown = total ? startIndex + 1 : 0;
+                var shown = Math.min(endIndex, total);
+                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " maps";
+                dom.resultNote.textContent = total === allMaps.length
                     ? "Full map index"
                     : "Filtered from " + formatNumber(allMaps.length) + " maps";
 
-                if (endIndex < mapsToDisplay.length) {
-                    dom.showMore.hidden = false;
-                    dom.showMore.textContent = "Show more (" + formatNumber(mapsToDisplay.length - endIndex) + " remaining)";
-                } else {
-                    dom.showMore.hidden = true;
-                }
+                dom.pager.hidden = false;
+                dom.showMore.hidden = false;
+                dom.pageStatus.textContent = "Page " + currentMapPage + " of " + lastPage;
+                dom.prevPage.disabled = currentMapPage <= 1;
+                dom.showMore.disabled = currentMapPage >= lastPage;
             }
 
             function loadMoreMaps() {
-                currentMapPage += 1;
+                goToMapPage(currentMapPage + 1);
+            }
+
+            function goToMapPage(page) {
+                var total = filteredAndSortedMaps.length;
+                var lastPage = Math.max(1, Math.ceil(total / mapPageSize));
+
+                if (page < 1 || page > lastPage) {
+                    return;
+                }
+
+                if (page === currentMapPage) {
+                    return;
+                }
+
+                currentMapPage = page;
+                dom.grid.innerHTML = "";
                 displayMaps(filteredAndSortedMaps);
             }
 
@@ -1224,11 +1250,19 @@
                 var clientsContainer = document.getElementById("serverClientsListContainer");
 
                 if (!clients.length) {
+                    var hasPlayers = number(serverData.numPlayers) > 0;
+                    var emptyMessage = hasPlayers
+                        ? "Client details are not included in this view."
+                        : "No players are on this server right now.";
+                    var emptyAction = hasPlayers
+                        ? '<a class="button ghost button-sm" href="servers.html?ip=' + encodeURIComponent(serverData.ip) + "&amp;port=" + encodeURIComponent(serverData.port) + '">View on Servers</a>'
+                        : '<button class="button ghost button-sm" type="button" data-close-server-details>Close</button>';
+
                     clientsContainer.innerHTML =
                         '<div class="inline-empty">' +
                             '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9.5" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path></svg>' +
-                            "<p>No players are on this server right now.</p>" +
-                            '<button class="button ghost button-sm" type="button" data-close-server-details>Close</button>' +
+                            "<p>" + emptyMessage + "</p>" +
+                            emptyAction +
                         "</div>";
                 } else {
                     var teams = {};
@@ -1503,8 +1537,13 @@
                     return;
                 }
 
-                if (target.closest("#showMoreMapsBtn")) {
+                if (target.closest("#showMoreMapsBtn") || target.closest("#mapNextBtn")) {
                     loadMoreMaps();
+                    return;
+                }
+
+                if (target.closest("#mapPrevBtn")) {
+                    goToMapPage(currentMapPage - 1);
                     return;
                 }
 
