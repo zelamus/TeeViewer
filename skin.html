@@ -301,6 +301,18 @@
 
             function updateMeta(state) {
                 setText("skin-meta", "Body " + state.body + " · Feet " + state.feet);
+                setText("skin-body-value", state.body);
+                setText("skin-feet-value", state.feet);
+
+                var bodySwatch = $("skin-body-swatch");
+                var feetSwatch = $("skin-feet-swatch");
+
+                if (bodySwatch) {
+                    bodySwatch.style.backgroundColor = skinColor(state.body);
+                }
+                if (feetSwatch) {
+                    feetSwatch.style.backgroundColor = skinColor(state.feet);
+                }
             }
 
             function updateBadge(name) {

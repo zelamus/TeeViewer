@@ -484,6 +484,12 @@
                 return "";
             }
 
+            function shortVersion(version) {
+                var text = String(version == null ? "" : version).trim();
+                var match = text.match(/^(\d+\.\d+)(?:\s+(\d{4}\.\d+))?/);
+                return match ? (match[2] ? match[1] + " " + match[2] : match[1]) : text;
+            }
+
             function serverCapacity(server) {
                 return number(server && server.maxPlayers) || number(server && server.maxClients);
             }

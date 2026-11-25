@@ -681,7 +681,7 @@ button:disabled {
 .hero {
     position: relative;
     isolation: isolate;
-    padding: clamp(3rem, 8vw, 6rem) 0 var(--space-7);
+    padding: var(--space-5) 0 var(--space-5);
     text-align: center;
 }
 
@@ -1528,7 +1528,7 @@ textarea.input {
     }
 
     .hero {
-        padding: var(--space-6) 0 var(--space-6);
+        padding: var(--space-5) 0 var(--space-5);
     }
 
     .hero-sub {
