@@ -464,7 +464,6 @@ button:disabled {
     display: block;
     width: auto;
     height: 44px;
-    filter: hue-rotate(180deg) saturate(1.15);
 }
 
 .nav {
@@ -753,9 +752,9 @@ button:disabled {
 
 .hero-subrow {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-4);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
     min-width: 0;
     width: 100%;
 }
@@ -790,14 +789,12 @@ button:disabled {
 
 .hero-actions {
     display: flex;
-    flex: 0 0 320px;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
     gap: var(--space-2);
-    margin-left: auto;
 }
 
 .hero-actions .button {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     min-width: 0;
 }
 
@@ -810,7 +807,7 @@ button:disabled {
 }
 
 .home .stat-section {
-    margin-top: var(--space-6);
+    margin-top: var(--space-2);
 }
 
 .network-section {

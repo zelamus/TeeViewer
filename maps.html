@@ -567,7 +567,7 @@
                 var stars = clampStars(value);
                 var filled = new Array(stars + 1).join("★");
                 var empty = new Array(6 - stars).join("☆");
-                var label = stars > 0 ? stars + " of 5 stars" : "Not rated";
+                var label = stars > 0 ? stars + " of 5 stars" : "0 stars";
 
                 return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + "</span></span></span>";
             }

@@ -27,6 +27,7 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
+                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
@@ -359,9 +360,19 @@
 
             fetchWithRetry("https://ddstats.tw/maps/json")
                 .then(function (data) {
-                    var maps = Array.isArray(data) ? data.slice().sort(function (a, b) {
+                    var list = Array.isArray(data) ? data
+                        : data && Array.isArray(data.maps) ? data.maps
+                        : data && Array.isArray(data.data) ? data.data
+                        : [];
+
+                    var maps = list.slice().sort(function (a, b) {
                         return (Number(b.points) || 0) - (Number(a.points) || 0);
-                    }).slice(0, 5) : [];
+                    }).slice(0, 5);
+
+                    if (!maps.length) {
+                        showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 3);
+                        return;
+                    }
 
                     render("topMapsBody", "topMapsStatus", maps, [
                         function (m) { return m.map || "Unnamed map"; },

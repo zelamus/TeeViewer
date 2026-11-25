@@ -139,12 +139,6 @@
     line-height: var(--leading-snug);
 }
 
-.result-bar .filter-legend::before {
-    margin-right: var(--space-2);
-    color: var(--muted);
-    content: "·";
-}
-
 .map-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -216,8 +210,8 @@
 }
 
 .stars-empty {
-    color: var(--text-2);
-    opacity: 0.75;
+    color: var(--muted);
+    opacity: 1;
 }
 
 .map-card-tags {

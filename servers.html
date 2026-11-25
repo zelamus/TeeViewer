@@ -903,7 +903,7 @@
                         '<div class="capacity-cell"><progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                         '<span class="capacity-mini-pct">' + capacityPercent(server) + "%</span></div>" +
                     "</td>" +
-                    '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
+                    '<td class="mono cell-version" title="' + (version ? escapeHtml(formatVersionLabel(version)) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
                     '<td class="action-col"><span class="row-chevron" aria-hidden="true">→</span></td>' +
                     "</tr>";
             }
@@ -929,7 +929,7 @@
                         '<span class="capacity-mini-pct">' + capacityPercent(server) + "%</span>" +
                     "</div>" +
                     '<div class="server-card-foot">' +
-                        '<span class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</span>" +
+                        '<span class="mono cell-version" title="' + (version ? escapeHtml(formatVersionLabel(version)) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</span>" +
                         '<span class="row-chevron" aria-hidden="true">→</span>' +
                     "</div>" +
                     "</article>";
@@ -1045,7 +1045,7 @@
                     ["Address", '<span class="mono">' + escapeHtml(server.ip) + ":" + escapeHtml(server.port) + "</span>"],
                     ["Map", map ? escapeHtml(map) : "Unknown"],
                     ["Game type", gameType ? escapeHtml(gameType) : "Unknown"],
-                    ["Version", version ? '<span class="mono">' + escapeHtml(version) + "</span>" : "Unknown"],
+                    ["Version", version ? '<span class="mono cell-version">' + escapeHtml(formatVersionLabel(version)) + "</span>" : "Unknown"],
                     ["Password", server.hasPassword ? "Protected" : "Open"],
                     ["Clients", formatNumber(server.numClients) + " of " + formatNumber(server.maxClients || maxPlayers)]
                 ];
@@ -1079,11 +1079,11 @@
                 var version = serverVersion(server);
 
                 if (version) {
-                    parts.push('<span class="badge">' + escapeHtml(version) + "</span>");
+                    parts.push('<span class="badge cell-version">' + escapeHtml(formatVersionLabel(version)) + "</span>");
                 }
 
                 if (server.supports6 && server.supports7) {
-                    parts.push('<span class="badge accent">0.6 + 0.7</span>');
+                    parts.push('<span class="badge accent">0.6 / 0.7</span>');
                 } else if (server.supports6) {
                     parts.push('<span class="badge accent">0.6</span>');
                 } else if (server.supports7) {

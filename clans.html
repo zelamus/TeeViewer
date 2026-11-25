@@ -299,6 +299,10 @@
                 return hasVisibleName(clan.name) ? clan.name : "Unnamed clan";
             }
 
+            function displayName(name) {
+                return String(name || "").replace(/-[0-9a-f]{6,}$/i, "");
+            }
+
             function isTestClan(clan) {
                 var label = clanLabel(clan);
                 return /^\[?FAKE/i.test(label) || label === "Unnamed clan";
@@ -552,7 +556,7 @@
                     var membersPreviewCell = document.createElement("td");
                     membersPreviewCell.className = "clan-members-preview";
                     membersPreviewCell.textContent = clan.players.slice(0, 3).map(function (player) {
-                        return player.name;
+                        return displayName(player.name);
                     }).join(", ");
 
                     row.appendChild(rankCell);
@@ -607,7 +611,7 @@
                     topMembersText.textContent = "Top members ";
                     var topMembersValue = document.createElement("strong");
                     topMembersValue.textContent = clan.players.slice(0, 3).map(function (player) {
-                        return player.name;
+                        return displayName(player.name);
                     }).join(", ");
                     topMembersText.appendChild(topMembersValue);
                     cardMeta.appendChild(membersText);
@@ -662,7 +666,7 @@
                         var nameCell = row.insertCell();
                         var name = document.createElement("span");
                         name.className = "member-name";
-                        name.textContent = player.name || "N/A";
+                        name.textContent = displayName(player.name) || "N/A";
                         nameCell.appendChild(name);
 
                         var scoreCell = row.insertCell();
