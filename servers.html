@@ -72,7 +72,7 @@
             <section class="filter-panel" id="serverFilterPanel" aria-labelledby="serverFiltersTitle">
                 <div class="section-head filter-panel-head">
                     <p class="section-title" id="serverFiltersTitle">Filter servers</p>
-                    <p class="section-note">Filters apply to the loaded list</p>
+                    <p class="section-note">Filters apply to all loaded servers</p>
                     <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel">Filters</button>
                 </div>
 
@@ -169,7 +169,7 @@
                                 <button class="sort-button" type="button" data-sort="players">Players <span class="sort-mark" aria-hidden="true"></span></button>
                             </th>
                             <th scope="col">Version</th>
-                            <th scope="col" class="icon-col"><span class="visually-hidden">Lock</span></th>
+                            <th scope="col" class="icon-col">Lock</th>
                             <th scope="col" class="action-col"><span class="visually-hidden">Action</span></th>
                         </tr>
                     </thead>
@@ -295,7 +295,7 @@
 
                 <div class="detail-grid">
                     <section class="card detail-card" aria-labelledby="serverInfoTitle">
-                        <h3 class="detail-section-title" id="serverInfoTitle">Overview</h3>
+                        <p class="detail-section-title" id="serverInfoTitle">Overview</p>
                         <div class="info-body" id="individualServerInfo">
                             <span class="skeleton sk sk-line"></span>
                             <span class="skeleton sk sk-line"></span>
@@ -304,7 +304,7 @@
                     </section>
 
                     <section class="card detail-card" aria-labelledby="serverStatsTitle">
-                        <h3 class="detail-section-title" id="serverStatsTitle">Reliability</h3>
+                        <p class="detail-section-title" id="serverStatsTitle">Reliability</p>
                         <div class="info-body" id="individualServerStats">
                             <span class="skeleton sk sk-line"></span>
                             <span class="skeleton sk sk-line"></span>
@@ -314,7 +314,7 @@
 
                     <section class="card detail-card detail-chart-card" aria-labelledby="serverChartTitle">
                         <div class="detail-card-head">
-                            <h3 class="detail-section-title" id="serverChartTitle">Player activity</h3>
+                            <p class="detail-section-title" id="serverChartTitle">Player activity</p>
                             <div class="range-buttons" role="group" aria-label="Chart range">
                                 <button class="range-button" type="button" data-range="day" aria-pressed="true">Day</button>
                                 <button class="range-button" type="button" data-range="week" aria-pressed="false">Week</button>
@@ -329,7 +329,7 @@
 
                     <section class="card detail-card detail-clients-card" aria-labelledby="serverClientsTitle">
                         <div class="detail-card-head">
-                            <h3 class="detail-section-title" id="serverClientsTitle">Players online</h3>
+                            <p class="detail-section-title" id="serverClientsTitle">Players online</p>
                             <p class="section-note" id="clientTotal"></p>
                         </div>
                         <div class="clients-body" id="serverClientsListContainer">
@@ -812,7 +812,7 @@
                     : '<span class="muted">—</span>';
 
                 return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0">' +
-                    '<td class="server-name-cell"><span class="server-name">' + escapeHtml(serverName(server)) + "</span></td>" +
+                    '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span></td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
@@ -835,7 +835,7 @@
 
                 return '<article class="server-card" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '">' +
                     '<div class="server-card-head">' +
-                        '<h3 class="server-card-name">' + escapeHtml(serverName(server)) + "</h3>" +
+                        '<h3 class="server-card-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</h3>" +
                         (server.hasPassword ? passwordIcon(server) : "") +
                     "</div>" +
                     '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +

@@ -174,6 +174,7 @@
             </div>
 
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
+                <p class="chart-title">Player count</p>
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch"></span>Avg</span>
                     <span class="legend-item"><span class="legend-swatch is-max"></span>Max</span>
@@ -211,6 +212,7 @@
             </div>
 
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
+                <p class="chart-title">Server count</p>
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch"></span>Avg</span>
                     <span class="legend-item"><span class="legend-swatch is-max"></span>Max</span>
@@ -308,7 +310,7 @@
             <div class="diagnostics-body">
                 <div class="diagnostics-grid">
                     <section aria-labelledby="region-title">
-                        <h3 class="section-title" id="region-title">Your region</h3>
+                        <p class="section-title" id="region-title">Your region</p>
                         <ul id="region-data" class="kv-list">
                             <li><span class="kv-key">Country</span><span class="kv-value" id="country">Not checked</span></li>
                             <li><span class="kv-key">City</span><span class="kv-value" id="city">Not checked</span></li>
@@ -316,7 +318,7 @@
                     </section>
 
                     <section aria-labelledby="ping-title">
-                        <h3 class="section-title" id="ping-title">Server pings</h3>
+                        <p class="section-title" id="ping-title">Server pings</p>
                         <ul id="server-pings" class="kv-list">
                             <li><span class="kv-key">master1.ddnet.org</span><span class="kv-value" id="ping-master1">Not checked</span></li>
                             <li><span class="kv-key">master2.ddnet.org</span><span class="kv-value" id="ping-master2">Not checked</span></li>
@@ -627,6 +629,7 @@
 
                 var colors = {
                     accent: token("--accent"),
+                    warning: token("--warning"),
                     text: token("--text"),
                     text2: token("--text-2"),
                     muted: token("--muted"),
@@ -657,13 +660,13 @@
                             {
                                 label: "Max",
                                 data: config.data.max,
-                                borderColor: colors.text2,
-                                backgroundColor: colors.text2,
-                                borderWidth: 1.5,
-                                borderDash: [8, 4],
+                                borderColor: colors.warning,
+                                backgroundColor: colors.warning,
+                                borderWidth: 2,
+                                borderDash: [7, 4],
                                 pointRadius: 0,
                                 pointHoverRadius: 4,
-                                pointHoverBackgroundColor: colors.text2,
+                                pointHoverBackgroundColor: colors.warning,
                                 tension: 0.4,
                                 yAxisID: "y"
                             },
@@ -727,7 +730,8 @@
                                 }
                             },
                             y: {
-                                beginAtZero: false,
+                                min: 0,
+                                beginAtZero: true,
                                 grace: "8%",
                                 border: { display: false },
                                 grid: { color: colors.border, drawBorder: false },

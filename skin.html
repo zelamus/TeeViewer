@@ -72,7 +72,6 @@
             <section class="card skin-preview-card" aria-labelledby="preview-title" aria-busy="true">
                 <div class="section-head">
                     <p class="section-title" id="preview-title">Preview</p>
-                    <span class="badge" id="skin-badge">default</span>
                 </div>
 
                 <div class="skin-stage" id="skin-display-container">
@@ -96,11 +95,10 @@
                 </div>
 
                 <div class="skin-swatches" aria-label="Selected colours">
-                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body <span class="mono" id="skin-body-value">65535</span></span>
-                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet <span class="mono" id="skin-feet-value">16711680</span></span>
+                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
+                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
                 </div>
                 <p class="skin-status" id="status" role="status">Loading skin…</p>
-                <p class="skin-meta" id="skin-meta">—</p>
             </section>
 
             <section class="card skin-controls" aria-labelledby="controls-title">
@@ -112,7 +110,7 @@
                     <div class="field">
                         <label for="skinName">Skin name</label>
                         <input class="input" type="text" id="skinName" name="skinname" value="default" autocomplete="off" spellcheck="false" placeholder="default">
-                        <p class="field-hint">Name of the skin file on ddnet.org, for example <span class="mono">default</span>.</p>
+                        <p class="field-hint">Name of the skin file on ddnet.org.</p>
                     </div>
 
                     <div class="field">
@@ -192,6 +190,15 @@
                 }
                 node.textContent = text;
                 node.setAttribute("data-tone", tone || "idle");
+            }
+
+            function updateBadge(name) {
+                var node = $("status");
+                if (!node) {
+                    return;
+                }
+                node.textContent = name ? "Preview ready" : "No skin selected";
+                node.setAttribute("data-tone", name ? "ready" : "idle");
             }
 
             function setBusy(busy) {
@@ -318,10 +325,6 @@
             }
 
             function updateMeta(state) {
-                setText("skin-meta", "Body " + state.body + " · Feet " + state.feet);
-                setText("skin-body-value", state.body);
-                setText("skin-feet-value", state.feet);
-
                 var bodySwatch = $("skin-body-swatch");
                 var feetSwatch = $("skin-feet-swatch");
 
@@ -331,10 +334,6 @@
                 if (feetSwatch) {
                     feetSwatch.style.backgroundColor = skinColor(state.feet);
                 }
-            }
-
-            function updateBadge(name) {
-                setText("skin-badge", name || DEFAULTS.name);
             }
 
             function updateDownload(instance, name) {
@@ -406,7 +405,6 @@
                         setBusy(false);
                         setStatus("Preview ready", "ready");
                         updateMeta(state);
-                        updateBadge(state.name);
                         updateDownload(instance, state.name);
                     }).catch(function () {
                         if (token !== renderToken) {

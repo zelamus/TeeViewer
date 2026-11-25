@@ -46,6 +46,17 @@
     gap: var(--space-3);
 }
 
+.filter-legend {
+    margin-top: var(--space-3);
+    color: var(--muted);
+    font-size: var(--text-xs);
+    line-height: var(--leading-snug);
+}
+
+.filter-legend-star {
+    color: var(--accent);
+}
+
 .field {
     display: flex;
     flex-direction: column;
@@ -102,7 +113,7 @@
 .result-count {
     color: var(--text);
     font-size: var(--text-sm);
-    font-weight: 600;
+    font-weight: 500;
     font-variant-numeric: tabular-nums;
 }
 

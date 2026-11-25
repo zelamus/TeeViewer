@@ -145,7 +145,7 @@
 }
 
 #playerEmptyState {
-    margin-bottom: var(--space-5);
+    margin-bottom: var(--space-2);
 }
 
 /* --------------------------------------------------------------------------
@@ -838,6 +838,10 @@
     text-align: right;
 }
 
+.clan-table-wrap {
+    --table-sticky-top: 0;
+}
+
 .clan-table .action-col {
     width: 104px;
     text-align: right;
@@ -1174,6 +1178,12 @@
 
     .comparison-form {
         grid-template-columns: 1fr;
+    }
+
+    #playerComparisonSection .panel-head {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-1);
     }
 
     .comparison-form .button {

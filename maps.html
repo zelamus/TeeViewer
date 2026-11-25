@@ -129,6 +129,8 @@
                         <span>Reset filters</span>
                     </button>
                 </div>
+
+                <p class="filter-legend"><span class="filter-legend-star" aria-hidden="true">★</span> 1–5 shows map difficulty. Points are awarded for completing a map.</p>
             </section>
 
             <div class="result-bar">
@@ -234,7 +236,7 @@
 
                     <div class="map-detail-grid">
                         <section class="card detail-card" aria-labelledby="mapOverviewTitle">
-                            <h3 class="detail-section-title" id="mapOverviewTitle">Overview</h3>
+                            <p class="detail-section-title" id="mapOverviewTitle">Overview</p>
                             <div class="info-body" id="individualMapInfo">
                                 <span class="skeleton sk sk-line"></span>
                                 <span class="skeleton sk sk-line"></span>
@@ -243,7 +245,7 @@
                         </section>
 
                         <section class="card detail-card" aria-labelledby="mapPreviewTitle">
-                            <h3 class="detail-section-title" id="mapPreviewTitle">Preview</h3>
+                            <p class="detail-section-title" id="mapPreviewTitle">Preview</p>
                             <div class="map-preview" id="individualMapPreview">
                                 <div class="preview-loading">
                                     <span class="spinner" aria-hidden="true"></span>
@@ -254,7 +256,7 @@
 
                         <section class="card detail-card map-detail-wide" aria-labelledby="mapServersTitle">
                             <div class="detail-card-head">
-                                <h3 class="detail-section-title" id="mapServersTitle">Live servers</h3>
+                                <p class="detail-section-title" id="mapServersTitle">Live servers</p>
                                 <p class="section-note" id="mapServerTotal"></p>
                             </div>
                             <div id="individualMapServers">
@@ -299,7 +301,7 @@
                         </section>
 
                         <section class="card detail-card map-detail-wide" aria-labelledby="mapRankingsTitle">
-                            <h3 class="detail-section-title" id="mapRankingsTitle">Top 10 rankings</h3>
+                            <p class="detail-section-title" id="mapRankingsTitle">Top 10 rankings</p>
                             <div class="table-shell map-table-shell">
                                 <table class="table map-detail-table">
                                     <caption class="visually-hidden">Fastest finishes for this map</caption>
@@ -328,7 +330,7 @@
                         </section>
 
                         <section class="card detail-card map-detail-wide" aria-labelledby="mapPlaytimeTitle">
-                            <h3 class="detail-section-title" id="mapPlaytimeTitle">Top playtime</h3>
+                            <p class="detail-section-title" id="mapPlaytimeTitle">Top playtime</p>
                             <div class="table-shell map-table-shell">
                                 <table class="table map-detail-table">
                                     <caption class="visually-hidden">Players with the most time on this map</caption>
@@ -1246,7 +1248,7 @@
                         infoRow("Version", '<span class="mono">' + escapeHtml(version) + "</span>") +
                         infoRow("Password", serverData.hasPassword ? "Protected" : "Open") +
                     "</dl>" +
-                    '<h4 class="detail-section-title popup-section-title">Players on server</h4>' +
+                    '<p class="detail-section-title popup-section-title">Players on server</p>' +
                     '<div id="serverClientsListContainer"></div>';
 
                 var clientsContainer = document.getElementById("serverClientsListContainer");

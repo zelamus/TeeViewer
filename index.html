@@ -72,8 +72,8 @@
 
         <section class="stat-section" aria-labelledby="live-stats-title">
             <div class="section-head">
-                <h2 class="section-title" id="live-stats-title">Live network</h2>
-                <p class="section-note">Updated from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+                <h2 id="live-stats-title">Live network</h2>
+                <p class="section-note" id="statAsOf" hidden></p>
             </div>
 
             <div class="stat-grid is-loading" id="statGrid" aria-busy="true">
@@ -118,19 +118,28 @@
                 </a>
             </div>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
-            <p class="stat-asof" id="statAsOf" hidden></p>
         </section>
 
         <section class="quick-section" aria-labelledby="explore-title">
             <div class="section-head">
-                <h2 class="section-title" id="explore-title">Explore</h2>
+                <h2 id="explore-title">Explore</h2>
                 <p class="section-note">Jump straight to the data</p>
             </div>
 
-            <div class="grid cols-3">
+            <div class="grid quick-grid">
                 <a class="card quick-card" href="players.html">
                     <h3 class="quick-card-title">Players <span class="quick-arrow" aria-hidden="true">→</span></h3>
                     <p>Search for a player to see playtime, points, country, and recent activity.</p>
+                </a>
+
+                <a class="card quick-card" href="clans.html">
+                    <h3 class="quick-card-title">Clans <span class="quick-arrow" aria-hidden="true">→</span></h3>
+                    <p>Browse tracked clans, member counts, and who is online right now.</p>
+                </a>
+
+                <a class="card quick-card" href="maps.html">
+                    <h3 class="quick-card-title">Maps <span class="quick-arrow" aria-hidden="true">→</span></h3>
+                    <p>Filter maps by difficulty, mapper, and server type, then open a map.</p>
                 </a>
 
                 <a class="card quick-card" href="servers.html">
