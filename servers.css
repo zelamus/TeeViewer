@@ -125,11 +125,19 @@
     color: var(--text);
 }
 
-.segment[aria-pressed="true"] {
-    border-color: var(--accent);
+.segment[aria-pressed="true"],
+.segment[aria-pressed="true"]:hover {
+    border-color: var(--accent-border);
     background: var(--accent-soft);
     color: var(--accent);
     box-shadow: inset 0 0 0 1px var(--accent-border);
+}
+
+.row-chevron {
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: var(--text-lg);
+    line-height: 1;
 }
 
 .password-chip {
@@ -199,27 +207,42 @@
 }
 
 .server-table th:nth-child(1) {
-    width: 26%;
+    width: 34%;
 }
 
 .server-table th:nth-child(2) {
-    width: 16%;
+    width: 14%;
 }
 
 .server-table th:nth-child(3) {
-    width: 18%;
+    width: 14%;
 }
 
 .server-table th:nth-child(4) {
-    width: 13%;
+    width: 12%;
 }
 
 .server-table th:nth-child(5) {
-    width: 17%;
+    width: 18%;
 }
 
 .server-table th:nth-child(6) {
-    width: 10%;
+    width: 8%;
+}
+
+.server-table th,
+.server-table td {
+    padding: var(--space-2);
+}
+
+.server-table th:first-child,
+.server-table td:first-child {
+    padding-left: var(--space-3);
+}
+
+.server-table th:last-child,
+.server-table td:last-child {
+    padding-right: var(--space-3);
 }
 
 .server-table th.num,
@@ -314,7 +337,7 @@
     overflow: hidden;
     color: var(--text-2);
     font-size: var(--text-xs);
-    max-width: 22ch;
+    max-width: 28ch;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -987,15 +1010,15 @@
     }
 
     .server-table th:nth-child(1) {
-        width: 26%;
+        width: 34%;
     }
 
     .server-table th:nth-child(3) {
-        width: 18%;
+        width: 14%;
     }
 
     .server-table th:nth-child(5) {
-        width: 15%;
+        width: 18%;
     }
 }
 

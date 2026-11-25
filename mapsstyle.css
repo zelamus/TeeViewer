@@ -41,9 +41,24 @@
 
 .filter-grid {
     display: grid;
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     align-items: end;
     gap: var(--space-3);
+}
+
+.filter-row-end {
+    display: flex;
+    align-items: end;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.filter-row-end .field {
+    flex: 1 1 auto;
+}
+
+.filter-row-end .reset-button {
+    flex: none;
 }
 
 .filter-legend {
@@ -55,6 +70,7 @@
 
 .filter-legend-star {
     color: var(--accent);
+    font-size: 16px;
 }
 
 .field {
@@ -195,7 +211,7 @@
 
 .stars-empty {
     color: var(--muted);
-    opacity: 1;
+    opacity: 0.35;
 }
 
 .map-card-tags {

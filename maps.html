@@ -34,7 +34,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -98,7 +98,7 @@
                     </label>
 
                     <label class="field">
-                        <span class="field-label">Stars</span>
+                        <span class="field-label">Difficulty</span>
                         <select class="select" id="starsFilter">
                             <option value="">Any difficulty</option>
                             <option value="1">1 star</option>
@@ -109,23 +109,25 @@
                         </select>
                     </label>
 
-                    <label class="field">
-                        <span class="field-label">Sort by</span>
-                        <select class="select" id="sortBy">
-                            <option value="map">Map name</option>
-                            <option value="points">Points</option>
-                            <option value="stars">Stars</option>
-                            <option value="timestamp">Release date</option>
-                        </select>
-                    </label>
+                    <div class="filter-row-end">
+                        <label class="field">
+                            <span class="field-label">Sort by</span>
+                            <select class="select" id="sortBy">
+                                <option value="map">Map name</option>
+                                <option value="points">Points</option>
+                                <option value="stars">Stars</option>
+                                <option value="timestamp">Release date</option>
+                            </select>
+                        </label>
 
-                    <button class="button ghost reset-button" type="button" id="resetMapFilters">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                            <path d="M3 12a9 9 0 1 0 3-6.7"></path>
-                            <path d="M3 4v5h5"></path>
-                        </svg>
-                        <span>Reset filters</span>
-                    </button>
+                        <button class="button ghost reset-button" type="button" id="resetMapFilters">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M3 12a9 9 0 1 0 3-6.7"></path>
+                                <path d="M3 4v5h5"></path>
+                            </svg>
+                            <span>Reset</span>
+                        </button>
+                    </div>
                 </div>
 
                 <p class="filter-legend"><span class="filter-legend-star" aria-hidden="true">★</span> 1–5 shows difficulty. Points are earned for completions. Select a card for details.</p>

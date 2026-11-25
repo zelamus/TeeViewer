@@ -35,7 +35,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -178,7 +178,6 @@
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
                 </div>
-                <p class="chart-axis-title">Players</p>
                 <div class="chart-box">
                     <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
@@ -216,7 +215,6 @@
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
                 </div>
-                <p class="chart-axis-title">Servers</p>
                 <div class="chart-box">
                     <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
@@ -543,7 +541,7 @@
 
             function formatLabel(date, period) {
                 if (period === "day") {
-                    return date.toLocaleTimeString([], {
+                    return date.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + date.toLocaleTimeString([], {
                         hour: "2-digit",
                         minute: "2-digit",
                         hour12: false
@@ -625,7 +623,7 @@
 
                 var colors = {
                     accent: token("--accent"),
-                    accentSoft: token("--accent-soft"),
+                    accentSoft: token("--chart-fill"),
                     warning: token("--warning"),
                     success: token("--success"),
                     text: token("--text"),
@@ -687,7 +685,7 @@
                                     color: colors.muted,
                                     maxTicksLimit: tickLimit,
                                     autoSkipPadding: 12,
-                                    maxRotation: 0,
+                                    maxRotation: 30,
                                     autoSkip: true,
                                     font: { size: 13 },
                                     callback: function (value) {

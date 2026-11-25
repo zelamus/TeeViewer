@@ -4,6 +4,14 @@
    Loads after style.css and theme.css. Uses design tokens only.
    ========================================================================== */
 
+:root {
+    --chart-fill: rgba(76, 141, 255, 0.34);
+}
+
+[data-theme="light"] {
+    --chart-fill: rgba(29, 78, 216, 0.22);
+}
+
 /* --------------------------------------------------------------------------
    Status page: head
    -------------------------------------------------------------------------- */
@@ -586,8 +594,8 @@ html.js .chart-card.is-loading .chart-box canvas {
     align-items: center;
     justify-content: center;
     width: 100%;
-    max-width: 260px;
-    height: 200px;
+    max-width: 380px;
+    height: 280px;
     overflow: hidden;
     box-shadow: none;
 }
@@ -595,7 +603,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 .skin-stage .teeassembler-tee {
     flex: 0 0 auto;
     margin-left: 0;
-    transform: scale(2.4);
+    transform: scale(3.2);
     transform-origin: center;
 }
 
@@ -699,14 +707,6 @@ html.js .chart-card.is-loading .chart-box canvas {
     background: var(--danger);
 }
 
-.skin-meta {
-    margin-top: var(--space-1);
-    color: var(--text-2);
-    font-size: var(--text-sm);
-    font-variant-numeric: tabular-nums;
-    overflow-wrap: anywhere;
-}
-
 .skin-form {
     display: flex;
     flex-direction: column;
@@ -733,6 +733,35 @@ html.js .chart-card.is-loading .chart-box canvas {
 
 .field-hint.is-error {
     color: var(--danger);
+}
+
+.color-row {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.color-row .input {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.color-picker {
+    flex: none;
+    width: 44px;
+    height: 40px;
+    padding: 2px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2);
+    background: var(--surface);
+    cursor: pointer;
+}
+
+.color-hex {
+    flex: none;
+    color: var(--text-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
 }
 
 .skin-actions {
@@ -881,7 +910,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .skin-stage .teeassembler-tee {
-        transform: scale(2.4);
+        transform: scale(3.2);
     }
 
     .skin-actions .button {
@@ -927,7 +956,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .skin-stage .teeassembler-tee {
-        transform: scale(2.4);
+        transform: scale(3.2);
     }
 }
 

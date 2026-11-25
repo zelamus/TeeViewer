@@ -34,7 +34,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -72,7 +72,6 @@
             <section class="filter-panel" id="serverFilterPanel" aria-labelledby="serverFiltersTitle">
                 <div class="section-head filter-panel-head">
                     <p class="section-title" id="serverFiltersTitle">Filter servers</p>
-                    <p class="section-note">Filters apply to all loaded servers</p>
                     <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel">Filters</button>
                 </div>
 
@@ -508,6 +507,19 @@
                 return parts.join(" ");
             }
 
+            function formatVersionLabel(version) {
+                var short = shortVersion(version);
+
+                if (!short) {
+                    return "";
+                }
+
+                var parts = short.replace(/,/g, "").split(/\s+/);
+                return parts.length > 1
+                    ? parts[0] + " / build " + parts.slice(1).join(" ")
+                    : short;
+            }
+
             function serverCapacity(server) {
                 return number(server && server.maxPlayers) || number(server && server.maxClients);
             }
@@ -817,15 +829,15 @@
                     ? '<a class="table-link" href="maps.html?map=' + encodeURIComponent(map) + '">' + escapeHtml(map) + "</a>"
                     : '<span class="muted">—</span>';
 
-                return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0">' +
+                return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0" role="button" aria-label="Open server ' + escapeHtml(serverName(server)) + '">' +
                     '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</td>" +
-                    '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(shortVersion(version)) : "—") + "</td>" +
-                    '<td class="action-col"><button class="button ghost button-sm" type="button" data-open-server>Details</button></td>' +
+                    '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
+                    '<td class="action-col"><span class="row-chevron" aria-hidden="true">→</span></td>' +
                     "</tr>";
             }
 
@@ -838,7 +850,7 @@
                     ? '<a class="card-link" href="maps.html?map=' + encodeURIComponent(map) + '">' + escapeHtml(map) + "</a>"
                     : "Unknown map";
 
-                return '<article class="server-card" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '">' +
+                return '<article class="server-card" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0" role="button" aria-label="Open server ' + escapeHtml(serverName(server)) + '">' +
                     '<div class="server-card-head">' +
                         '<h3 class="server-card-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</h3>" +
                         (server.hasPassword ? passwordIcon(server) : "") +
@@ -849,8 +861,8 @@
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</div>" +
                     '<div class="server-card-foot">' +
-                        '<span class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(shortVersion(version)) : "—") + "</span>" +
-                        '<button class="button ghost button-sm" type="button" data-open-server>Details</button>' +
+                        '<span class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</span>" +
+                        '<span class="row-chevron" aria-hidden="true">→</span>' +
                     "</div>" +
                     "</article>";
             }
@@ -1588,10 +1600,14 @@
                 }
 
                 var row = event.target.closest && event.target.closest("tr.server-row");
+                var card = event.target.closest && event.target.closest(".server-card[data-ip]");
 
                 if (row && event.target === row) {
                     event.preventDefault();
                     showIndividualServer(row.getAttribute("data-ip"), Number(row.getAttribute("data-port")));
+                } else if (card && event.target === card) {
+                    event.preventDefault();
+                    showIndividualServer(card.getAttribute("data-ip"), Number(card.getAttribute("data-port")));
                 }
             }
 

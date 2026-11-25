@@ -33,7 +33,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -62,14 +62,14 @@
         <section class="hero" aria-labelledby="hero-title">
             <div class="hero-inner">
                 <div class="hero-copy">
-                    <div>
-                        <h1 class="hero-title" id="hero-title">Your Teeworlds journey, <span class="accent">visualized.</span></h1>
+                    <h1 class="hero-title" id="hero-title">Your Teeworlds journey, <span class="accent">visualized.</span></h1>
+                    <div class="hero-subrow">
                         <p class="hero-sub">Track players, clans, maps, and live servers across Teeworlds in one place.</p>
+                        <div class="hero-actions">
+                            <a class="button primary" href="players.html">Find a player</a>
+                            <a class="button ghost" href="servers.html">Browse servers</a>
+                        </div>
                     </div>
-                </div>
-                <div class="hero-actions">
-                    <a class="button primary" href="players.html">Find a player</a>
-                    <a class="button ghost" href="servers.html">Browse servers</a>
                 </div>
             </div>
         </section>
@@ -116,7 +116,7 @@
                         <span class="stat-number" data-stat="maps">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Available</span>
+                    <span class="stat-label">Active maps</span>
                     <span class="stat-foot">Across all game types</span>
                 </a>
             </div>
@@ -130,7 +130,7 @@
                 <p class="section-note">Top five by players</p>
             </div>
             <div class="table-wrap">
-                <table class="table preview-table">
+                <table class="table preview-table live-servers-table">
                     <thead>
                         <tr><th scope="col">Server</th><th scope="col">Map</th><th scope="col" data-align="right">Players</th></tr>
                     </thead>
@@ -282,12 +282,27 @@
 
                 body.textContent = "";
 
+                var headers = [];
+                var table = body.closest("table");
+
+                if (table) {
+                    var cells = table.querySelectorAll("thead th");
+
+                    for (var i = 0; i < cells.length; i += 1) {
+                        headers.push(cells[i].textContent.trim());
+                    }
+                }
+
                 rows.forEach(function (row) {
                     var tr = document.createElement("tr");
 
                     columns.forEach(function (column, index) {
                         var td = document.createElement("td");
                         td.textContent = column(row);
+
+                        if (headers[index]) {
+                            td.setAttribute("data-label", headers[index]);
+                        }
 
                         if (index === columns.length - 1) {
                             td.className = "num";

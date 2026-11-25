@@ -35,7 +35,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -427,6 +427,10 @@
                     });
                 });
 
+                function clanSortName(clan) {
+                    return String(clan.name || "").toLowerCase().replace(/^[^\p{L}\p{N}]+/u, "");
+                }
+
                 filteredAndSortedClans.sort(function (a, b) {
                     var aValue;
                     var bValue;
@@ -441,8 +445,12 @@
                             bValue = new Date(b.createdAt).getTime() || 0;
                             break;
                         default:
-                            aValue = String(a.name || "").toLowerCase();
-                            bValue = String(b.name || "").toLowerCase();
+                            aValue = clanSortName(a);
+                            bValue = clanSortName(b);
+                    }
+
+                    if (sortValue === "name" && !aValue !== !bValue) {
+                        return aValue ? -1 : 1;
                     }
 
                     var result = typeof aValue === "string"
@@ -523,7 +531,7 @@
                     row.appendChild(membersCell);
                     row.appendChild(createdCell);
                     row.tabIndex = 0;
-                    row.setAttribute("aria-label", "View members of " + label);
+                    row.setAttribute("aria-label", "Open clan " + label);
                     row.addEventListener("click", function () {
                         openClanDialog(index);
                     });
@@ -563,7 +571,7 @@
                     cardMeta.appendChild(createdText);
 
                     card.tabIndex = 0;
-                    card.setAttribute("aria-label", "View members of " + label);
+                    card.setAttribute("aria-label", "Open clan " + label);
                     card.addEventListener("click", function () {
                         openClanDialog(index);
                     });

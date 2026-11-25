@@ -385,6 +385,7 @@
 .meta-value {
     margin-inline-start: 0;
     color: var(--text);
+    font-family: var(--font-mono);
     font-size: var(--text-base);
     font-variant-numeric: tabular-nums;
     line-height: var(--leading-snug);
@@ -545,11 +546,13 @@
     align-items: center;
     gap: var(--space-2);
     color: var(--text-2);
+    font-family: var(--font-mono);
     font-size: var(--text-sm);
     font-weight: 600;
 }
 
 .status-value::before {
+    display: none;
     width: 7px;
     height: 7px;
     border-radius: var(--radius-pill);
@@ -863,7 +866,7 @@
 }
 
 .clan-table th:nth-child(2) {
-    width: 200px;
+    width: 180px;
 }
 
 .clan-table th:nth-child(3) {

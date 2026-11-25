@@ -39,7 +39,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -588,7 +588,7 @@
                 var parts = [];
 
                 if (hours > 0) {
-                    parts.push(hours + "h");
+                    parts.push(hours.toLocaleString("en-US") + "h");
                 }
 
                 if (minutes > 0) {
@@ -857,12 +857,12 @@
                 document.getElementById("playerCountry").textContent = countryName;
                 countryFlag.src = "countryflags/" + (window.COUNTRY_CODES ? window.COUNTRY_CODES[countryCode] || "default" : "default") + ".png";
                 countryFlag.alt = countryName + " flag";
-                countryFlag.hidden = false;
+                countryFlag.hidden = !profile.clan || countryCode === "-1" || countryName === "Default";
 
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
-                document.getElementById("isMapper").textContent = playerData.is_mapper ? "Yes" : "Unknown";
+                document.getElementById("isMapper").textContent = playerData.is_mapper ? "Yes" : "—";
 
                 document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 
