@@ -34,7 +34,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
                 </div>
             </nav>
 
@@ -78,7 +78,7 @@
         <section class="stat-section network-section" aria-labelledby="live-stats-title">
             <div class="section-head">
                 <h2 id="live-stats-title">Live network</h2>
-                <p class="section-note stat-source">As of <span id="statAsOf" hidden>—</span></p>
+                <p class="section-note stat-source"><span id="statAsOf" hidden></span></p>
             </div>
 
             <div class="stat-grid is-loading" id="statGrid" aria-busy="true">
@@ -145,9 +145,9 @@
             <div class="table-wrap">
                 <table class="table preview-table">
                     <thead>
-                        <tr><th scope="col">Map</th><th scope="col">Stars</th><th scope="col" data-align="right">Points</th></tr>
+                        <tr><th scope="col">Map</th><th scope="col">Mapper</th><th scope="col">Server</th><th scope="col">Stars</th><th scope="col" data-align="right">Points</th></tr>
                     </thead>
-                    <tbody id="topMapsBody"><tr><td colspan="3">Loading top maps.</td></tr></tbody>
+                    <tbody id="topMapsBody"><tr><td colspan="5">Loading top maps.</td></tr></tbody>
                 </table>
             </div>
             <p class="visually-hidden" id="topMapsStatus" role="status">Loading top maps.</p>
@@ -216,7 +216,7 @@
                     settle("Snapshot values shown. Live data loading.");
 
                     if (asOfLine) {
-                        asOfLine.textContent = "Snapshot";
+                        asOfLine.textContent = "Updated snapshot";
                         asOfLine.hidden = false;
                     }
                     if (asOfSep) {
@@ -253,7 +253,7 @@
                     return;
                 }
 
-                asOfLine.textContent = timeFormat.format(new Date());
+                asOfLine.textContent = "Updated " + timeFormat.format(new Date());
                 asOfLine.hidden = false;
 
                 if (asOfSep) {
@@ -275,7 +275,7 @@
                     if (!asOfLine || asOfLine.hidden) {
                         return;
                     }
-                    asOfLine.textContent = "Snapshot";
+                    asOfLine.textContent = "Updated snapshot";
                 })
                 .finally(function () {
                     window.clearTimeout(timeout);
@@ -462,6 +462,8 @@
                     if (!liveMapsLoaded && Array.isArray(snapshot.maps)) {
                         render("topMapsBody", "topMapsStatus", snapshot.maps, [
                             function (m) { return m.map || "Unnamed map"; },
+                            function (m) { return m.mapper || "—"; },
+                            function (m) { return m.server || "—"; },
                             function (m) { return starsElement(m.stars); },
                             function (m) { return numberFormat.format(Number(m.points) || 0); }
                         ], mapOverviewLink);
@@ -512,18 +514,20 @@
                     }).slice(0, 5);
 
                     if (!maps.length) {
-                        showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 3);
+                        showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 5);
                         return;
                     }
 
                     render("topMapsBody", "topMapsStatus", maps, [
                         function (m) { return m.map || "Unnamed map"; },
+                        function (m) { return m.mapper || "—"; },
+                        function (m) { return m.server || "—"; },
                         function (m) { return starsElement(m.stars); },
                         function (m) { return numberFormat.format(Number(m.points) || 0); }
                     ], mapOverviewLink);
                 })
                 .catch(function () {
-                    showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 3);
+                    showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 5);
                 });
         })();
     </script>

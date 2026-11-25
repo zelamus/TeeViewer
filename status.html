@@ -36,7 +36,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
                 </div>
             </nav>
 
@@ -76,7 +76,7 @@
                 </div>
             </div>
             <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
-            <p class="status-times">Live totals checked at <time class="status-updated" id="last-updated" title="Time the live totals were fetched">—</time>. <span id="latest-sample-line" hidden>History samples end at <time class="status-updated" id="latest-sample"></time>.</span></p>
+            <p class="status-times"><time class="status-updated" id="last-updated" title="Time the live totals were fetched">Updated —</time>. <span id="latest-sample-line" hidden>History <time class="status-updated" id="latest-sample" title="Time of the latest history sample"></time>.</span></p>
         </header>
 
         <section aria-labelledby="overview-title">
@@ -182,6 +182,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
+                <p class="chart-warning" id="player-chart-warning" role="status" hidden></p>
                 <p class="chart-scope">Unique players seen over the selected period.</p>
                 <p class="chart-note" id="player-chart-note" role="status">Peak appears after data loads.</p>
 
@@ -220,6 +221,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
+                <p class="chart-warning" id="server-chart-warning" role="status" hidden></p>
                 <p class="chart-scope">Servers seen over the selected period.</p>
                 <p class="chart-note" id="server-chart-note" role="status">Peak appears after data loads.</p>
 
@@ -344,7 +346,6 @@
             var STATS_URL = "https://api.status.tw/stats";
             var numberFormat = new Intl.NumberFormat("en-US");
             var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
-            var stampFormat = new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
             var overviewValues = {};
 
             if (typeof window.Chart !== "undefined") {
@@ -353,6 +354,7 @@
 
             var stale = 0;
             var overviewRequest = 0;
+            var liveCheckedAt = null;
 
             var charts = {
                 players: {
@@ -375,6 +377,7 @@
                     overviewId: "stat-players",
                     titleId: "player-chart-title",
                     asofId: "player-chart-asof",
+                    warningId: "player-chart-warning",
                     noteId: "player-chart-note"
                 },
                 servers: {
@@ -397,6 +400,7 @@
                     overviewId: "stat-servers",
                     titleId: "server-chart-title",
                     asofId: "server-chart-asof",
+                    warningId: "server-chart-warning",
                     noteId: "server-chart-note"
                 }
             };
@@ -427,8 +431,9 @@
                 }
 
                 var now = new Date();
+                liveCheckedAt = now;
                 time.setAttribute("datetime", now.toISOString());
-                time.textContent = timeFormat.format(now);
+                time.textContent = "Updated " + timeFormat.format(now);
             }
 
             function showState(id, title, message, visible) {
@@ -580,6 +585,7 @@
 
             function setAsOf(config, rows) {
                 var node = $(config.asofId);
+                var warning = $(config.warningId);
                 var latest = null;
 
                 rows.forEach(function (item) {
@@ -615,19 +621,34 @@
                     if (summaryLine && !hasSamples) {
                         summaryLine.hidden = true;
                     }
+
+                    if (warning) {
+                        warning.hidden = true;
+                    }
                     return;
                 }
 
-                var stamp = config.period === "day" ? timeFormat.format(latest) : stampFormat.format(latest);
+                var stamp = timeFormat.format(latest);
 
                 if (node) {
-                    node.textContent = "Latest sample " + stamp;
+                    node.textContent = "Updated " + stamp;
                     node.setAttribute("datetime", latest.toISOString());
                 }
 
                 if (summary) {
-                    summary.textContent = stamp;
+                    summary.textContent = "Updated " + stamp;
                     summary.setAttribute("datetime", latest.toISOString());
+                }
+
+                if (warning) {
+                    var lag = (liveCheckedAt ? liveCheckedAt.getTime() : Date.now()) - latest.getTime();
+
+                    if (lag > 3600000) {
+                        warning.textContent = "History feed is " + Math.floor(lag / 3600000) + " hours behind";
+                        warning.hidden = false;
+                    } else {
+                        warning.hidden = true;
+                    }
                 }
 
                 if (summaryLine) {

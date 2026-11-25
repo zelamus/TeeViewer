@@ -35,7 +35,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
                 </div>
             </nav>
 
@@ -610,7 +610,7 @@
                     return;
                 }
 
-                dom.countAsOf.textContent = text ? "as of " + text : "";
+                dom.countAsOf.textContent = text ? "Updated " + text : "";
                 dom.countAsOf.hidden = !text;
             }
 
@@ -804,9 +804,10 @@
                 var mapper = item && item.mapper ? item.mapper : "Unknown";
                 var points = item ? item.points : 0;
                 var tone = mapTone(mapName);
+                var initial = (mapName.match(/[A-Za-z]/) || mapName.match(/[0-9]/) || ["?"])[0].toUpperCase();
 
                 return '<button class="map-card" type="button" data-map="' + escapeHtml(mapName) + '">' +
-                    '<span class="map-card-tile" style="--tile-hue:' + tone + '" aria-hidden="true"><span class="map-tile-mark"></span></span>' +
+                    '<span class="map-card-tile" style="--tile-hue:' + tone + ';--tile-shift:' + (tone % 4) + '" aria-hidden="true"><span class="map-tile-mark">' + escapeHtml(initial) + '</span></span>' +
                     '<span class="map-card-head">' +
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
                     "</span>" +

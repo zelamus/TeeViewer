@@ -566,9 +566,15 @@ button:disabled {
 }
 
 .nav-buttons a[href^="https://discord.com/"]::after {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
     margin-left: var(--space-1);
-    font-size: var(--text-xs);
-    content: "↗";
+    vertical-align: -1px;
+    background-color: currentColor;
+    content: "";
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3h7v7'/%3E%3Cpath d='M10 14 21 3'/%3E%3Cpath d='M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M14 3h7v7'/%3E%3Cpath d='M10 14 21 3'/%3E%3Cpath d='M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 .external-mark {
@@ -1952,8 +1958,12 @@ textarea.input {
     }
 
     .live-servers-table tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        align-items: baseline;
+        column-gap: var(--space-2);
         margin-bottom: var(--space-2);
-        padding: var(--space-3);
+        padding: var(--space-2) var(--space-3);
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
         background: var(--surface-2);
@@ -1964,12 +1974,25 @@ textarea.input {
     }
 
     .live-servers-table td {
-        padding: 2px 0;
+        padding: 0;
         border: 0;
     }
 
+    .live-servers-table td:first-child {
+        grid-column: 1 / -1;
+        overflow: hidden;
+        font-weight: 600;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .live-servers-table td:first-child::before {
+        content: none;
+    }
+
     .live-servers-table td::before {
-        display: block;
+        display: inline;
+        margin-right: 4px;
         color: var(--muted);
         font-size: var(--text-xs);
         letter-spacing: var(--tracking-wide);
@@ -1977,8 +2000,25 @@ textarea.input {
         content: attr(data-label);
     }
 
+    .live-servers-table td:nth-child(2) {
+        grid-column: 1;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .live-servers-table td:nth-child(3) {
+        grid-column: 2;
+        text-align: right;
+    }
+
     .live-servers-table td.num {
-        text-align: left;
+        text-align: right;
+    }
+
+    .live-servers-table td[colspan] {
+        grid-column: 1 / -1;
     }
 
     .live-servers-table td[colspan]::before {

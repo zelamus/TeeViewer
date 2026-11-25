@@ -299,10 +299,11 @@
 }
 
 .identity-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
+    display: grid;
+    grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.1fr);
+    align-items: start;
     gap: var(--space-4);
+    column-gap: var(--space-5);
     padding: var(--space-5);
     border: 1px solid var(--border);
     border-radius: var(--radius-4);
@@ -311,9 +312,8 @@
 
 .identity-top {
     display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: stretch;
     gap: var(--space-3);
 }
 
@@ -417,10 +417,10 @@
 
 .identity-meta {
     display: grid;
-    grid-template-columns: repeat(4, minmax(140px, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: var(--space-3);
-    padding-top: var(--space-4);
-    border-top: 1px solid var(--border);
+    padding-left: var(--space-5);
+    border-left: 1px solid var(--border);
 }
 
 .meta-item {
@@ -1081,9 +1081,10 @@
 
 .clan-card-head {
     display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: var(--space-3);
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: flex-start;
+    gap: var(--space-2);
 }
 
 .clan-card-name {
@@ -1350,6 +1351,17 @@
 
     .profile-layout {
         grid-template-columns: 1fr;
+    }
+
+    .identity-card {
+        grid-template-columns: 1fr;
+    }
+
+    .identity-meta {
+        padding-top: var(--space-4);
+        padding-left: 0;
+        border-top: 1px solid var(--border);
+        border-left: 0;
     }
 
     .profile-layout .identity-card {
