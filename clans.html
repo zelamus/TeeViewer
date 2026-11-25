@@ -3,772 +3,667 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clans - TeeViewer</title>
+    <title>Clans — TeeViewer</title>
+    <meta name="description" content="Browse Teeworlds clans, member counts, creation dates, and online members.">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .clans-container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 0 20px;
-        }
-
-        .search-filters {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .search-input {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 12px 20px;
-            color: var(--text-color);
-            font-family: 'SF Pro Rounded', sans-serif;
-            font-size: 16px;
-            min-width: 300px;
-            transition: all 0.3s ease;
-        }
-
-        .search-input:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 15px rgba(255, 69, 0, 0.3);
-        }
-
-        .filter-select {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 12px 15px;
-            color: var(--text-color);
-            font-family: 'SF Pro Rounded', sans-serif;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
-
-        #clansTable {
-            border-spacing: 0px;
-            border-collapse: collapse;
-            margin: 30px auto;
-            width: 95%;
-            text-align: center;
-            max-width: 1200px;
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            color: var(--text-color);
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            font-size: 16px;
-            animation: fadeInUp 1s ease-out 0.3s both;
-        }
-
-        #clansTable th {
-            background: rgba(255, 69, 0, 0.1);
-            color: var(--primary-color);
-            padding: 15px;
-            font-weight: 600;
-            border-style: none;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #clansTable th:hover {
-            background: rgba(255, 69, 0, 0.2);
-        }
-
-        #clansTable td {
-            padding: 15px;
-            transition: background-color 0.2s ease;
-            border-style: none;
-            color: var(--primary-color);
-        }
-
-        .clan-row {
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .clan-row:hover {
-            background: rgba(255, 69, 0, 0.05);
-        }
-
-        .clan-row.expanded {
-            background: rgba(255, 69, 0, 0.08);
-        }
-
-        .clan-details {
-            display: none;
-            background: rgba(255, 69, 0, 0.03);
-            border-top: 1px solid rgba(255, 69, 0, 0.2);
-        }
-
-        .clan-details.show {
-            display: table-row;
-            animation: fadeInDown 0.3s ease-out;
-        }
-
-        .clan-content {
-            display: flex;
-            padding: 20px;
-            gap: 20px;
-            align-items: flex-start;
-        }
-
-        .clan-info {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 15px;
-            background: var(--glass-bg);
-            border-radius: 6px;
-            border: 1px solid var(--glass-border);
-        }
-
-        .info-label {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .info-value {
-            color: var(--text-color);
-        }
-
-        .players-container {
-            flex: 2;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .players-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 10px;
-        }
-
-        .player-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 6px;
-            padding: 12px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .player-card:hover {
-            background: rgba(255, 69, 0, 0.1);
-            border-color: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
-        .player-header {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 8px;
-        }
-
-        .player-name {
-            font-weight: 600;
-            color: var(--primary-color);
-            flex: 1;
-        }
-
-        .country-flag {
-            width: 30px;
-            height: 15px;
-            border-radius: 2px;
-        }
-
-        .player-status {
-            display: flex;
-            gap: 5px;
-        }
-
-        .status-badge {
-            padding: 2px 6px;
-            border-radius: 10px;
-            font-size: 10px;
-            font-weight: 600;
-            color: white;
-        }
-
-        .status-online { background: #4CAF50; }
-        .status-afk { background: #FF9800; }
-        .status-offline { background: #9E9E9E; }
-
-        .player-info {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.7);
-            line-height: 1.4;
-        }
-
-        .server-info {
-            background: rgba(255, 69, 0, 0.05);
-            border-radius: 4px;
-            padding: 6px;
-            margin-top: 6px;
-            font-size: 11px;
-        }
-
-        .clan-stats-badges {
-            display: flex;
-            gap: 10px;
-
-
-            justify-content: center;
-        }
-
-        .stat-badge {
-            background: linear-gradient(135deg, var(--primary-color), #ff3300);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
-            
-        }
-
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255, 69, 0, 0.3);
-            border-radius: 50%;
-            border-top-color: var(--primary-color);
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        .empty-state {
-            text-align: center;
-            color: rgba(255, 255, 255, 0.6);
-            font-style: italic;
-            padding: 20px;
-        }
-
-        @keyframes fadeInDown {
-            from {
-                opacity: 0;
-                transform: translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes glow {
-            from { text-shadow: 0 0 20px rgba(255, 137, 27, 0.6); }
-            to { text-shadow: 0 0 30px rgba(255, 137, 27, 0.8); }
-        }
-
-        @media (max-width: 768px) {
-            .clan-content {
-                flex-direction: column;
-            }
-            
-            .players-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .search-input {
-                min-width: auto;
-                width: 90%;
-            }
-
-            .search-filters {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            
-            .filter-select {
-                width: 100%;
-            }
-
-            .clan-stats-badges {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-
-        .players-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .players-container::-webkit-scrollbar-track {
-            background: rgba(255, 69, 0, 0.1);
-            border-radius: 4px;
-        }
-
-        .players-container::-webkit-scrollbar-thumb {
-            background: var(--primary-color);
-            border-radius: 4px;
-        }
-
-        .players-container::-webkit-scrollbar-thumb:hover {
-            background: #ff3300;
-        }
-    </style>
-    <script src="./country_codes.js"></script>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="players.css">
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
+    <script src="country_codes.js"></script>
 </head>
 <body>
-    <div class="topbar">
-        <img onclick="navigateToPage('index.html')" class="logo" src="logo.png" alt="TeeViewer Logo">
-        <div class="nav-buttons">
-            <button onclick="navigateToPage('players.html')" class="categories" id="players">Players</button>
-            <button onclick="navigateToPage('clans.html')"class="categories" id="clans">Clans</button>
-            <button onclick="navigateToPage('maps.html')"class="categories" id="maps">Maps</button>
-            <button onclick="navigateToPage('servers.html')"class="categories" id="servers">Servers</button>
-            <button onclick="window.location.href='https://discord.com/oauth2/authorize?client_id=1391161122714943528&permissions=117760&scope=bot+applications.commands'" class="categories" id="servers">Discord Bot</button>
-            <button onclick="navigateToPage('status.html')" class="categories" id="status">Status</button>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html" aria-label="TeeViewer home">
+                <img class="logo" src="logo.png" alt="TeeViewer" width="863" height="330">
+            </a>
+
+            <nav class="nav" id="site-nav" aria-label="Primary">
+                <div class="nav-buttons">
+                    <a class="categories" href="players.html">Players</a>
+                    <a class="categories" href="clans.html">Clans</a>
+                    <a class="categories" href="maps.html">Maps</a>
+                    <a class="categories" href="servers.html">Servers</a>
+                    <a class="categories" href="status.html">Status</a>
+                    <a class="categories" href="skin.html">Skin</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                </div>
+            </nav>
+
+            <div class="topbar-actions">
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
+                    </svg>
+                </button>
+                <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
+                    <span class="menu-bars" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
         </div>
-    </div>
+    </header>
 
-    <div class="clans-container">
-        <h1 style="text-align: center; color: var(--primary-color); font-size: 36px; margin-bottom: 30px; text-shadow: 0 0 10px rgba(255, 69, 0, 0.3); animation: glow 2s ease-in-out infinite alternate;">
-            Clan Browser
-        </h1>
+    <main class="page" id="main">
+        <header class="page-head">
+            <div>
+                <h1 class="page-title">Clans</h1>
+                <p class="page-sub">Browse every tracked clan, its members, and who is online right now.</p>
+            </div>
+        </header>
 
-        <div class="search-filters">
-            <input type="text" id="clanSearch" class="search-input" placeholder="Search clans by name or player...">
-            
-            <select id="sortBy" class="filter-select">
-                <option value="name">Sort by Clan Name</option>
-                <option value="members">Sort by Online Players</option>
-                <option value="created">Sort by Creation Date</option>
+        <section class="toolbar" aria-labelledby="clan-search-title">
+            <h2 class="visually-hidden" id="clan-search-title">Clan search</h2>
+            <div class="clan-toolbar">
+                <div class="field">
+                    <label class="field-label" for="clanSearch">Search clans</label>
+                    <input class="input" id="clanSearch" type="search" placeholder="Clan name or member name" autocomplete="off" spellcheck="false">
+                </div>
+                <div class="field">
+                    <label class="field-label" for="sortBy">Sort by</label>
+                    <select class="select" id="sortBy">
+                        <option value="name">Clan name</option>
+                        <option value="members">Member count</option>
+                        <option value="created">Creation date</option>
+                    </select>
+                </div>
+            </div>
+            <p class="result-count" id="clanCount" role="status">Loading clans…</p>
+        </section>
 
-            </select>
+        <section aria-labelledby="clan-list-title">
+            <div class="section-head">
+                <h2 class="section-title" id="clan-list-title">All clans</h2>
+                <p class="section-note">Live from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            </div>
+
+            <div class="loading-panel" id="clansLoading" role="status" aria-live="polite">
+                <div class="loading-head">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <span class="visually-hidden">Loading clans</span>
+                    <span class="skeleton skeleton-line skeleton-title" aria-hidden="true"></span>
+                </div>
+                <div class="skeleton-rows" aria-hidden="true">
+                    <div class="skeleton-row">
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                    </div>
+                    <div class="skeleton-row">
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                    </div>
+                    <div class="skeleton-row">
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                    </div>
+                    <div class="skeleton-row">
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                    </div>
+                    <div class="skeleton-row">
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                    </div>
+                    <div class="skeleton-row">
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                        <span class="skeleton skeleton-line"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="state-card" id="clansError" role="alert" hidden>
+                <span class="state-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <circle cx="12" cy="12" r="9"></circle>
+                        <path d="M12 8v5"></path>
+                        <path d="M12 16h.01"></path>
+                    </svg>
+                </span>
+                <p class="state-title">Could not load clans</p>
+                <p class="state-text">The clan service did not answer. Check your connection and try again.</p>
+                <div class="state-actions">
+                    <button class="button ghost" id="clansRetryButton" type="button">Retry</button>
+                </div>
+            </div>
+
+            <div class="state-card" id="clansEmpty" hidden>
+                <span class="state-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+                        <circle cx="11" cy="11" r="6"></circle>
+                        <path d="m16 16 4 4"></path>
+                    </svg>
+                </span>
+                <p class="state-title">No clans match this search</p>
+                <p class="state-text">Try a shorter clan name, or search for a member name instead.</p>
+                <div class="state-actions">
+                    <button class="button ghost" id="clansClearButton" type="button">Clear search</button>
+                </div>
+            </div>
+
+            <div id="clansResults" hidden>
+                <div class="table-wrap clan-table-wrap">
+                    <table class="table clan-table" id="clansTable">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="rank-col">#</th>
+                                <th scope="col">
+                                    <button class="th-sort" type="button" data-sort="name">Clan</button>
+                                </th>
+                                <th scope="col" class="num">
+                                    <button class="th-sort" type="button" data-sort="members">Members</button>
+                                </th>
+                                <th scope="col">
+                                    <button class="th-sort" type="button" data-sort="created">Created</button>
+                                </th>
+                                <th scope="col" class="action-col">View</th>
+                            </tr>
+                        </thead>
+                        <tbody id="clansTableBody"></tbody>
+                    </table>
+                </div>
+
+                <div class="clan-cards" id="clanCards"></div>
+            </div>
+        </section>
+    </main>
+
+    <dialog class="clan-dialog" id="clanDialog" aria-labelledby="clanDialogTitle">
+        <div class="dialog-head">
+            <div>
+                <h2 class="dialog-title" id="clanDialogTitle"></h2>
+                <p class="dialog-sub" id="clanDialogSub"></p>
+            </div>
+            <button class="dialog-close" id="clanDialogClose" type="button" aria-label="Close clan details">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+                    <path d="M6 6l12 12M18 6 6 18"></path>
+                </svg>
+            </button>
         </div>
+        <div class="dialog-body">
+            <div class="dialog-meta">
+                <div class="detail-item">
+                    <dt>Members</dt>
+                    <dd id="clanDialogMembers"></dd>
+                </div>
+                <div class="detail-item">
+                    <dt>Online</dt>
+                    <dd id="clanDialogOnline"></dd>
+                </div>
+                <div class="detail-item">
+                    <dt>AFK</dt>
+                    <dd id="clanDialogAfk"></dd>
+                </div>
+            </div>
+            <div class="dialog-table-wrap">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Member</th>
+                            <th scope="col" class="num">Score</th>
+                            <th scope="col">Server</th>
+                            <th scope="col">Country</th>
+                        </tr>
+                    </thead>
+                    <tbody id="clanMembersBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </dialog>
 
-        <table id="clansTable">
-            <thead>
-                <tr>
-                    <th onclick="sortTable('name')">Clan Name</th>
-                    <th onclick="sortTable('created')">Created</th>
-                    <th onclick="sortTable('members')">Online</th>
-                </tr>
-            </thead>
-            <tbody id="clansTableBody">
-                <tr>
-                    <td colspan="6" style="padding: 40px;">
-                        <div class="loading" style="margin: 0 auto;"></div>
-                        <div style="margin-top: 15px;">Loading clans...</div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <p class="footer-brand">TeeViewer</p>
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            <nav class="footer-links" aria-label="Footer">
+                <a href="players.html">Players</a>
+                <a href="servers.html">Servers</a>
+                <a href="status.html">Status</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord</a>
+            </nav>
+        </div>
+    </footer>
 
     <script>
-        let allClans = [];
-        let currentSort = { column: 'name', direction: 'asc' };
-        let filteredAndSortedClans = [];
-        let clanToExpand = null; // New variable to store clan name from URL
+        (function () {
+            "use strict";
 
-        // Page navigation
-        function navigateToPage(url) {
-            document.body.style.transform = 'translateX(-100%)';
-            document.body.style.transition = 'transform 0.5s ease-in-out';
-            
-            setTimeout(() => {
-                window.location.href = url;
-            }, 250);
-        }
+            var allClans = [];
+            var filteredAndSortedClans = [];
+            var currentSort = { column: "name", direction: "asc" };
+            var clanToExpand = null;
+            var loadAttempt = 0;
 
-        // Load clans data
-        async function loadClans() {
-            try {
-                const response = await fetch('https://api.status.tw/clan/list');
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            var clanSearch = document.getElementById("clanSearch");
+            var sortBy = document.getElementById("sortBy");
+            var clanCount = document.getElementById("clanCount");
+            var clansLoading = document.getElementById("clansLoading");
+            var clansError = document.getElementById("clansError");
+            var clansEmpty = document.getElementById("clansEmpty");
+            var clansResults = document.getElementById("clansResults");
+            var clansTableBody = document.getElementById("clansTableBody");
+            var clanCards = document.getElementById("clanCards");
+            var clanDialog = document.getElementById("clanDialog");
+
+            function formatDate(timestamp) {
+                if (!timestamp) {
+                    return "Unknown";
                 }
-                const rawData = await response.json();
-                
-                // Process the clan data to add calculated fields
-                allClans = rawData.map(clan => {
-                    const onlinePlayers = clan.players.filter(player => player.server).length;
-                    const afkPlayers = clan.players.filter(player => player.isAfk).length;
-                    
-                    return {
-                        ...clan,
-                        onlinePlayers,
-                        afkPlayers,
 
-                        memberCount: clan.players.length
-                    };
+                var date = new Date(timestamp);
+
+                if (isNaN(date.getTime())) {
+                    return "Unknown";
+                }
+
+                return date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
                 });
-                
+            }
+
+            function countryLabel(country) {
+                if (!country) {
+                    return "Default";
+                }
+
+                var stored = window.COUNTRY_CODES ? window.COUNTRY_CODES[String(country.code)] : null;
+                var value = stored || country.identifier || String(country.code);
+
+                if (!value || value === "default") {
+                    return "Default";
+                }
+
+                try {
+                    var regionNames = new Intl.DisplayNames(["en"], { type: "region" });
+                    return regionNames.of(value) || value;
+                } catch (error) {
+                    return value;
+                }
+            }
+
+            function setLoading(loading) {
+                clansLoading.hidden = !loading;
+
+                if (loading) {
+                    clansError.hidden = true;
+                    clansEmpty.hidden = true;
+                    clansResults.hidden = true;
+                    clanCount.textContent = "Loading clans…";
+                }
+            }
+
+            function showError() {
+                clansLoading.hidden = true;
+                clansEmpty.hidden = true;
+                clansResults.hidden = true;
+                clansError.hidden = false;
+                clanCount.textContent = "Clans are unavailable";
+            }
+
+            async function loadClans() {
+                setLoading(true);
+
+                try {
+                    var url = "https://api.status.tw/clan/list";
+
+                    if (loadAttempt > 0) {
+                        url += "#retry=" + loadAttempt;
+                    }
+
+                    loadAttempt += 1;
+
+                    var rawData = await window.fetchJSON(url);
+
+                    allClans = rawData.map(function (clan) {
+                        var players = Array.isArray(clan.players) ? clan.players : [];
+                        var onlinePlayers = players.filter(function (player) {
+                            return Boolean(player.server);
+                        }).length;
+                        var afkPlayers = players.filter(function (player) {
+                            return Boolean(player.isAfk);
+                        }).length;
+
+                        return Object.assign({}, clan, {
+                            players: players,
+                            onlinePlayers: onlinePlayers,
+                            afkPlayers: afkPlayers,
+                            memberCount: players.length
+                        });
+                    });
+
+                    applyFiltersAndSort();
+
+                    if (clanToExpand) {
+                        var index = filteredAndSortedClans.findIndex(function (clan) {
+                            return clan.name.toLowerCase() === clanToExpand.toLowerCase();
+                        });
+
+                        if (index !== -1) {
+                            openClanDialog(index);
+                        }
+
+                        clanToExpand = null;
+                    }
+                } catch (error) {
+                    showError();
+                }
+            }
+
+            function applyFiltersAndSort() {
+                var searchTerm = clanSearch.value.trim().toLowerCase();
+                var sortValue = sortBy.value;
+
+                filteredAndSortedClans = allClans.filter(function (clan) {
+                    if (!searchTerm) {
+                        return true;
+                    }
+
+                    if (clan.name.toLowerCase().indexOf(searchTerm) !== -1) {
+                        return true;
+                    }
+
+                    return clan.players.some(function (player) {
+                        return String(player.name || "").toLowerCase().indexOf(searchTerm) !== -1;
+                    });
+                });
+
+                filteredAndSortedClans.sort(function (a, b) {
+                    var aValue;
+                    var bValue;
+
+                    switch (sortValue) {
+                        case "members":
+                            aValue = a.memberCount;
+                            bValue = b.memberCount;
+                            break;
+                        case "created":
+                            aValue = new Date(a.createdAt).getTime() || 0;
+                            bValue = new Date(b.createdAt).getTime() || 0;
+                            break;
+                        default:
+                            aValue = a.name.toLowerCase();
+                            bValue = b.name.toLowerCase();
+                    }
+
+                    if (typeof aValue === "string") {
+                        return aValue.localeCompare(bValue) * (currentSort.direction === "asc" ? 1 : -1);
+                    }
+
+                    return (aValue - bValue) * (currentSort.direction === "asc" ? 1 : -1);
+                });
+
+                clanCount.textContent = filteredAndSortedClans.length + " of " + allClans.length + " clans";
+                displayClans(filteredAndSortedClans);
+            }
+
+            function displayClans(clans) {
+                clansTableBody.innerHTML = "";
+                clanCards.innerHTML = "";
+
+                if (clans.length === 0) {
+                    clansLoading.hidden = true;
+                    clansResults.hidden = true;
+                    clansError.hidden = true;
+                    clansEmpty.hidden = false;
+                    return;
+                }
+
+                clansEmpty.hidden = true;
+                clansError.hidden = true;
+                clansLoading.hidden = true;
+                clansResults.hidden = false;
+
+                clans.forEach(function (clan, index) {
+                    var rank = index + 1;
+                    var created = formatDate(clan.createdAt);
+                    var row = document.createElement("tr");
+                    row.className = "clan-row";
+
+                    var rankCell = document.createElement("td");
+                    rankCell.className = "clan-rank";
+                    rankCell.textContent = rank;
+
+                    var nameCell = document.createElement("td");
+                    var name = document.createElement("span");
+                    name.className = "clan-name";
+                    name.textContent = clan.name;
+                    nameCell.appendChild(name);
+
+                    var membersCell = document.createElement("td");
+                    membersCell.className = "clan-count";
+                    membersCell.textContent = clan.memberCount;
+
+                    var createdCell = document.createElement("td");
+                    createdCell.className = "clan-created";
+                    createdCell.textContent = created;
+
+                    var actionCell = document.createElement("td");
+                    var actionWrap = document.createElement("div");
+                    actionWrap.className = "clan-view";
+                    var viewButton = document.createElement("button");
+                    viewButton.type = "button";
+                    viewButton.className = "button ghost";
+                    viewButton.textContent = "View";
+                    viewButton.setAttribute("aria-label", "View " + clan.name);
+                    viewButton.addEventListener("click", function (event) {
+                        event.stopPropagation();
+                        openClanDialog(index);
+                    });
+                    actionWrap.appendChild(viewButton);
+                    actionCell.appendChild(actionWrap);
+
+                    row.appendChild(rankCell);
+                    row.appendChild(nameCell);
+                    row.appendChild(membersCell);
+                    row.appendChild(createdCell);
+                    row.appendChild(actionCell);
+                    row.addEventListener("click", function () {
+                        openClanDialog(index);
+                    });
+
+                    clansTableBody.appendChild(row);
+
+                    var card = document.createElement("article");
+                    card.className = "clan-card";
+
+                    var cardHead = document.createElement("div");
+                    cardHead.className = "clan-card-head";
+                    var cardName = document.createElement("h3");
+                    cardName.className = "clan-card-name";
+                    cardName.textContent = clan.name;
+                    var cardRank = document.createElement("span");
+                    cardRank.className = "clan-card-rank";
+                    cardRank.textContent = "#" + rank;
+                    cardHead.appendChild(cardName);
+                    cardHead.appendChild(cardRank);
+
+                    var cardMeta = document.createElement("p");
+                    cardMeta.className = "clan-card-meta";
+                    var membersText = document.createElement("span");
+                    membersText.textContent = "Members ";
+                    var membersValue = document.createElement("strong");
+                    membersValue.textContent = clan.memberCount;
+                    membersText.appendChild(membersValue);
+                    var createdText = document.createElement("span");
+                    createdText.textContent = "Created " + created;
+                    cardMeta.appendChild(membersText);
+                    cardMeta.appendChild(createdText);
+
+                    var cardActions = document.createElement("div");
+                    cardActions.className = "clan-card-actions";
+                    var cardButton = document.createElement("button");
+                    cardButton.type = "button";
+                    cardButton.className = "button ghost";
+                    cardButton.textContent = "View members";
+                    cardButton.setAttribute("aria-label", "View members of " + clan.name);
+                    cardButton.addEventListener("click", function () {
+                        openClanDialog(index);
+                    });
+                    cardActions.appendChild(cardButton);
+
+                    card.appendChild(cardHead);
+                    card.appendChild(cardMeta);
+                    card.appendChild(cardActions);
+                    clanCards.appendChild(card);
+                });
+            }
+
+            function openClanDialog(index) {
+                var clan = filteredAndSortedClans[index];
+
+                if (!clan) {
+                    return;
+                }
+
+                document.getElementById("clanDialogTitle").textContent = clan.name;
+                document.getElementById("clanDialogSub").textContent = "Created " + formatDate(clan.createdAt);
+                document.getElementById("clanDialogMembers").textContent = clan.memberCount;
+                document.getElementById("clanDialogOnline").textContent = clan.onlinePlayers;
+                document.getElementById("clanDialogAfk").textContent = clan.afkPlayers;
+
+                var body = document.getElementById("clanMembersBody");
+                body.innerHTML = "";
+
+                if (clan.players.length === 0) {
+                    var emptyRow = body.insertRow();
+                    var emptyCell = emptyRow.insertCell();
+                    emptyCell.colSpan = 4;
+                    emptyCell.className = "table-empty";
+                    emptyCell.textContent = "No members in this clan.";
+                } else {
+                    clan.players.forEach(function (player) {
+                        var row = body.insertRow();
+
+                        var nameCell = row.insertCell();
+                        var name = document.createElement("span");
+                        name.className = "member-name";
+                        name.textContent = player.name || "N/A";
+                        nameCell.appendChild(name);
+
+                        var scoreCell = row.insertCell();
+                        scoreCell.className = "num";
+                        scoreCell.textContent = player.score === undefined || player.score === null ? "—" : player.score;
+
+                        var serverCell = row.insertCell();
+                        serverCell.className = "member-server";
+                        serverCell.textContent = player.server ? player.server.name : "Offline";
+
+                        var countryCell = row.insertCell();
+                        var country = document.createElement("span");
+                        country.className = "member-country";
+
+                        if (player.country && player.country.iconUrl) {
+                            var flag = document.createElement("img");
+                            flag.className = "member-flag";
+                            flag.src = player.country.iconUrl;
+                            flag.alt = "";
+                            flag.loading = "lazy";
+                            flag.width = 18;
+                            flag.height = 12;
+                            country.appendChild(flag);
+                        }
+
+                        var countryText = document.createElement("span");
+                        countryText.textContent = countryLabel(player.country);
+                        country.appendChild(countryText);
+                        countryCell.appendChild(country);
+                    });
+                }
+
+                if (typeof clanDialog.showModal === "function") {
+                    clanDialog.showModal();
+                } else {
+                    clanDialog.setAttribute("open", "open");
+                }
+            }
+
+            function toggleClanDetails(index) {
+                openClanDialog(index);
+            }
+
+            function sortTable(column) {
+                if (currentSort.column === column) {
+                    currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
+                } else {
+                    currentSort.column = column;
+                    currentSort.direction = "asc";
+                }
+
+                sortBy.value = column;
                 applyFiltersAndSort();
-
-                // After clans are displayed, check for clanToExpand
-                if (clanToExpand) {
-                    const index = filteredAndSortedClans.findIndex(clan => clan.name.toLowerCase() === clanToExpand.toLowerCase());
-                    if (index !== -1) {
-                        toggleClanDetails(index);
-                    }
-                    clanToExpand = null; // Reset after use
-                }
-
-            } catch (error) {
-                console.error('Error loading clans:', error);
-                document.getElementById('clansTableBody').innerHTML = `
-                    <tr>
-                        <td colspan="6" style="color: #ff4444; padding: 40px;">
-                            Error loading clans. Please try again later.
-                        </td>
-                    </tr>
-                `;
-            }
-        }
-
-        // Display clans in table
-        function displayClans(clans) {
-            const tbody = document.getElementById('clansTableBody');
-            tbody.innerHTML = '';
-
-            if (clans.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="6" style="padding: 40px; color: rgba(255, 255, 255, 0.6);">
-                            No clans found matching your criteria.
-                        </td>
-                    </tr>
-                `;
-                return;
             }
 
-            clans.forEach((clan, index) => {
-                const row = document.createElement('tr');
-                row.className = 'clan-row';
-                row.onclick = () => toggleClanDetails(index);
-                
-                const statusBadges = [];
-                if (clan.onlinePlayers > 0) statusBadges.push(`<span class="stat-badge">${clan.onlinePlayers} Online</span>`);
-                if (clan.afkPlayers > 0) statusBadges.push(`<span class="stat-badge" style="background: #FF9800;">${clan.afkPlayers} AFK</span>`);
-                
-                row.innerHTML = `
-                    <td style="font-weight: 600;">${clan.name}</td>
+            clanSearch.addEventListener("input", applyFiltersAndSort);
 
-
-                    <td>${formatDate(clan.createdAt)}</td>
-                    <td>
-                        <div class="clan-stats-badges">
-                            ${statusBadges.join('') || '<span style="color: rgba(255,255,255,0.5);">Offline</span>'}
-                        </div>
-                    </td>
-                `;
-                
-                tbody.appendChild(row);
-                let createDate = formatDate(clan.createdAt);
-                if (createDate === "Jun 1, 2024") {
-                    createDate = "Jun 1, 2024 (not accurate)";
-                }
-                // Create details row
-                const detailsRow = document.createElement('tr');
-                detailsRow.className = 'clan-details';
-                detailsRow.id = `details-${index}`;
-                detailsRow.innerHTML = `
-                    <td colspan="6">
-                        <div class="clan-content">
-                            <div class="clan-info">
-                                <div class="info-item">
-                                    <span class="info-label">Clan Name:</span>
-                                    <span class="info-value">${clan.name}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Online Players:</span>
-                                    <span class="info-value">${clan.onlinePlayers}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">AFK Players:</span>
-                                    <span class="info-value">${clan.afkPlayers}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Created:</span>
-                                    <span class="info-value">${createDate}</span>
-                                </div>
-                            </div>
-                            <div class="players-container">
-                                <h4 style="color: var(--primary-color); margin-bottom: 15px;">Clan Members (${clan.memberCount})</h4>
-                                <div class="players-grid">
-                                    ${generatePlayersGrid(clan.players)}
-                                </div>
-                            </div>
-                        </div>
-                    </td>
-                `;
-                
-                tbody.appendChild(detailsRow);
+            sortBy.addEventListener("change", function () {
+                currentSort.column = sortBy.value;
+                currentSort.direction = "asc";
+                applyFiltersAndSort();
             });
-        }
 
-        // Generate players grid
-        function generatePlayersGrid(players) {
-            if (players.length === 0) {
-                return '<div class="empty-state">No players in this clan</div>';
-            }
-
-            return players.map(player => {
-                const statusBadges = [];
-                if (player.server) {
-                    statusBadges.push('<span class="status-badge status-online">Online</span>');
-                    if (player.isAfk) {
-                        statusBadges.push('<span class="status-badge status-afk">AFK</span>');
-                    }
-                } else {
-                    statusBadges.push('<span class="status-badge status-offline">Offline</span>');
-                }
-                
-                const serverInfo = player.server ? `
-                    <div class="server-info">
-                        <strong>Server:</strong> ${player.server.name}<br>
-                        <strong>Ip:</strong> ${player.server.ip}:${player.server.port}<br>
-                        <strong>Map:</strong> ${player.server.map?.name || 'Unknown'}<br>
-                        <strong>Players:</strong> ${player.server.numPlayers}/${player.server.maxPlayers}
-                    </div>
-                ` : '';
-
-const countryName = COUNTRY_CODES[player.country?.code] || player.country?.code;
-                const regionNames = new Intl.DisplayNames(
-                    ['en'], {type: 'region'}
-                );
-                let countryNamey; 
-                try{
-                    
-                    countryNamey = countryName?.toLowerCase() === "default"
-                     ? "Default"
-                     : regionNames.of(countryName);
-                }
-                catch (e) {
-                    
-                    countryNamey = countryName;
-                }
-                
-
-                return `
-                    <div class="player-card" onclick="navigateToPage('players.html?player=${encodeURIComponent(player.name)}')" style="cursor: pointer;">
-                        <div class="player-header">
-                            <span class="player-name">${player.name}</span>
-                            ${player.country?.iconUrl ? `<img src="${player.country.iconUrl}" alt="${player.country.code}" class="country-flag">` : ''}
-                        </div>
-                        <div class="player-status">
-                            ${statusBadges.join('')}
-                        </div>
-                        <div class="player-info">
-
-                            <strong>Country:</strong> ${countryNamey}<br>
-                            <strong>Joined:</strong> ${formatDateShort(player.createdAt)}
-                            <strong>Playtime:</strong> ${formatDateShort(player.createdAt)}
-                            ${serverInfo}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Toggle clan details
-        function toggleClanDetails(index) {
-            const detailsRow = document.getElementById(`details-${index}`);
-            const clanRow = document.querySelectorAll('.clan-row')[index];
-            
-            if (detailsRow.classList.contains('show')) {
-                detailsRow.classList.remove('show');
-                clanRow.classList.remove('expanded');
-            } else {
-                // Close other expanded rows
-                document.querySelectorAll('.clan-details.show').forEach(row => {
-                    row.classList.remove('show');
+            document.querySelectorAll("[data-sort]").forEach(function (button) {
+                button.addEventListener("click", function () {
+                    sortTable(button.getAttribute("data-sort"));
                 });
-                document.querySelectorAll('.clan-row.expanded').forEach(row => {
-                    row.classList.remove('expanded');
-                });
-                
-                detailsRow.classList.add('show');
-                clanRow.classList.add('expanded');
-            }
-        }
-
-        // Combined filtering and sorting logic
-        function applyFiltersAndSort() {
-            const searchTerm = document.getElementById('clanSearch').value.toLowerCase();
-            const sortBy = document.getElementById('sortBy').value;
-
-            filteredAndSortedClans = allClans.filter(clan => {
-                const matchesSearch = clan.name.toLowerCase().includes(searchTerm) || 
-                                      clan.players.some(player => player.name.toLowerCase().includes(searchTerm));
-                
-                let matchesStatus = true;
-                
-                return matchesSearch && matchesStatus;
             });
 
-            // Apply sorting
-            filteredAndSortedClans.sort((a, b) => {
-                let aVal, bVal;
+            document.getElementById("clansRetryButton").addEventListener("click", loadClans);
 
-                switch (sortBy) {
-                    case 'name':
-                        aVal = a.name;
-                        bVal = b.name;
-                        break;
-                    case 'members': // This case doesn't exist in your HTML, should be 'online' or 'created'
-                        aVal = a.memberCount;
-                        bVal = b.memberCount;
-                        break;
-                    case 'online':
-                        aVal = a.onlinePlayers; // Correctly gets the value
-                        bVal = b.onlinePlayers; // Correctly gets the value
-                        break;
-                    case 'created':
-                        aVal = new Date(a.createdAt);
-                        bVal = new Date(b.createdAt);
-                        break;
-                    default:
-                        return 0;
-                }
+            document.getElementById("clansClearButton").addEventListener("click", function () {
+                clanSearch.value = "";
+                clanSearch.focus();
+                applyFiltersAndSort();
+            });
 
-                if (typeof aVal === 'string') {
-                    return aVal.localeCompare(bVal) * (currentSort.direction === 'asc' ? 1 : -1);
-                } else {
-                    // This is where the issue lies for numerical and date sorting
-                    return (aVal - bVal) * (currentSort.direction === 'asc' ? 1 : -1);
+            document.getElementById("clanDialogClose").addEventListener("click", function () {
+                clanDialog.close();
+            });
+
+            clanDialog.addEventListener("click", function (event) {
+                if (event.target === clanDialog) {
+                    clanDialog.close();
                 }
             });
 
-            displayClans(filteredAndSortedClans);
-        }
+            var urlParams = new URLSearchParams(window.location.search);
+            var clanParam = urlParams.get("clanName");
 
-        // Sort table
-        function sortTable(column) {
-            if (currentSort.column === column) {
-                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.column = column;
-                currentSort.direction = 'asc';
-            }
-            document.getElementById('sortBy').value = column;
-            applyFiltersAndSort();
-        }
-
-        // Copy to clipboard
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const tooltip = document.createElement('div');
-                tooltip.textContent = 'Player name copied!';
-                tooltip.style.cssText = `
-                    position: fixed;
-                    top: 50%;
-                    left: 50%;
-                    transform: translate(-50%, -50%);
-                    background: var(--primary-color);
-                    color: white;
-                    padding: 8px 16px;
-                    border-radius: 4px;
-                    z-index: 10000;
-                    font-weight: 600;
-                `;
-                document.body.appendChild(tooltip);
-                setTimeout(() => tooltip.remove(), 1500);
-            });
-        }
-
-        // Helper functions
-        function formatDate(timestamp) {
-            if (!timestamp) return 'Unknown';
-            const date = new Date(timestamp);
-            return date.toLocaleDateString('en-US', { 
-                year: 'numeric', 
-                month: 'short', 
-                day: 'numeric' 
-            });
-        }
-
-        function formatDateShort(timestamp) {
-            if (!timestamp) return 'Unknown';
-            const date = new Date(timestamp);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays < 30) {
-                return `${diffDays}d ago`;
-            } else if (diffDays < 365) {
-                return `${Math.floor(diffDays / 30)}mo ago`;
-            } else {
-                return `${Math.floor(diffDays / 365)}y ago`;
-            }
-        }
-
-        // Event listeners
-        document.getElementById('clanSearch').addEventListener('input', applyFiltersAndSort);
-        document.getElementById('sortBy').addEventListener('change', function() {
-            currentSort.column = this.value;
-            currentSort.direction = 'asc';
-            applyFiltersAndSort();
-        });
-        
-
-        // Navigation button functionality
-        document.getElementById('servers').addEventListener('click', () => {
-            console.log('Navigate to Servers');
-        });
-
-        // Page load animation and URL parameter handling
-        window.addEventListener('load', () => {
-            document.body.classList.add('page-transition');
-            
-            // Parse URL for clan parameter
-            const urlParams = new URLSearchParams(window.location.search);
-            const clanParam = urlParams.get('clanName');
             if (clanParam) {
-                document.getElementById('clanSearch').value = clanParam;
-                clanToExpand = clanParam; // Store the clan name to expand after data loads
+                clanSearch.value = clanParam;
+                clanToExpand = clanParam;
             }
 
             loadClans();
-        });
-
-        // Page transition from other pages
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                document.body.style.transform = 'translateX(0)';
-                document.body.style.transition = 'transform 0.5s ease-in-out';
-            }
-        });
+        })();
     </script>
 </body>
 </html>
