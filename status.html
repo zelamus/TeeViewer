@@ -105,7 +105,7 @@
                         <span class="stat-number" id="stat-servers">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Reporting in</span>
+                    <span class="stat-label">Connected</span>
                     <span class="stat-foot">Public game servers</span>
                 </article>
 
@@ -146,7 +146,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Client builds</span>
-                    <span class="stat-foot">Reporting in</span>
+                    <span class="stat-foot">Seen live</span>
                 </article>
             </div>
             <p class="visually-hidden" id="overview-status" role="status">Loading network statistics.</p>
@@ -345,7 +345,7 @@
                 <a href="servers.html">Servers</a>
                 <a href="status.html">Status</a>
                 <a href="skin.html">Skin</a>
-                <a href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord</a>
+                <a href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
             </nav>
         </div>
     </footer>
@@ -377,7 +377,7 @@
                     totalKey: "totalPlayers",
                     avgKey: "avgPlayers",
                     maxKey: "maxPlayers",
-                    unit: "Players",
+                    unit: "players",
                     noun: "player"
                 },
                 servers: {
@@ -397,7 +397,7 @@
                     totalKey: "totalServers",
                     avgKey: "avgServers",
                     maxKey: "maxServers",
-                    unit: "Servers",
+                    unit: "servers",
                     noun: "server"
                 }
             };
@@ -597,6 +597,15 @@
                     return a.date - b.date;
                 });
 
+                if (samples.length > 2) {
+                    var last = samples[samples.length - 1];
+                    var previous = samples[samples.length - 2];
+
+                    if (previous.total && last.total !== null && last.total < previous.total * 0.85) {
+                        samples.pop();
+                    }
+                }
+
                 var series = { labels: [], total: [], avg: [], max: [] };
 
                 samples.forEach(function (sample) {
@@ -630,6 +639,7 @@
                 var colors = {
                     accent: token("--accent"),
                     warning: token("--warning"),
+                    success: token("--success"),
                     text: token("--text"),
                     text2: token("--text-2"),
                     muted: token("--muted"),
@@ -649,8 +659,8 @@
                                 data: config.data.max,
                                 borderColor: colors.warning,
                                 backgroundColor: colors.warning,
-                                borderWidth: 3,
-                                borderDash: [7, 4],
+                                borderWidth: 2,
+                                borderDash: [6, 3],
                                 pointRadius: 0,
                                 pointHoverRadius: 4,
                                 pointHoverBackgroundColor: colors.warning,
@@ -662,7 +672,7 @@
                                 data: config.data.avg,
                                 borderColor: colors.accent,
                                 backgroundColor: colors.accent,
-                                borderWidth: 2,
+                                borderWidth: 3,
                                 borderDash: [],
                                 pointRadius: 0,
                                 pointHoverRadius: 4,
@@ -673,15 +683,15 @@
                             {
                                 label: "Total",
                                 data: config.data.total,
-                                borderColor: colors.muted,
-                                backgroundColor: colors.muted,
-                                borderWidth: 1.5,
+                                borderColor: colors.success,
+                                backgroundColor: colors.success,
+                                borderWidth: 2,
                                 borderDash: [2, 3],
                                 pointRadius: 0,
                                 pointHoverRadius: 4,
-                                pointHoverBackgroundColor: colors.muted,
+                                pointHoverBackgroundColor: colors.success,
                                 tension: 0.4,
-                                yAxisID: "y"
+                                yAxisID: "y1"
                             }
                         ]
                     },
@@ -732,18 +742,37 @@
                             y: {
                                 min: 0,
                                 beginAtZero: true,
-                                grace: "8%",
                                 border: { display: false },
                                 grid: { color: colors.border, drawBorder: false },
                                 ticks: {
                                     color: colors.muted,
                                     precision: 0,
+                                    maxTicksLimit: tickLimit,
                                     font: { size: 12 }
                                 },
                                 title: {
                                     display: true,
                                     text: config.unit,
                                     color: colors.muted,
+                                    font: { size: 12 }
+                                }
+                            },
+                            y1: {
+                                min: 0,
+                                beginAtZero: true,
+                                position: "right",
+                                border: { display: false },
+                                grid: { display: false, drawOnChartArea: false },
+                                ticks: {
+                                    color: colors.success,
+                                    precision: 0,
+                                    maxTicksLimit: tickLimit,
+                                    font: { size: 12 }
+                                },
+                                title: {
+                                    display: true,
+                                    text: "total " + config.unit,
+                                    color: colors.success,
                                     font: { size: 12 }
                                 }
                             }

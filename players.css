@@ -839,7 +839,8 @@
 }
 
 .clan-table-wrap {
-    --table-sticky-top: 0;
+    --table-sticky-top: calc(var(--topbar-h) + 1px);
+    overflow: visible;
 }
 
 .clan-table .action-col {
