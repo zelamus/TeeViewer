@@ -645,6 +645,19 @@
                         labels: config.data.labels,
                         datasets: [
                             {
+                                label: "Max",
+                                data: config.data.max,
+                                borderColor: colors.warning,
+                                backgroundColor: colors.warning,
+                                borderWidth: 3,
+                                borderDash: [7, 4],
+                                pointRadius: 0,
+                                pointHoverRadius: 4,
+                                pointHoverBackgroundColor: colors.warning,
+                                tension: 0.4,
+                                yAxisID: "y"
+                            },
+                            {
                                 label: "Avg",
                                 data: config.data.avg,
                                 borderColor: colors.accent,
@@ -654,19 +667,6 @@
                                 pointRadius: 0,
                                 pointHoverRadius: 4,
                                 pointHoverBackgroundColor: colors.accent,
-                                tension: 0.4,
-                                yAxisID: "y"
-                            },
-                            {
-                                label: "Max",
-                                data: config.data.max,
-                                borderColor: colors.warning,
-                                backgroundColor: colors.warning,
-                                borderWidth: 2,
-                                borderDash: [7, 4],
-                                pointRadius: 0,
-                                pointHoverRadius: 4,
-                                pointHoverBackgroundColor: colors.warning,
                                 tension: 0.4,
                                 yAxisID: "y"
                             },

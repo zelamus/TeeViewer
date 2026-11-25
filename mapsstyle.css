@@ -553,7 +553,7 @@ body.map-modal-open {
 
 .info-label {
     color: var(--muted);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
 }
 
 .info-value {
