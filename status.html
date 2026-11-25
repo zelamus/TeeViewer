@@ -62,24 +62,24 @@
 
     <main class="page status-page" id="main">
         <header class="page-head status-page-head">
-            <div>
+            <div class="page-head-row">
                 <h1 class="page-title">Status</h1>
-                <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
+                <div class="status-actions">
+                    <span class="status-pill" id="network-pill" data-state="loading" role="status">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        <span id="network-pill-text">Checking</span>
+                    </span>
+                    <button class="button ghost" id="refresh-status" type="button">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                            <path d="M21 3v6h-6"></path>
+                        </svg>
+                        Refresh
+                    </button>
+                    <span class="status-updated">Updated <time id="last-updated">—</time></span>
+                </div>
             </div>
-            <div class="status-actions">
-                <span class="status-pill" id="network-pill" data-state="loading" role="status">
-                    <span class="status-dot" aria-hidden="true"></span>
-                    <span id="network-pill-text">Checking</span>
-                </span>
-                <button class="button ghost" id="refresh-status" type="button">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                        <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
-                        <path d="M21 3v6h-6"></path>
-                    </svg>
-                    Refresh
-                </button>
-                <span class="status-updated">Updated <time id="last-updated">—</time></span>
-            </div>
+            <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
         </header>
 
         <section aria-labelledby="overview-title">

@@ -242,7 +242,7 @@
 .profile-layout {
     display: grid;
     grid-template-columns: 300px minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: var(--space-4);
     margin-bottom: var(--space-4);
 }
@@ -251,7 +251,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: var(--space-3);
     padding: var(--space-4);
     border: 1px solid var(--border);
@@ -261,6 +261,7 @@
 
 .tee-stage {
     display: flex;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: center;
     width: 100%;
@@ -344,11 +345,22 @@
     cursor: default;
 }
 
+.identity-badges .badge {
+    padding: 3px 10px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface-2);
+}
+
 .identity-country {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    color: var(--text-2);
+    padding: 3px 10px;
+    border: 1px solid var(--accent-border);
+    border-radius: var(--radius-pill);
+    background: var(--accent-soft);
+    color: var(--accent);
     font-size: var(--text-sm);
 }
 
@@ -571,7 +583,7 @@
 }
 
 .status-value[data-state="offline"] {
-    color: var(--muted);
+    color: color-mix(in srgb, var(--danger) 70%, var(--muted));
 }
 
 .status-value[data-state="pending"]::before {
@@ -860,8 +872,26 @@
 
 .clan-result-bar {
     display: flex;
-    justify-content: flex-end;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: var(--space-2) var(--space-3);
     padding: 0 0 var(--space-2);
+}
+
+.result-source {
+    color: var(--muted);
+    font-size: var(--text-xs);
+}
+
+.result-source::before {
+    margin-right: var(--space-2);
+    color: var(--muted);
+    content: "·";
+}
+
+.clan-result-bar .pager-top {
+    margin: 0;
 }
 
 .clan-table {
@@ -882,14 +912,22 @@
 }
 
 .clan-table th:nth-child(2) {
-    width: 180px;
+    width: 220px;
 }
 
 .clan-table th:nth-child(3) {
-    width: 96px;
+    width: 110px;
 }
 
 .clan-table th:nth-child(4) {
+    width: 160px;
+}
+
+.clan-table th:nth-child(5) {
+    width: 80px;
+}
+
+.clan-table th:nth-child(6) {
     width: auto;
 }
 
@@ -949,6 +987,14 @@
 .clan-created {
     color: var(--text-2);
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.clan-members-preview {
+    color: var(--text-2);
+    font-size: var(--text-xs);
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
 }
 

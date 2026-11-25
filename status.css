@@ -707,29 +707,21 @@ html.js .chart-card.is-loading .chart-box canvas {
     height: 6px;
     flex: none;
     border-radius: 50%;
-    background: var(--muted);
+    background: var(--accent);
     content: "";
 }
 
 .skin-status[data-tone="ready"] {
-    border-color: color-mix(in srgb, var(--success) 40%, var(--border));
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
     color: var(--text);
 }
 
-.skin-status[data-tone="ready"]::before {
-    background: var(--success);
-}
-
-.skin-status[data-tone="busy"]::before {
-    background: var(--warning);
+.skin-status[data-tone="busy"] {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
 }
 
 .skin-status[data-tone="error"] {
-    border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
-}
-
-.skin-status[data-tone="error"]::before {
-    background: var(--danger);
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
 }
 
 .skin-form {

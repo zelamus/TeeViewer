@@ -66,13 +66,13 @@
 
     <main class="page" id="main">
         <header class="page-head">
-            <div>
+            <div class="page-head-row">
                 <h1 class="page-title">Players</h1>
-                <p class="page-sub">Search a Teeworlds player to see their profile, playtime, and points history.</p>
+                <div class="page-head-actions">
+                    <a class="button ghost" href="#playerComparisonSection">Compare two players</a>
+                </div>
             </div>
-            <div class="page-head-actions">
-                <a class="button ghost" href="#playerComparisonSection">Compare two players</a>
-            </div>
+            <p class="page-sub">Search a Teeworlds player to see their profile, playtime, and points history.</p>
         </header>
 
         <section class="toolbar" aria-labelledby="player-search-title">
@@ -1059,7 +1059,7 @@
                                     ticks: {
                                         color: axisColor,
                                         callback: function (value) {
-                                            return value + "h";
+                                            return numberFormat.format(value) + "h";
                                         }
                                     },
                                     grid: {
@@ -1144,7 +1144,10 @@
                                 y: {
                                     beginAtZero: true,
                                     ticks: {
-                                        color: axisColor
+                                        color: axisColor,
+                                        callback: function (value) {
+                                            return numberFormat.format(value);
+                                        }
                                     },
                                     grid: {
                                         color: gridColor
@@ -1243,7 +1246,7 @@
                                                     return a + b;
                                                 }, 0);
                                                 var percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : "0.0";
-                                                return context.label + ": " + context.parsed + "h (" + percentage + "%)";
+                                                return context.label + ": " + numberFormat.format(context.parsed) + "h (" + percentage + "%)";
                                             }
                                         }
                                     }

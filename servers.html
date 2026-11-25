@@ -62,11 +62,11 @@
     <main class="page servers-page" id="main">
         <div id="serversBrowser">
             <header class="page-head">
-                <div>
+                <div class="page-head-row">
                     <h1 class="page-title">Servers</h1>
-                    <p class="page-sub">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
+                    <p class="page-meta">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
                 </div>
-                <p class="page-meta">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+                <p class="page-sub">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
             </header>
 
             <section class="filter-panel" id="serverFilterPanel" aria-labelledby="serverFiltersTitle">
@@ -155,13 +155,12 @@
             <div class="result-bar">
                 <p class="result-count" id="serverCount" role="status" aria-live="polite">Loading servers…</p>
                 <p class="result-hint">Select a server for details</p>
+                <nav class="pager pager-top" id="serverPagerTop" aria-label="Server pages (top)" hidden>
+                    <button class="button ghost button-sm" type="button" data-server-prev>Previous</button>
+                    <span class="pager-status" data-server-page-status role="status"></span>
+                    <button class="button ghost button-sm" type="button" data-server-next>Next</button>
+                </nav>
             </div>
-
-            <nav class="pager pager-top" id="serverPagerTop" aria-label="Server pages (top)" hidden>
-                <button class="button ghost button-sm" type="button" data-server-prev>Previous</button>
-                <span class="pager-status" data-server-page-status role="status"></span>
-                <button class="button ghost button-sm" type="button" data-server-next>Next</button>
-            </nav>
 
             <div class="table-shell" id="serversTableWrap">
                 <table class="table server-table" id="serversTable">
@@ -865,11 +864,12 @@
                     : '<span class="muted">—</span>';
 
                 return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0" role="button" aria-label="Open server ' + escapeHtml(serverName(server)) + '">' +
-                    '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span>" + passwordIcon(server) + "</td>" +
+                    '<td class="server-name-cell"><a class="server-name table-link" href="servers.html?ip=' + encodeURIComponent(server.ip) + "&port=" + encodeURIComponent(server.port) + '" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</a>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + "</span></span>" +
-                        '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
+                        '<div class="capacity-cell"><progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
+                        '<span class="capacity-mini-pct">' + capacityPercent(server) + "%</span></div>" +
                     "</td>" +
                     '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
                     '<td class="action-col"><span class="row-chevron" aria-hidden="true">→</span></td>' +
@@ -894,6 +894,7 @@
                     '<div class="server-card-capacity">' +
                         '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
+                        '<span class="capacity-mini-pct">' + capacityPercent(server) + "%</span>" +
                     "</div>" +
                     '<div class="server-card-foot">' +
                         '<span class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</span>" +
@@ -1373,7 +1374,7 @@
                                 bodyColor: colors.text,
                                 callbacks: {
                                     label: function (context) {
-                                        return context.dataset.label + ": " + context.parsed.y.toFixed(0);
+                                        return context.dataset.label + ": " + numberFormat.format(context.parsed.y);
                                     }
                                 }
                             }
@@ -1404,7 +1405,10 @@
                                 },
                                 ticks: {
                                     color: colors.muted,
-                                    precision: 0
+                                    precision: 0,
+                                    callback: function (value) {
+                                        return numberFormat.format(value);
+                                    }
                                 }
                             }
                         }

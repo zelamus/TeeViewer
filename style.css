@@ -241,7 +241,7 @@
     --border-strong: #9aa1ac;
     --text: #14161a;
     --text-2: #2e333b;
-    --muted: #39414d;
+    --muted: #2f3743;
     --accent: #1d4ed8;
     --accent-hover: #1e40af;
     --accent-strong: #1d4ed8;
@@ -251,6 +251,7 @@
     --accent-border: rgba(29, 78, 216, 0.32);
     --success: #1a7f37;
     --warning: #966400;
+    --star-filled: #a86800;
     --danger: #cf222e;
     --danger-hover: #a40e26;
     --on-danger: #ffffff;
@@ -277,7 +278,7 @@
         --border-strong: #9aa1ac;
         --text: #14161a;
         --text-2: #3f444c;
-        --muted: #4b5563;
+        --muted: #3a4350;
         --accent: #1d4ed8;
         --accent-hover: #1e40af;
         --accent-strong: #1d4ed8;
@@ -287,6 +288,7 @@
         --accent-border: rgba(29, 78, 216, 0.32);
         --success: #1a7f37;
         --warning: #966400;
+        --star-filled: #a86800;
         --danger: #cf222e;
         --danger-hover: #a40e26;
         --on-danger: #ffffff;
@@ -627,12 +629,16 @@ button:disabled {
 }
 
 .page-head {
+    display: block;
+    margin-bottom: var(--space-4);
+}
+
+.page-head-row {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-end;
+    align-items: baseline;
     justify-content: space-between;
     gap: var(--space-2) var(--space-3);
-    margin-bottom: var(--space-4);
 }
 
 .page-title {
