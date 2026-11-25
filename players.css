@@ -1155,6 +1155,30 @@
         padding: var(--space-3);
     }
 
+    .completion-table {
+        table-layout: fixed;
+    }
+
+    .completion-table th,
+    .completion-table td {
+        padding: var(--space-2);
+        font-size: var(--text-xs);
+    }
+
+    .completion-table th {
+        white-space: normal;
+    }
+
+    .completion-table th:first-child,
+    .completion-table td:first-child {
+        padding-left: var(--space-3);
+    }
+
+    .completion-table th:last-child,
+    .completion-table td:last-child {
+        padding-right: var(--space-3);
+    }
+
     .completion-table th:nth-child(2),
     .completion-table td:nth-child(2) {
         display: none;

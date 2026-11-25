@@ -498,6 +498,7 @@
             var currentPlayerName = null;
             var currentTeeInstance = null;
             var currentTeeAssemblerString = null;
+            var lastPlayerData = null;
             var onlineAttempts = {};
             var toastTimer = null;
 
@@ -672,6 +673,7 @@
             async function fetchOnlineData(playerName) {
                 var onlineStatusElement = document.getElementById("onlineStatus");
                 var serverDetailsElement = document.getElementById("serverDetails");
+                var serverEmptyElement = document.getElementById("serverEmpty");
                 var serverNameElement = document.getElementById("serverName");
                 var serverMapElement = document.getElementById("serverMap");
                 var gameTypeElement = document.getElementById("gameType");
@@ -682,6 +684,7 @@
                 onlineStatusElement.textContent = "Checking…";
                 onlineStatusElement.dataset.state = "pending";
                 serverDetailsElement.hidden = true;
+                serverEmptyElement.hidden = true;
                 serversTabButton.onclick = null;
                 copyServerInfoButton.onclick = null;
 
@@ -703,6 +706,7 @@
                         onlineStatusElement.textContent = "Online";
                         onlineStatusElement.dataset.state = "online";
                         serverDetailsElement.hidden = false;
+                        serverEmptyElement.hidden = true;
 
                         serverNameElement.textContent = server.name;
                         serverMapElement.textContent = server.map.name;
@@ -730,11 +734,13 @@
                         onlineStatusElement.textContent = "Offline";
                         onlineStatusElement.dataset.state = "offline";
                         serverDetailsElement.hidden = true;
+                        serverEmptyElement.hidden = false;
                     }
                 } catch (error) {
                     onlineStatusElement.textContent = "Unavailable";
                     onlineStatusElement.dataset.state = "unknown";
                     serverDetailsElement.hidden = true;
+                    serverEmptyElement.hidden = false;
                 }
             }
 
@@ -808,6 +814,7 @@
                 playerEmptyState.hidden = true;
                 errorMessage.hidden = true;
                 playerStatsContainer.hidden = false;
+                lastPlayerData = playerData;
 
                 document.getElementById("playerName").textContent = profile.name || "N/A";
                 document.getElementById("playerPoints").textContent = playerData.profile.points || 0;
@@ -1006,6 +1013,9 @@
                                 }),
                                 borderColor: accentColor,
                                 backgroundColor: softColor,
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                pointHoverRadius: 3,
                                 tension: 0.3,
                                 fill: true
                             }]
@@ -1014,6 +1024,12 @@
                             responsive: true,
                             maintainAspectRatio: false,
                             animation: false,
+                            layout: {
+                                padding: {
+                                    top: 4,
+                                    right: 8
+                                }
+                            },
                             scales: {
                                 y: {
                                     beginAtZero: true,
@@ -1042,7 +1058,7 @@
                                     ticks: {
                                         color: axisColor,
                                         autoSkip: true,
-                                        maxTicksLimit: 12
+                                        maxTicksLimit: 8
                                     },
                                     grid: {
                                         color: gridColor
@@ -1094,6 +1110,9 @@
                                 }),
                                 borderColor: accentColor,
                                 backgroundColor: softColor,
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                pointHoverRadius: 3,
                                 tension: 0.3,
                                 fill: true
                             }]
@@ -1102,6 +1121,12 @@
                             responsive: true,
                             maintainAspectRatio: false,
                             animation: false,
+                            layout: {
+                                padding: {
+                                    top: 4,
+                                    right: 8
+                                }
+                            },
                             scales: {
                                 y: {
                                     beginAtZero: true,
@@ -1126,7 +1151,7 @@
                                     ticks: {
                                         color: axisColor,
                                         autoSkip: true,
-                                        maxTicksLimit: 12
+                                        maxTicksLimit: 8
                                     },
                                     grid: {
                                         color: gridColor
@@ -1201,10 +1226,13 @@
                                 plugins: {
                                     legend: {
                                         position: "bottom",
+                                        align: "start",
                                         labels: {
                                             color: legendColor,
-                                            padding: 12,
-                                            boxWidth: 10
+                                            padding: 10,
+                                            boxWidth: 8,
+                                            usePointStyle: true,
+                                            pointStyle: "circle"
                                         }
                                     },
                                     tooltip: {
@@ -1580,6 +1608,36 @@
                     copyTeeSettings();
                 }
             });
+
+            function refreshChartColors() {
+                if (!lastPlayerData) {
+                    return;
+                }
+
+                renderLineCharts(lastPlayerData);
+                renderPieCharts(lastPlayerData);
+            }
+
+            var themeObserver = new MutationObserver(refreshChartColors);
+            themeObserver.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ["data-theme"]
+            });
+
+            if (window.matchMedia) {
+                var lightScheme = window.matchMedia("(prefers-color-scheme: light)");
+                var onSchemeChange = function () {
+                    if (!document.documentElement.hasAttribute("data-theme")) {
+                        refreshChartColors();
+                    }
+                };
+
+                if (typeof lightScheme.addEventListener === "function") {
+                    lightScheme.addEventListener("change", onSchemeChange);
+                } else if (typeof lightScheme.addListener === "function") {
+                    lightScheme.addListener(onSchemeChange);
+                }
+            }
 
             var urlParams = new URLSearchParams(window.location.search);
             var playerNameFromUrl = urlParams.get("player");

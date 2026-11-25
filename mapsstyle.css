@@ -575,6 +575,7 @@ body.map-modal-open {
     align-items: center;
     justify-content: center;
     gap: var(--space-2);
+    background: var(--surface-2);
     color: var(--muted);
     font-size: var(--text-sm);
     text-align: center;
@@ -603,6 +604,7 @@ body.map-modal-open {
    -------------------------------------------------------------------------- */
 
 .table-shell {
+    --table-sticky-top: 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-3);
     background: var(--surface);
@@ -1088,18 +1090,7 @@ body.map-modal-open {
     }
 
     .map-modal-actions {
-        width: 100%;
-        justify-content: flex-end;
-    }
-
-    .map-modal-actions .button {
-        flex: 1 1 auto;
-        justify-content: center;
-    }
-
-    .map-modal-bar > .button {
-        flex: 1 1 auto;
-        justify-content: center;
+        margin-left: auto;
     }
 
     .map-stars {

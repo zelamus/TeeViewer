@@ -812,7 +812,7 @@
                 return '<article class="server-card" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '">' +
                     '<div class="server-card-head">' +
                         '<h3 class="server-card-name">' + escapeHtml(serverName(server)) + "</h3>" +
-                        passwordIcon(server) +
+                        (server.hasPassword ? passwordIcon(server) : "") +
                     "</div>" +
                     '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
                     '<div class="server-card-capacity">' +

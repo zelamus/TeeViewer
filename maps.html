@@ -1030,13 +1030,10 @@
 
                 var iframe = document.createElement("iframe");
                 iframe.title = "Map preview for " + mapName;
-                iframe.loading = "lazy";
-                iframe.hidden = true;
                 iframe.src = "https://ddnet.org/mappreview/?map=" + encodeURIComponent(mapName);
 
                 iframe.onload = function () {
                     if (dom.preview.contains(iframe)) {
-                        iframe.hidden = false;
                         var loader = dom.preview.querySelector(".preview-loading");
 
                         if (loader) {

@@ -555,13 +555,7 @@
                 }
 
                 if (period === "week") {
-                    return date.toLocaleString([], {
-                        month: "short",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: false
-                    });
+                    return date.toLocaleDateString([], { month: "short", day: "numeric" });
                 }
 
                 return date.toLocaleDateString([], { month: "short", day: "numeric" });
@@ -637,6 +631,8 @@
                     surface: token("--surface-2")
                 };
 
+                var tickLimit = canvas.clientWidth < 520 ? 3 : (canvas.clientWidth < 900 ? 4 : 6);
+
                 config.chart = new window.Chart(canvas.getContext("2d"), {
                     type: "line",
                     data: {
@@ -710,7 +706,8 @@
                                 grid: { display: false, drawBorder: false },
                                 ticks: {
                                     color: colors.muted,
-                                    maxTicksLimit: 6,
+                                    maxTicksLimit: tickLimit,
+                                    autoSkipPadding: 12,
                                     maxRotation: 0,
                                     autoSkip: true,
                                     font: { size: 11 },
