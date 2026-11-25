@@ -121,7 +121,7 @@
                     <span class="stat-foot">Across all game types</span>
                 </a>
             </div>
-            <p class="section-note stat-source">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a> · <span id="statAsOf" hidden></span></p>
+            <p class="section-note stat-source">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a><span class="asof-sep" aria-hidden="true"> · </span><span id="statAsOf" hidden></span></p>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
         </section>
 
@@ -198,6 +198,7 @@
             var numberFormat = new Intl.NumberFormat("en-US");
             var statusLine = document.getElementById("statStatus");
             var asOfLine = document.getElementById("statAsOf");
+            var asOfSep = document.querySelector(".asof-sep");
             var controller = new AbortController();
             var timeout = window.setTimeout(function () {
                 controller.abort();
@@ -235,6 +236,10 @@
 
                 asOfLine.textContent = "as of " + hours + ":" + minutes;
                 asOfLine.hidden = false;
+
+                if (asOfSep) {
+                    asOfSep.hidden = false;
+                }
             }
 
             window.fetchJSON("https://api.status.tw/stats")
@@ -252,6 +257,9 @@
                     settle("Live network statistics are unavailable.");
                     if (asOfLine) {
                         asOfLine.hidden = true;
+                    }
+                    if (asOfSep) {
+                        asOfSep.hidden = true;
                     }
                 })
                 .finally(function () {
@@ -299,7 +307,13 @@
 
                     columns.forEach(function (column, index) {
                         var td = document.createElement("td");
-                        td.textContent = column(row);
+                        var value = column(row);
+
+                        if (value && value.nodeType) {
+                            td.appendChild(value);
+                        } else {
+                            td.textContent = value;
+                        }
 
                         if (headers[index]) {
                             td.setAttribute("data-label", headers[index]);
@@ -318,6 +332,27 @@
                 if (status) {
                     status.textContent = "Loaded " + rows.length + " entries.";
                 }
+            }
+
+            function starsElement(value) {
+                var stars = Math.max(0, Math.min(5, Number(value) || 0));
+                var wrap = document.createElement("span");
+                wrap.className = "map-stars";
+                wrap.setAttribute("aria-label", stars + " of 5 stars");
+
+                var filled = document.createElement("span");
+                filled.className = "stars-filled";
+                filled.setAttribute("aria-hidden", "true");
+                filled.textContent = new Array(stars + 1).join("★");
+
+                var empty = document.createElement("span");
+                empty.className = "stars-empty";
+                empty.setAttribute("aria-hidden", "true");
+                empty.textContent = new Array(6 - stars).join("☆");
+
+                wrap.appendChild(filled);
+                wrap.appendChild(empty);
+                return wrap;
             }
 
             function showError(bodyId, statusId, message, columns) {
@@ -376,7 +411,7 @@
 
                     render("topMapsBody", "topMapsStatus", maps, [
                         function (m) { return m.map || "Unnamed map"; },
-                        function (m) { return String(Number(m.stars) || 0); },
+                        function (m) { return starsElement(m.stars); },
                         function (m) { return numberFormat.format(Number(m.points) || 0); }
                     ]);
                 })

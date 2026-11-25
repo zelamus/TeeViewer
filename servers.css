@@ -127,9 +127,10 @@
 
 .segment[aria-pressed="true"],
 .segment[aria-pressed="true"]:hover {
-    border-color: var(--accent);
-    background: var(--accent);
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
     color: var(--on-accent);
+    font-weight: 700;
 }
 
 .row-chevron {
@@ -347,11 +348,16 @@
 }
 
 .cell-version {
+    display: inline-flex;
+    align-items: center;
+    min-height: 22px;
+    max-width: 28ch;
     overflow: hidden;
     color: var(--text);
     font-size: 13px;
-    max-width: 28ch;
+    line-height: 1.4;
     text-overflow: ellipsis;
+    vertical-align: middle;
     white-space: nowrap;
 }
 

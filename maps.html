@@ -780,9 +780,9 @@
                 return '<button class="map-card" type="button" data-map="' + escapeHtml(mapName) + '">' +
                     '<span class="map-card-head">' +
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
-                        starsMarkup(points === undefined ? 0 : (item ? item.stars : 0)) +
                     "</span>" +
                     '<span class="map-card-tags">' +
+                        '<span class="badge difficulty-badge" aria-label="Difficulty rating">' + starsMarkup(item ? item.stars : 0) + "</span>" +
                         '<span class="badge">' + escapeHtml(server) + "</span>" +
                         '<span class="map-card-mapper"> by ' + escapeHtml(mapper) + "</span>" +
                     "</span>" +

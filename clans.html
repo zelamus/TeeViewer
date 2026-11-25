@@ -381,6 +381,8 @@
 
                     var rawData = await window.fetchJSON(url);
 
+                    setLoading(false);
+
                     allClans = rawData.map(function (clan) {
                         var players = Array.isArray(clan.players) ? clan.players : [];
                         var onlinePlayers = players.filter(function (player) {

@@ -166,7 +166,10 @@
         <section aria-labelledby="player-chart-title">
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="player-chart-title">Players over 24 hours</p>
+                    <div class="chart-heading">
+                        <p class="chart-title" id="player-chart-title">Players over 24 hours</p>
+                        <time class="chart-asof" id="player-chart-asof" datetime="">Latest sample —</time>
+                    </div>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
                         <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
                         <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
@@ -183,6 +186,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
+                <p class="chart-scope">Chart covers available samples in this range, not an exact time window.</p>
                 <p class="chart-note" id="player-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="player-chart-state" hidden>
@@ -201,7 +205,10 @@
         <section aria-labelledby="server-chart-title">
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="server-chart-title">Servers over 7 days</p>
+                    <div class="chart-heading">
+                        <p class="chart-title" id="server-chart-title">Servers over 7 days</p>
+                        <time class="chart-asof" id="server-chart-asof" datetime="">Latest sample —</time>
+                    </div>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
                         <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
                         <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
@@ -218,6 +225,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
+                <p class="chart-scope">Chart covers available samples in this range, not an exact time window.</p>
                 <p class="chart-note" id="server-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="server-chart-state" hidden>
@@ -370,6 +378,7 @@
                     noun: "player",
                     overviewId: "stat-players",
                     titleId: "player-chart-title",
+                    asofId: "player-chart-asof",
                     noteId: "player-chart-note"
                 },
                 servers: {
@@ -391,6 +400,7 @@
                     noun: "server",
                     overviewId: "stat-servers",
                     titleId: "server-chart-title",
+                    asofId: "server-chart-asof",
                     noteId: "server-chart-note"
                 }
             };
@@ -571,6 +581,41 @@
                 }
 
                 return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
+            }
+
+            function setAsOf(config, rows) {
+                var node = $(config.asofId);
+
+                if (!node) {
+                    return;
+                }
+
+                var latest = null;
+
+                rows.forEach(function (item) {
+                    if (!item || !item.timestamp) {
+                        return;
+                    }
+
+                    var date = new Date(String(item.timestamp).replace(" ", "T"));
+
+                    if (!isNaN(date.getTime()) && (!latest || date > latest)) {
+                        latest = date;
+                    }
+                });
+
+                if (!latest) {
+                    node.textContent = "Latest sample —";
+                    node.removeAttribute("datetime");
+                    return;
+                }
+
+                var stamp = config.period === "day"
+                    ? latest.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false })
+                    : latest.toLocaleString([], { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit", hour12: false });
+
+                node.textContent = "Latest sample " + stamp;
+                node.setAttribute("datetime", latest.toISOString());
             }
 
             function toNumber(value) {
@@ -807,11 +852,16 @@
                 }
 
                 if (peak === current) {
-                    setText(config.noteId, "The peak was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ", the same as the current count.");
+                    setText(config.noteId, "The peak across available samples was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ", the same as the live count.");
                     return;
                 }
 
-                setText(config.noteId, "The peak was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ", the current count is " + numberFormat.format(current) + " " + config.unit + ", " + numberFormat.format(peak - current) + " below the peak.");
+                if (current > peak) {
+                    setText(config.noteId, "The peak across available samples was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ". The live count is " + numberFormat.format(current) + " " + config.unit + ", " + numberFormat.format(current - peak) + " above the peak.");
+                    return;
+                }
+
+                setText(config.noteId, "The peak across available samples was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ". The live count is " + numberFormat.format(current) + " " + config.unit + ", " + numberFormat.format(peak - current) + " below the peak.");
             }
 
             function loadChart(kind, period) {
@@ -863,6 +913,7 @@
                     }
 
                     config.data = series;
+                    setAsOf(config, rows);
                     updateChartNote(config, series);
                     drawChart(kind);
 
@@ -873,8 +924,8 @@
 
                     if (status) {
                         status.textContent = result.fallback
-                            ? "Longer range unavailable. Showing the last day."
-                            : rangeLabel(period) + " · " + series.labels.length + " samples";
+                            ? "Longer range unavailable. Showing available samples from the last day."
+                            : rangeLabel(period) + " · " + numberFormat.format(series.labels.length) + " samples";
                     }
                 }).catch(function (error) {
                     if (requestId !== config.requestId) {
@@ -892,6 +943,7 @@
 
                 function fail(title, message) {
                     config.data = null;
+                    setAsOf(config, []);
 
                     if (config.chart) {
                         config.chart.destroy();

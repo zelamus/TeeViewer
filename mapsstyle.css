@@ -178,13 +178,15 @@
 
 .map-card-head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 96px;
+    grid-template-columns: minmax(0, 1fr);
     align-items: start;
     gap: var(--space-2);
     min-width: 0;
 }
 
-.map-card-name {
+.map-card-name,
+.map-card-name:visited,
+.map-card:visited {
     min-width: 0;
     color: var(--text);
     font-weight: 600;
@@ -228,6 +230,15 @@
     font-size: 13px;
     line-height: var(--leading-snug);
     overflow-wrap: anywhere;
+}
+
+.difficulty-badge {
+    gap: var(--space-1);
+    color: var(--text-2);
+}
+
+.difficulty-badge .map-stars {
+    font-size: 14px;
 }
 
 .map-card-foot {

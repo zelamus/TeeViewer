@@ -981,6 +981,8 @@
 
 .clan-name {
     color: var(--text);
+    font-family: var(--font-cjk);
+    font-synthesis: none;
     font-weight: 600;
     overflow-wrap: anywhere;
 }
@@ -1030,6 +1032,8 @@
 
 .clan-card-name {
     color: var(--text);
+    font-family: var(--font-cjk);
+    font-synthesis: none;
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: var(--leading-snug);
@@ -1093,6 +1097,8 @@
 }
 
 .dialog-title {
+    font-family: var(--font-cjk);
+    font-synthesis: none;
     font-weight: 600;
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-snug);
@@ -1154,6 +1160,8 @@
 
 .member-name {
     color: var(--text);
+    font-family: var(--font-cjk);
+    font-synthesis: none;
     font-weight: 500;
     overflow-wrap: anywhere;
 }
@@ -1472,7 +1480,9 @@
     }
 
     .tee-panel {
+        display: flex;
         flex-direction: column;
+        order: 1;
     }
 
     .tee-stage {

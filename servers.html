@@ -528,10 +528,19 @@
                     return "";
                 }
 
-                var parts = short.replace(/,/g, "").split(/\s+/);
-                return parts.length > 1
-                    ? parts[0] + " / build " + parts.slice(1).join(" ")
-                    : short;
+                var match = short.match(/\d+(?:\.\d+)*/);
+
+                if (!match) {
+                    return short;
+                }
+
+                var parts = match[0].split(".");
+
+                while (parts.length < 4) {
+                    parts.push("0");
+                }
+
+                return "v" + parts.slice(0, 4).join(".");
             }
 
             function serverCapacity(server) {
