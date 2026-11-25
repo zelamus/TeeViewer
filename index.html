@@ -27,14 +27,13 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
-                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -47,7 +46,6 @@
                     <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
                     </svg>
-                    <span class="theme-toggle-label">Theme</span>
                 </button>
                 <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
                     <span class="menu-bars" aria-hidden="true">
@@ -68,7 +66,7 @@
                     <div class="hero-subrow">
                         <p class="hero-sub">Track players, clans, maps, and live servers across Teeworlds in one place.</p>
                         <div class="hero-actions">
-                            <a class="button primary" href="players.html?focus=1">Open player search</a>
+                            <a class="button primary" href="players.html">Find a player</a>
                             <a class="button ghost" href="servers.html">Browse servers</a>
                         </div>
                     </div>
@@ -79,7 +77,6 @@
         <section class="stat-section network-section" aria-labelledby="live-stats-title">
             <div class="section-head">
                 <h2 id="live-stats-title">Live network</h2>
-                <p class="section-note stat-source"><span id="statAsOf" hidden></span></p>
             </div>
 
             <div class="stat-grid is-loading" id="statGrid" aria-busy="true">
@@ -90,6 +87,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Online now</span>
+                    <span class="stat-foot">Across the live network</span>
                 </a>
 
                 <a class="stat-tile" href="servers.html">
@@ -98,7 +96,8 @@
                         <span class="stat-number" data-stat="servers">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Reporting live now</span>
+                    <span class="stat-label">Reporting in</span>
+                    <span class="stat-foot">Public game servers</span>
                 </a>
 
                 <a class="stat-tile" href="clans.html">
@@ -107,7 +106,8 @@
                         <span class="stat-number" data-stat="clans">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Clans tracked</span>
+                    <span class="stat-label">Tracked</span>
+                    <span class="stat-foot">Community teams</span>
                 </a>
 
                 <a class="stat-tile" href="maps.html">
@@ -117,15 +117,17 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Active maps</span>
+                    <span class="stat-foot">Across all game types</span>
                 </a>
             </div>
+            <p class="section-note stat-source">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a> · <span id="statAsOf" hidden></span></p>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
         </section>
 
         <section class="stat-section preview-section" aria-labelledby="live-servers-title">
             <div class="section-head">
                 <h2 id="live-servers-title">Live servers</h2>
-                <p class="section-note" id="liveServersNote">Top five by players</p>
+                <p class="section-note">Top five by players</p>
             </div>
             <div class="table-wrap">
                 <table class="table preview-table live-servers-table">
@@ -141,14 +143,14 @@
         <section class="stat-section preview-section" aria-labelledby="top-maps-title">
             <div class="section-head">
                 <h2 id="top-maps-title">Top maps</h2>
-                <p class="section-note" id="topMapsNote">Highest points</p>
+                <p class="section-note">Highest points</p>
             </div>
             <div class="table-wrap">
                 <table class="table preview-table">
                     <thead>
-                        <tr><th scope="col">Map</th><th scope="col">Mapper</th><th scope="col">Server</th><th scope="col">Stars</th><th scope="col" data-align="right">Points</th></tr>
+                        <tr><th scope="col">Map</th><th scope="col">Stars</th><th scope="col" data-align="right">Points</th></tr>
                     </thead>
-                    <tbody id="topMapsBody"><tr><td colspan="5">Loading top maps.</td></tr></tbody>
+                    <tbody id="topMapsBody"><tr><td colspan="3">Loading top maps.</td></tr></tbody>
                 </table>
             </div>
             <p class="visually-hidden" id="topMapsStatus" role="status">Loading top maps.</p>
@@ -158,6 +160,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -192,41 +195,12 @@
                 { key: "maps", source: "numMaps" }
             ];
             var numberFormat = new Intl.NumberFormat("en-US");
-            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
             var statusLine = document.getElementById("statStatus");
             var asOfLine = document.getElementById("statAsOf");
-            var asOfSep = document.querySelector(".asof-sep");
             var controller = new AbortController();
             var timeout = window.setTimeout(function () {
                 controller.abort();
             }, 8000);
-            var liveLoaded = false;
-
-            fetch("snapshot.json")
-                .then(function (response) {
-                    return response.ok ? response.json() : null;
-                })
-                .then(function (snapshot) {
-                    if (!snapshot || !snapshot.stats || liveLoaded) {
-                        return;
-                    }
-
-                    fields.forEach(function (field) {
-                        writeValue(field.key, snapshot.stats[field.source]);
-                    });
-                    settle("Snapshot values shown. Live data loading.");
-
-                    if (asOfLine) {
-                        asOfLine.textContent = "Updated snapshot";
-                        asOfLine.hidden = false;
-                    }
-                    if (asOfSep) {
-                        asOfSep.hidden = false;
-                    }
-                })
-                .catch(function () {
-                    return;
-                });
 
             function writeValue(key, value) {
                 var target = grid.querySelector('[data-stat="' + key + '"]');
@@ -254,17 +228,16 @@
                     return;
                 }
 
-                asOfLine.textContent = "Updated " + timeFormat.format(new Date());
-                asOfLine.hidden = false;
+                var now = new Date();
+                var hours = String(now.getHours()).padStart(2, "0");
+                var minutes = String(now.getMinutes()).padStart(2, "0");
 
-                if (asOfSep) {
-                    asOfSep.hidden = false;
-                }
+                asOfLine.textContent = "as of " + hours + ":" + minutes;
+                asOfLine.hidden = false;
             }
 
             window.fetchJSON("https://api.status.tw/stats")
                 .then(function (data) {
-                    liveLoaded = true;
                     fields.forEach(function (field) {
                         writeValue(field.key, data[field.source]);
                     });
@@ -272,11 +245,13 @@
                     markAsOf();
                 })
                 .catch(function () {
-                    settle("Showing bundled snapshot. Live data unavailable.");
-                    if (!asOfLine || asOfLine.hidden) {
-                        return;
+                    fields.forEach(function (field) {
+                        writeValue(field.key, null);
+                    });
+                    settle("Live network statistics are unavailable.");
+                    if (asOfLine) {
+                        asOfLine.hidden = true;
                     }
-                    asOfLine.textContent = "Updated snapshot";
                 })
                 .finally(function () {
                     window.clearTimeout(timeout);
@@ -297,7 +272,7 @@
                 });
             }
 
-            function render(bodyId, statusId, rows, columns, linkFor) {
+            function render(bodyId, statusId, rows, columns) {
                 var body = document.getElementById(bodyId);
                 var status = document.getElementById(statusId);
 
@@ -320,34 +295,10 @@
 
                 rows.forEach(function (row) {
                     var tr = document.createElement("tr");
-                    var href = linkFor ? linkFor(row) : null;
 
                     columns.forEach(function (column, index) {
                         var td = document.createElement("td");
-                        var value = column(row);
-
-                        if (index === 0 && href) {
-                            var link = document.createElement("a");
-                            link.className = "table-link preview-row-link";
-                            link.href = href;
-
-                            if (value && value.nodeType) {
-                                link.appendChild(value);
-                            } else {
-                                link.textContent = value;
-                            }
-
-                            var arrow = document.createElement("span");
-                            arrow.className = "preview-row-arrow";
-                            arrow.setAttribute("aria-hidden", "true");
-                            arrow.textContent = "→";
-                            link.appendChild(arrow);
-                            td.appendChild(link);
-                        } else if (value && value.nodeType) {
-                            td.appendChild(value);
-                        } else {
-                            td.textContent = value;
-                        }
+                        td.textContent = column(row);
 
                         if (headers[index]) {
                             td.setAttribute("data-label", headers[index]);
@@ -366,27 +317,6 @@
                 if (status) {
                     status.textContent = "Loaded " + rows.length + " entries.";
                 }
-            }
-
-            function starsElement(value) {
-                var stars = Math.max(0, Math.min(5, Number(value) || 0));
-                var wrap = document.createElement("span");
-                wrap.className = "map-stars";
-                wrap.setAttribute("aria-label", stars + " of 5 stars");
-
-                var filled = document.createElement("span");
-                filled.className = "stars-filled";
-                filled.setAttribute("aria-hidden", "true");
-                filled.textContent = new Array(stars + 1).join("★");
-
-                var empty = document.createElement("span");
-                empty.className = "stars-empty";
-                empty.setAttribute("aria-hidden", "true");
-                empty.textContent = new Array(6 - stars).join("☆");
-
-                wrap.appendChild(filled);
-                wrap.appendChild(empty);
-                return wrap;
             }
 
             function showError(bodyId, statusId, message, columns) {
@@ -409,91 +339,19 @@
                 }
             }
 
-            function serverLabel(server) {
-                var name = server && server.name ? server.name : "Unnamed server";
-
-                if (server && server.ip) {
-                    var parts = String(server.ip).split(".");
-                    var shortIp = parts.length >= 2 ? parts.slice(-2).join(".") : String(server.ip);
-                    return name + " (" + shortIp + ":" + server.port + ")";
-                }
-
-                return name;
-            }
-
-            function serverOverviewLink(server) {
-                if (server && server.ip) {
-                    return "servers.html?ip=" + encodeURIComponent(server.ip) + "&port=" + encodeURIComponent(server.port || "");
-                }
-
-                return "servers.html";
-            }
-
-            function mapOverviewLink(map) {
-                return "maps.html?map=" + encodeURIComponent(map && map.map ? map.map : "");
-            }
-
-            var liveServersLoaded = false;
-            var liveMapsLoaded = false;
-            var serversNote = document.getElementById("liveServersNote");
-            var mapsNote = document.getElementById("topMapsNote");
-
-            fetch("snapshot.json")
-                .then(function (response) {
-                    return response.ok ? response.json() : null;
-                })
-                .then(function (snapshot) {
-                    if (!snapshot) {
-                        return;
-                    }
-
-                    if (!liveServersLoaded && Array.isArray(snapshot.servers)) {
-                        render("liveServersBody", "liveServersStatus", snapshot.servers, [
-                            function (s) { return serverLabel(s, snapshot.servers); },
-                            function (s) { return s.map || "Unknown"; },
-                            function (s) {
-                                return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
-                            }
-                        ], serverOverviewLink);
-                        if (serversNote) {
-                            serversNote.textContent = "Top five by players · Snapshot";
-                        }
-                    }
-
-                    if (!liveMapsLoaded && Array.isArray(snapshot.maps)) {
-                        render("topMapsBody", "topMapsStatus", snapshot.maps, [
-                            function (m) { return m.map || "Unnamed map"; },
-                            function (m) { return m.mapper || "—"; },
-                            function (m) { return m.server || "—"; },
-                            function (m) { return starsElement(m.stars); },
-                            function (m) { return numberFormat.format(Number(m.points) || 0); }
-                        ], mapOverviewLink);
-                        if (mapsNote) {
-                            mapsNote.textContent = "Highest points · Snapshot";
-                        }
-                    }
-                })
-                .catch(function () {
-                    return;
-                });
-
             fetchWithRetry("https://api.status.tw/server/list")
                 .then(function (data) {
-                    liveServersLoaded = true;
-                    if (serversNote) {
-                        serversNote.textContent = "Top five by players";
-                    }
                     var servers = Array.isArray(data) ? data.slice().sort(function (a, b) {
                         return (Number(b.numPlayers) || 0) - (Number(a.numPlayers) || 0);
                     }).slice(0, 5) : [];
 
                     render("liveServersBody", "liveServersStatus", servers, [
-                        function (s) { return serverLabel(s, servers); },
+                        function (s) { return s.name || "Unnamed server"; },
                         function (s) { return s.map && s.map.name ? s.map.name : "Unknown"; },
                         function (s) {
                             return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
                         }
-                    ], serverOverviewLink);
+                    ]);
                 })
                 .catch(function () {
                     showError("liveServersBody", "liveServersStatus", "Live servers are unavailable.", 3);
@@ -501,34 +359,18 @@
 
             fetchWithRetry("https://ddstats.tw/maps/json")
                 .then(function (data) {
-                    liveMapsLoaded = true;
-                    if (mapsNote) {
-                        mapsNote.textContent = "Highest points";
-                    }
-                    var list = Array.isArray(data) ? data
-                        : data && Array.isArray(data.maps) ? data.maps
-                        : data && Array.isArray(data.data) ? data.data
-                        : [];
-
-                    var maps = list.slice().sort(function (a, b) {
+                    var maps = Array.isArray(data) ? data.slice().sort(function (a, b) {
                         return (Number(b.points) || 0) - (Number(a.points) || 0);
-                    }).slice(0, 5);
-
-                    if (!maps.length) {
-                        showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 5);
-                        return;
-                    }
+                    }).slice(0, 5) : [];
 
                     render("topMapsBody", "topMapsStatus", maps, [
                         function (m) { return m.map || "Unnamed map"; },
-                        function (m) { return m.mapper || "—"; },
-                        function (m) { return m.server || "—"; },
-                        function (m) { return starsElement(m.stars); },
+                        function (m) { return String(Number(m.stars) || 0); },
                         function (m) { return numberFormat.format(Number(m.points) || 0); }
-                    ], mapOverviewLink);
+                    ]);
                 })
                 .catch(function () {
-                    showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 5);
+                    showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 3);
                 });
         })();
     </script>

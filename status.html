@@ -29,14 +29,13 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
-                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -49,7 +48,6 @@
                     <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
                     </svg>
-                    <span class="theme-toggle-label">Theme</span>
                 </button>
                 <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
                     <span class="menu-bars" aria-hidden="true">
@@ -64,27 +62,31 @@
 
     <main class="page status-page" id="main">
         <header class="page-head status-page-head">
-            <div class="page-head-row">
+            <div>
                 <h1 class="page-title">Status</h1>
-                <div class="status-actions">
-                    <button class="button ghost" id="refresh-status" type="button">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                            <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
-                            <path d="M21 3v6h-6"></path>
-                        </svg>
-                        Refresh
-                    </button>
-                </div>
+                <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
             </div>
-            <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
-            <p class="status-times"><time class="status-updated" id="last-updated" title="Time the live totals were fetched">Updated —</time><span class="status-time-sep" aria-hidden="true"> · </span><span id="latest-sample-line" hidden><time class="status-updated" id="latest-sample" title="Time of the latest history sample">History samples —</time></span></p>
+            <div class="status-actions">
+                <span class="status-pill" id="network-pill" data-state="loading" role="status">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    <span id="network-pill-text">Checking</span>
+                </span>
+                <button class="button ghost" id="refresh-status" type="button">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                        <path d="M21 3v6h-6"></path>
+                    </svg>
+                    Refresh
+                </button>
+                <span class="status-updated">Updated <time id="last-updated">—</time></span>
+            </div>
         </header>
 
         <section aria-labelledby="overview-title">
             <div class="section-head">
                 <p class="section-title" id="overview-title">Overview</p>
+                <p class="section-note">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             </div>
-            <p class="section-note data-provenance">Live values from the network right now.</p>
 
             <div class="stat-grid status-overview is-loading" id="overall-stats" aria-busy="true">
                 <article class="stat-tile">
@@ -93,57 +95,57 @@
                         <span class="stat-number" id="stat-players">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Current online</span>
-                    <span class="stat-foot">Across the live network</span>
+                    <span class="stat-label">Online now</span>
+                    <span class="stat-foot">Across all servers</span>
                 </article>
 
                 <article class="stat-tile">
-                    <span class="stat-kicker">Current servers</span>
+                    <span class="stat-kicker">Servers</span>
                     <span class="stat-value">
                         <span class="stat-number" id="stat-servers">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Reporting live now</span>
+                    <span class="stat-label">Connected</span>
                     <span class="stat-foot">Public game servers</span>
                 </article>
 
                 <article class="stat-tile">
-                    <span class="stat-kicker">Current clans</span>
+                    <span class="stat-kicker">Clans</span>
                     <span class="stat-value">
                         <span class="stat-number" id="stat-clans">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Clans tracked</span>
+                    <span class="stat-label">Tracked</span>
                     <span class="stat-foot">Community teams</span>
                 </article>
 
                 <article class="stat-tile">
-                    <span class="stat-kicker">Current maps</span>
+                    <span class="stat-kicker">Maps</span>
                     <span class="stat-value">
                         <span class="stat-number" id="stat-maps">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Active maps</span>
-                    <span class="stat-foot">Across all game types</span>
+                    <span class="stat-label">Available</span>
+                    <span class="stat-foot">Across game types</span>
                 </article>
 
                 <article class="stat-tile">
-                    <span class="stat-kicker">Current game types</span>
+                    <span class="stat-kicker">Game types</span>
                     <span class="stat-value">
                         <span class="stat-number" id="stat-gametypes">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Game types in use</span>
+                    <span class="stat-label">Distinct types</span>
                     <span class="stat-foot">In rotation</span>
                 </article>
 
                 <article class="stat-tile">
-                    <span class="stat-kicker">Current versions</span>
+                    <span class="stat-kicker">Versions</span>
                     <span class="stat-value">
                         <span class="stat-number" id="stat-versions">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Client versions seen</span>
+                    <span class="stat-label">Distinct versions</span>
                     <span class="stat-foot">Client builds seen live</span>
                 </article>
             </div>
@@ -164,10 +166,7 @@
         <section aria-labelledby="player-chart-title">
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <div class="chart-heading">
-                        <p class="chart-title" id="player-chart-title">Unique players in 24 hours</p>
-                        <span class="peak-badge" hidden>—</span>
-                    </div>
+                    <p class="chart-title" id="player-chart-title">24-hour sample peak</p>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
                         <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
                         <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
@@ -175,18 +174,16 @@
                     </div>
                 </div>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-item"><span class="legend-swatch is-total"></span>Unique players</span>
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
                 </div>
                 <div class="chart-box">
-                    <canvas id="playerStatsChart" role="img" aria-label="Unique players in 24 hours"></canvas>
+                    <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
                         <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
-                <p class="chart-warning" id="player-chart-warning" role="status" hidden></p>
-                <p class="chart-scope">Unique players seen over the selected period.</p>
-                <p class="chart-note" id="player-chart-note" role="status">Peak appears after data loads.</p>
+                <p class="chart-note" id="player-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="player-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -204,10 +201,7 @@
         <section aria-labelledby="server-chart-title">
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <div class="chart-heading">
-                        <p class="chart-title" id="server-chart-title">Servers in 7 days</p>
-                        <span class="peak-badge" hidden>—</span>
-                    </div>
+                    <p class="chart-title" id="server-chart-title">7-day sample peak</p>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
                         <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
                         <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
@@ -215,18 +209,16 @@
                     </div>
                 </div>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-item"><span class="legend-swatch is-total"></span>Servers</span>
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
                 </div>
                 <div class="chart-box">
-                    <canvas id="serverStatsChart" role="img" aria-label="Servers over time"></canvas>
+                    <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
                         <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
                     </div>
                 </div>
                 <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
-                <p class="chart-warning" id="server-chart-warning" role="status" hidden></p>
-                <p class="chart-scope">Servers seen over the selected period.</p>
-                <p class="chart-note" id="server-chart-note" role="status">Peak appears after data loads.</p>
+                <p class="chart-note" id="server-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="server-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -338,6 +330,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -348,7 +341,6 @@
 
             var STATS_URL = "https://api.status.tw/stats";
             var numberFormat = new Intl.NumberFormat("en-US");
-            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
             var overviewValues = {};
 
             if (typeof window.Chart !== "undefined") {
@@ -357,7 +349,6 @@
 
             var stale = 0;
             var overviewRequest = 0;
-            var liveCheckedAt = null;
 
             var charts = {
                 players: {
@@ -379,8 +370,6 @@
                     noun: "player",
                     overviewId: "stat-players",
                     titleId: "player-chart-title",
-                    asofId: "player-chart-asof",
-                    warningId: "player-chart-warning",
                     noteId: "player-chart-note"
                 },
                 servers: {
@@ -402,8 +391,6 @@
                     noun: "server",
                     overviewId: "stat-servers",
                     titleId: "server-chart-title",
-                    asofId: "server-chart-asof",
-                    warningId: "server-chart-warning",
                     noteId: "server-chart-note"
                 }
             };
@@ -427,6 +414,14 @@
                 return url + (url.indexOf("?") === -1 ? "?" : "&") + "t=" + stale;
             }
 
+            function setPill(state, text) {
+                var pill = $("network-pill");
+                if (pill) {
+                    pill.setAttribute("data-state", state);
+                }
+                setText("network-pill-text", text);
+            }
+
             function setUpdated() {
                 var time = $("last-updated");
                 if (!time) {
@@ -434,9 +429,13 @@
                 }
 
                 var now = new Date();
-                liveCheckedAt = now;
                 time.setAttribute("datetime", now.toISOString());
-                time.textContent = "Updated " + timeFormat.format(now);
+                time.textContent = now.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    second: "2-digit",
+                    hour12: false
+                });
             }
 
             function showState(id, title, message, visible) {
@@ -482,6 +481,7 @@
                 }
 
                 showState("overview-state", "", "", false);
+                setPill("loading", "Checking");
                 setText("overview-status", "Loading network statistics.");
 
                 if (typeof window.fetchJSON !== "function") {
@@ -507,6 +507,7 @@
                         grid.setAttribute("aria-busy", "false");
                     }
 
+                    setPill("live", "Live");
                     setUpdated();
                     setText("overview-status", "Network statistics loaded.");
                 }).catch(fail);
@@ -529,6 +530,7 @@
                         grid.setAttribute("aria-busy", "false");
                     }
 
+                    setPill("offline", "Offline");
                     showState(
                         "overview-state",
                         "Statistics unavailable",
@@ -549,114 +551,22 @@
                 return "Last 24 hours";
             }
 
-            function rangeSpan(period) {
+            function peakTitle(period) {
                 if (period === "week") {
-                    return "7 days";
+                    return "7-day sample peak";
                 }
                 if (period === "month") {
-                    return "30 days";
+                    return "30-day sample peak";
                 }
-                return "24 hours";
-            }
-
-            function historyLabel(period) {
-                if (period === "week") {
-                    return "7-day";
-                }
-                if (period === "month") {
-                    return "30-day";
-                }
-                return "24-hour";
-            }
-
-            function chartTitle(period, unit) {
-                var subject = unit === "players" ? "Unique players" : unit.charAt(0).toUpperCase() + unit.slice(1);
-                return subject + " in " + rangeSpan(period);
+                return "24-hour sample peak";
             }
 
             function formatLabel(date, period) {
-                var rounded = new Date(date.getTime());
-
                 if (period === "day") {
-                    rounded.setMinutes(0, 0, 0);
-                    return rounded.toLocaleDateString("en-US", { month: "numeric", day: "numeric" }) + " " + timeFormat.format(rounded);
+                    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
                 }
 
-                rounded.setHours(0, 0, 0, 0);
-                return rounded.toLocaleDateString("en-US", { month: "numeric", day: "numeric" });
-            }
-
-            function setAsOf(config, rows) {
-                var node = $(config.asofId);
-                var warning = $(config.warningId);
-                var latest = null;
-
-                rows.forEach(function (item) {
-                    if (!item) {
-                        return;
-                    }
-
-                    var date = item.date || (item.timestamp ? new Date(String(item.timestamp).replace(" ", "T")) : null);
-
-                    if (date && !isNaN(date.getTime()) && (!latest || date > latest)) {
-                        latest = date;
-                    }
-                });
-
-                var summary = $("latest-sample");
-                var summaryLine = $("latest-sample-line");
-                var hasSamples = Object.keys(charts).some(function (kind) {
-                    var data = charts[kind].data;
-                    return data && data.samples && data.samples.length > 0;
-                });
-
-                if (!latest) {
-                    if (node) {
-                        node.textContent = "Latest sample —";
-                        node.removeAttribute("datetime");
-                    }
-
-                    if (summary) {
-                        summary.textContent = "";
-                        summary.removeAttribute("datetime");
-                    }
-
-                    if (summaryLine && !hasSamples) {
-                        summaryLine.hidden = true;
-                    }
-
-                    if (warning) {
-                        warning.hidden = true;
-                    }
-                    return;
-                }
-
-                var stamp = timeFormat.format(latest);
-
-                if (node) {
-                    node.textContent = "Updated " + stamp;
-                    node.setAttribute("datetime", latest.toISOString());
-                }
-
-                if (summary) {
-                    summary.textContent = "History samples " + stamp;
-                    summary.setAttribute("datetime", latest.toISOString());
-                }
-
-                if (warning) {
-                    var lag = (liveCheckedAt ? liveCheckedAt.getTime() : Date.now()) - latest.getTime();
-
-                    if (lag > 3600000) {
-                        warning.textContent = "History feed is " + Math.floor(lag / 3600000) + " hours behind";
-                        warning.hidden = false;
-                    } else {
-                        warning.hidden = true;
-                    }
-                }
-
-                if (summaryLine) {
-                    summaryLine.hidden = false;
-                }
+                return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
             }
 
             function toNumber(value) {
@@ -704,7 +614,6 @@
                     series.total.push(sample.total);
                 });
 
-                series.samples = samples;
                 return series;
             }
 
@@ -739,15 +648,6 @@
                 };
 
                 var tickLimit = canvas.clientWidth < 520 ? 3 : (canvas.clientWidth < 900 ? 4 : 6);
-                var peakIndex = -1;
-                var peakValue = -Infinity;
-
-                config.data.total.forEach(function (value, index) {
-                    if (typeof value === "number" && isFinite(value) && value > peakValue) {
-                        peakValue = value;
-                        peakIndex = index;
-                    }
-                });
 
                 config.chart = new window.Chart(canvas.getContext("2d"), {
                     type: "line",
@@ -755,7 +655,7 @@
                         labels: config.data.labels,
                         datasets: [
                             {
-                                label: config.unit === "players" ? "Unique players" : "Servers",
+                                label: "Total",
                                 data: config.data.total,
                                 borderColor: colors.accent,
                                 backgroundColor: colors.accentSoft,
@@ -775,7 +675,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        layout: { padding: { top: 48, right: 8, bottom: 4 } },
+                        layout: { padding: { top: 4, right: 8, bottom: 4 } },
                         backgroundColor: "transparent",
                         animation: { duration: 300 },
                         interaction: { mode: "index", intersect: false },
@@ -797,30 +697,20 @@
                         },
                         scales: {
                             x: {
-                                offset: false,
                                 border: { color: colors.border },
                                 grid: { display: false, drawBorder: false },
                                 ticks: {
-                                    color: colors.text2,
+                                    color: colors.muted,
+                                    maxTicksLimit: tickLimit,
+                                    autoSkipPadding: 12,
                                     maxRotation: 0,
                                     minRotation: 0,
-                                    autoSkip: false,
-                                    font: { size: 13 },
-                                    callback: function (value, index) {
-                                        var count = config.data.labels.length;
-                                        var step = Math.max(1, Math.ceil((count - 1) / Math.max(1, tickLimit - 1)));
-
-                                        if (index === 0 || index === count - 1 || index % step === 0) {
-                                            return config.data.labels[index];
-                                        }
-
-                                        return "";
-                                    }
+                                    autoSkip: true,
+                                    font: { size: 12 }
                                 }
                             },
                             y: {
                                 min: 0,
-                                suggestedMax: peakValue > 0 ? peakValue * 1.2 : undefined,
                                 beginAtZero: true,
                                 border: { display: false },
                                 grid: { color: colors.border, drawBorder: false },
@@ -834,8 +724,8 @@
                                     }
                                 },
                                 title: {
-                                    display: true,
-                                    text: config.unit === "players" ? "Unique players" : "Servers",
+                                    display: false,
+                                    text: config.unit,
                                     color: colors.muted,
                                     font: { size: 13 }
                                 }
@@ -877,16 +767,7 @@
                     buttons[i].setAttribute("aria-pressed", active ? "true" : "false");
                 }
 
-                setText(config.titleId, chartTitle(config.period, config.unit));
-
-                var card = $(config.cardId);
-                var scope = card ? card.querySelector(".chart-scope") : null;
-
-                if (scope) {
-                    scope.textContent = config.unit === "players"
-                        ? "Unique players seen over the selected period."
-                        : "Servers seen over the selected period.";
-                }
+                setText(config.titleId, peakTitle(config.period));
             }
 
             function refreshNotes() {
@@ -908,26 +789,25 @@
                 });
 
                 if (!values.length) {
-                    setText(config.noteId, "Peak is unavailable.");
-                    var emptyCard = config.cardId ? $(config.cardId) : null;
-                    var emptyBadge = emptyCard ? emptyCard.querySelector(".peak-badge") : null;
-
-                    if (emptyBadge) {
-                        emptyBadge.hidden = true;
-                    }
+                    setText(config.noteId, "Peak and current count are unavailable.");
                     return;
                 }
 
                 var peak = Math.max.apply(null, values);
-                var card = config.cardId ? $(config.cardId) : null;
-                var badge = card ? card.querySelector(".peak-badge") : null;
+                var current = overviewValues[config.overviewId === "stat-players" ? "players" : "servers"];
+                var live = typeof current === "number" && Number.isFinite(current);
+                var label = peakTitle(config.period);
 
-                setText(config.noteId, "Peak in this period: " + numberFormat.format(peak) + " " + config.unit + ".");
-
-                if (badge) {
-                    badge.textContent = "Peak " + numberFormat.format(peak);
-                    badge.hidden = false;
+                if (!live) {
+                    current = values[values.length - 1];
                 }
+
+                if (peak === current) {
+                    setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
+                    return;
+                }
+
+                setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
             }
 
             function loadChart(kind, period) {
@@ -979,7 +859,6 @@
                     }
 
                     config.data = series;
-                    setAsOf(config, series.samples);
                     updateChartNote(config, series);
                     drawChart(kind);
 
@@ -990,8 +869,8 @@
 
                     if (status) {
                         status.textContent = result.fallback
-                            ? "Longer range unavailable. Showing available samples from the last day."
-                            : rangeLabel(period) + " · " + numberFormat.format(series.labels.length) + " samples";
+                            ? "Longer range unavailable. Showing the last day."
+                            : rangeLabel(period) + " · " + series.labels.length + " samples";
                     }
                 }).catch(function (error) {
                     if (requestId !== config.requestId) {
@@ -1009,7 +888,6 @@
 
                 function fail(title, message) {
                     config.data = null;
-                    setAsOf(config, []);
 
                     if (config.chart) {
                         config.chart.destroy();

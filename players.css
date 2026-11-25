@@ -26,10 +26,6 @@
     background: var(--surface);
 }
 
-.compare-shortcut {
-    justify-self: start;
-}
-
 .search-form {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -81,7 +77,8 @@
 .result-count {
     color: var(--muted);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--text-xs);
+    letter-spacing: 0.02em;
     line-height: var(--leading-snug);
 }
 
@@ -120,6 +117,7 @@
     color: var(--text);
     font-size: var(--text-h3);
     font-weight: 600;
+    letter-spacing: -0.01em;
     line-height: var(--leading-snug);
 }
 
@@ -244,7 +242,7 @@
 .profile-layout {
     display: grid;
     grid-template-columns: 300px minmax(0, 1fr);
-    align-items: stretch;
+    align-items: start;
     gap: var(--space-4);
     margin-bottom: var(--space-4);
 }
@@ -253,7 +251,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     gap: var(--space-3);
     padding: var(--space-4);
     border: 1px solid var(--border);
@@ -263,11 +261,10 @@
 
 .tee-stage {
     display: flex;
-    flex: 1 1 auto;
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 150px;
+    min-height: 224px;
     overflow: hidden;
 }
 
@@ -280,7 +277,6 @@
 .tee-stage .teeassembler-tee {
     flex: none;
     margin-left: 0;
-    transform: scale(1.4);
     cursor: pointer;
 }
 
@@ -290,10 +286,9 @@
 
 .tee-caption {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
-    gap: var(--space-2);
+    gap: var(--space-1);
     text-align: center;
 }
 
@@ -303,11 +298,9 @@
 }
 
 .identity-card {
-    display: grid;
-    grid-template-columns: minmax(220px, 0.9fr) minmax(0, 1.1fr);
-    align-items: stretch;
+    display: flex;
+    flex-direction: column;
     gap: var(--space-4);
-    column-gap: var(--space-5);
     padding: var(--space-5);
     border: 1px solid var(--border);
     border-radius: var(--radius-4);
@@ -316,18 +309,10 @@
 
 .identity-top {
     display: flex;
-    flex-direction: column;
-    align-items: stretch;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
     gap: var(--space-3);
-}
-
-.identity-top > div {
-    min-width: 0;
-}
-
-.identity-badges .status-chip::before {
-    display: block;
-    flex: none;
 }
 
 .identity-name {
@@ -342,13 +327,11 @@
     flex-wrap: wrap;
     align-items: center;
     gap: var(--space-2);
-    max-width: 100%;
     margin-top: var(--space-2);
 }
 
 .identity-badges a {
     color: var(--accent);
-    overflow-wrap: anywhere;
     text-decoration: none;
 }
 
@@ -361,54 +344,12 @@
     cursor: default;
 }
 
-.identity-badges .badge {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    padding: 3px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-pill);
-    background: var(--surface-2);
-}
-
-.badge-label {
-    color: var(--muted);
-    font-size: var(--text-xs);
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-}
-
 .identity-country {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
-    padding: 3px 10px;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-pill);
-    background: var(--accent-soft);
-    color: var(--accent);
+    color: var(--text-2);
     font-size: var(--text-sm);
-}
-
-.identity-badges .badge.clan-chip {
-    background: var(--surface);
-}
-
-.identity-badges .badge.clan-chip[data-state="set"]::before {
-    margin-right: 2px;
-    color: var(--accent);
-    content: "◇";
-}
-
-.identity-country.country-chip {
-    background: var(--accent-soft);
-    color: var(--accent);
-}
-
-.identity-badges .badge,
-.identity-badges .identity-country {
-    height: 30px;
-    padding-block: 0;
 }
 
 .identity-flag {
@@ -421,13 +362,10 @@
 
 .identity-meta {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    grid-auto-rows: minmax(0, 1fr);
-    align-content: stretch;
-    gap: var(--space-3) var(--space-4);
-    padding: var(--space-3) var(--space-4);
-    border-radius: var(--radius-3);
-    background: var(--surface-2);
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-3);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--border);
 }
 
 .meta-item {
@@ -448,6 +386,7 @@
 .meta-value {
     margin-inline-start: 0;
     color: var(--text);
+    font-family: var(--font-mono);
     font-size: var(--text-base);
     font-variant-numeric: tabular-nums;
     line-height: var(--leading-snug);
@@ -462,7 +401,7 @@
 
 .profile-stats {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--space-3);
     margin-bottom: var(--space-4);
 }
@@ -609,6 +548,7 @@
     align-items: center;
     gap: var(--space-2);
     color: var(--text-2);
+    font-family: var(--font-mono);
     font-size: var(--text-sm);
     font-weight: 600;
 }
@@ -631,7 +571,7 @@
 }
 
 .status-value[data-state="offline"] {
-    color: color-mix(in srgb, var(--danger) 70%, var(--muted));
+    color: var(--muted);
 }
 
 .status-value[data-state="pending"]::before {
@@ -838,20 +778,16 @@
     margin: 0 0 var(--space-3);
 }
 
-.pager .button {
-    font-size: 13px;
-}
-
 .pager-status {
     color: var(--muted);
     font-family: var(--font-mono);
-    font-size: 13px;
+    font-size: var(--text-xs);
     font-variant-numeric: tabular-nums;
 }
 
 .pager button[disabled] {
     cursor: not-allowed;
-    opacity: 0.7;
+    opacity: 0.45;
 }
 
 .button-sm {
@@ -918,83 +854,14 @@
     gap: var(--space-3);
 }
 
-.clan-toolbar .field-inline {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-height: var(--tap-target);
-    color: var(--text-2);
-    font-size: var(--text-sm);
-    white-space: nowrap;
-}
-
-.clan-toolbar .select {
-    background-color: var(--surface-2);
-    color: var(--text);
-}
-
-.clan-toolbar .field-inline input[type="checkbox"] {
-    position: relative;
-    flex: none;
-    width: 34px;
-    height: 18px;
-    margin: 0;
-    border: 1px solid var(--border-strong);
-    border-radius: var(--radius-pill);
-    background: var(--surface-2);
-    appearance: none;
-    -webkit-appearance: none;
-    cursor: pointer;
-    transition:
-        background-color var(--dur-1) var(--ease-standard),
-        border-color var(--dur-1) var(--ease-standard);
-}
-
-.clan-toolbar .field-inline input[type="checkbox"]::after {
-    position: absolute;
-    top: 2px;
-    left: 2px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background: var(--text-2);
-    content: "";
-    transition: transform var(--dur-1) var(--ease-standard);
-}
-
-.clan-toolbar .field-inline input[type="checkbox"]:checked {
-    border-color: var(--accent);
-    background: var(--accent);
-}
-
-.clan-toolbar .field-inline input[type="checkbox"]:checked::after {
-    background: var(--on-accent);
-    transform: translateX(16px);
-}
-
 .clan-result-head {
     flex-wrap: wrap;
 }
 
 .clan-result-bar {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-2) var(--space-3);
-    padding: 0 0 var(--space-3);
-}
-
-.clan-result-bar .result-source {
-    margin-right: auto;
-}
-
-.result-source {
-    color: var(--muted);
-    font-size: 13px;
-}
-
-.clan-result-bar .pager-top {
-    margin: 0 0 0 auto;
+    justify-content: flex-end;
+    padding: 0 0 var(--space-2);
 }
 
 .clan-table {
@@ -1015,33 +882,20 @@
 }
 
 .clan-table th:nth-child(2) {
-    width: 220px;
+    width: 180px;
 }
 
 .clan-table th:nth-child(3) {
-    width: 110px;
+    width: 96px;
 }
 
 .clan-table th:nth-child(4) {
-    width: 160px;
-}
-
-.clan-table th:nth-child(5) {
-    width: 80px;
-}
-
-.clan-table th:nth-child(6) {
     width: auto;
 }
 
 .clan-table-wrap {
     --table-sticky-top: calc(var(--topbar-h) + 1px);
     overflow: visible;
-}
-
-.clan-table th.num .th-sort {
-    justify-content: flex-end;
-    width: 100%;
 }
 
 .clan-table th .th-sort {
@@ -1079,32 +933,8 @@
     text-align: right;
 }
 
-.clan-name,
-.clan-card-name {
-    padding: 0;
-    border: 0;
-    background: none;
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-}
-
-.clan-name:hover,
-.clan-card-name:hover {
-    color: var(--accent);
-    text-decoration: underline;
-}
-
-.clan-name:focus-visible,
-.clan-card-name:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-}
-
 .clan-name {
     color: var(--text);
-    font-family: var(--font-cjk);
-    font-synthesis: none;
     font-weight: 600;
     overflow-wrap: anywhere;
 }
@@ -1119,14 +949,6 @@
 .clan-created {
     color: var(--text-2);
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-}
-
-.clan-members-preview {
-    color: var(--text-2);
-    font-size: var(--text-xs);
-    overflow: hidden;
-    text-overflow: ellipsis;
     white-space: nowrap;
 }
 
@@ -1147,16 +969,13 @@
 
 .clan-card-head {
     display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: flex-start;
-    gap: var(--space-2);
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-3);
 }
 
 .clan-card-name {
     color: var(--text);
-    font-family: var(--font-cjk);
-    font-synthesis: none;
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: var(--leading-snug);
@@ -1171,33 +990,17 @@
 }
 
 .clan-card-meta {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
-    gap: var(--space-1) var(--space-3);
-    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
     color: var(--text-2);
     font-size: var(--text-sm);
     line-height: var(--leading-normal);
 }
 
-.clan-card-meta-row {
-    display: contents;
-}
-
-.clan-card-meta dt {
-    color: var(--muted);
-    font-size: var(--text-xs);
-    font-weight: 600;
-    letter-spacing: var(--tracking-wide);
-    text-transform: uppercase;
-    white-space: nowrap;
-}
-
-.clan-card-meta dd {
-    margin: 0;
+.clan-card-meta strong {
     color: var(--text);
     font-variant-numeric: tabular-nums;
-    overflow-wrap: anywhere;
 }
 
 /* --------------------------------------------------------------------------
@@ -1236,8 +1039,6 @@
 }
 
 .dialog-title {
-    font-family: var(--font-cjk);
-    font-synthesis: none;
     font-weight: 600;
     letter-spacing: var(--tracking-tight);
     line-height: var(--leading-snug);
@@ -1299,8 +1100,6 @@
 
 .member-name {
     color: var(--text);
-    font-family: var(--font-cjk);
-    font-synthesis: none;
     font-weight: 500;
     overflow-wrap: anywhere;
 }
@@ -1377,98 +1176,16 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 768px) {
-    .page-head {
-        display: grid;
-        row-gap: var(--space-2);
-    }
-
-    .page-head > div,
-    .page-head-row {
-        display: contents;
-    }
-
-    .page-title {
-        order: 0;
-    }
-
-    .page-sub {
-        order: 1;
-        margin-top: 0;
-    }
-
-    .page-head-actions {
-        order: 2;
-    }
-
-    .example-row {
-        flex-wrap: nowrap;
-        min-width: 0;
-        overflow-x: auto;
-        scrollbar-width: none;
-    }
-
-    .example-row::-webkit-scrollbar {
-        display: none;
-    }
-
-    .example-label {
-        flex: none;
-    }
-
     .profile-layout {
         grid-template-columns: 1fr;
-    }
-
-    main.page {
-        display: flex;
-        flex-direction: column;
-    }
-
-    #playerStatsContainer,
-    .profile-layout {
-        display: contents;
-    }
-
-    main.page > *,
-    #playerStatsContainer > *,
-    .profile-layout > * {
-        order: 4;
-    }
-
-    main.page > .page-head {
-        order: 0;
-    }
-
-    .tee-panel {
-        order: 3;
-        margin-bottom: var(--space-4);
-    }
-
-    main.page > .toolbar {
-        order: 1;
-    }
-
-    .profile-layout .identity-card {
-        order: 2;
-        margin-bottom: var(--space-4);
     }
 
     .identity-card {
-        grid-template-columns: 1fr;
-    }
-
-    .identity-meta {
-        padding-top: var(--space-4);
-        padding-left: 0;
-        border-top: 1px solid var(--border);
-        border-left: 0;
-    }
-
-    .profile-layout .identity-card {
-        order: 2;
+        order: -1;
     }
 
     .tee-panel {
+        order: 1;
         flex-direction: row;
         justify-content: center;
         gap: var(--space-5);
@@ -1476,7 +1193,7 @@
 
     .tee-stage {
         width: auto;
-        min-height: 100px;
+        min-height: 190px;
     }
 
     .tee-caption {
@@ -1503,25 +1220,6 @@
 
     .clan-cards {
         display: grid;
-    }
-
-    .clan-card-head {
-        display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-        align-items: baseline;
-        gap: var(--space-3);
-    }
-
-    .clan-card-rank {
-        grid-column: 1;
-        grid-row: 1;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    .clan-card-name {
-        grid-column: 2;
-        grid-row: 1;
     }
 
     .clan-toolbar {
@@ -1554,17 +1252,6 @@
 @media (max-width: 560px) {
     .toolbar {
         padding: var(--space-3);
-    }
-
-    .clan-result-bar {
-        grid-template-columns: 1fr;
-    }
-
-    .clan-result-bar .pager-top {
-        grid-column: 1;
-        grid-row: auto;
-        justify-content: flex-start;
-        margin: 0;
     }
 
     .state-card {
@@ -1688,7 +1375,7 @@
     }
 
     .identity-meta {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
     }
 
     .profile-stats {
@@ -1721,23 +1408,17 @@
     }
 
     .tee-panel {
-        display: flex;
         flex-direction: column;
-        padding: var(--space-3);
     }
 
     .tee-stage {
-        flex: none;
-        width: 100%;
-        height: 84px;
-        min-height: 0;
-        padding: var(--space-1);
-        overflow: hidden;
+        min-height: 260px;
+        padding: var(--space-4);
     }
 
     .tee-stage .teeassembler-tee {
         margin-left: 0;
-        transform: scale(0.75);
+        transform: scale(1.6);
     }
 
     .tee-caption {
@@ -1765,56 +1446,16 @@
 }
 
 /* --------------------------------------------------------------------------
-   Responsive: 480px
-   -------------------------------------------------------------------------- */
-
-@media (max-width: 480px) {
-    .identity-top {
-        display: block;
-    }
-
-    .identity-actions {
-        margin-top: var(--space-3);
-    }
-
-    .identity-badges {
-        flex-wrap: nowrap;
-        gap: var(--space-1);
-        overflow: hidden;
-    }
-
-    .identity-badges .badge-label {
-        display: none;
-    }
-
-    .identity-badges .badge,
-    .identity-badges .identity-country {
-        flex: 0 1 auto;
-        min-width: 0;
-        padding-inline: var(--space-2);
-        font-size: var(--text-xs);
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .identity-badges a {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .identity-badges .status-chip {
-        flex: none;
-    }
-}
-
-/* --------------------------------------------------------------------------
    Responsive: 380px
    -------------------------------------------------------------------------- */
 
 @media (max-width: 380px) {
     .identity-badges {
+        gap: var(--space-1);
+    }
+
+    .clan-card-meta {
+        flex-direction: column;
         gap: var(--space-1);
     }
 

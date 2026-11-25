@@ -28,14 +28,13 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
-                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -48,7 +47,6 @@
                     <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
                     </svg>
-                    <span class="theme-toggle-label">Theme</span>
                 </button>
                 <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
                     <span class="menu-bars" aria-hidden="true">
@@ -64,16 +62,17 @@
     <main class="page servers-page" id="main">
         <div id="serversBrowser">
             <header class="page-head">
-                <div class="page-head-row">
+                <div>
                     <h1 class="page-title">Servers</h1>
+                    <p class="page-sub">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
                 </div>
-                <p class="page-sub servers-intro">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
+                <p class="page-meta">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             </header>
 
             <section class="filter-panel" id="serverFilterPanel" aria-labelledby="serverFiltersTitle">
                 <div class="section-head filter-panel-head">
                     <p class="section-title" id="serverFiltersTitle">Filter servers</p>
-                    <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel"><span>Filters</span><span class="filter-count" id="filterCount" hidden>0</span></button>
+                    <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel">Filters</button>
                 </div>
 
                 <div class="filter-grid">
@@ -117,7 +116,7 @@
                     <label class="field">
                         <span class="field-label">Sort by</span>
                         <select class="select" id="sortBy">
-                            <option value="players" selected>Players (most first)</option>
+                            <option value="relevanceScore">Relevance</option>
                             <option value="name">Name</option>
                             <option value="players">Players</option>
                             <option value="map">Map</option>
@@ -129,22 +128,18 @@
                 <div class="filter-foot">
                     <div class="field field-inline">
                         <span class="field-label" id="protocolLabel">Protocol</span>
-                        <div class="protocol-controls">
-                            <div class="segmented">
-                                <button class="segment" type="button" data-protocol="" aria-pressed="true">All</button>
-                            </div>
-                            <div class="segmented" role="group" aria-labelledby="protocolLabel">
-                                <button class="segment" type="button" data-protocol="0.6" aria-pressed="false">0.6</button>
-                                <span class="segment-divider" aria-hidden="true"></span>
-                                <button class="segment" type="button" data-protocol="0.7" aria-pressed="false">0.7</button>
-                            </div>
+                        <div class="segmented" role="group" aria-labelledby="protocolLabel">
+                            <button class="segment" type="button" data-protocol="0.6" aria-pressed="false">0.6</button>
+                            <button class="segment" type="button" data-protocol="0.7" aria-pressed="false">0.7</button>
                         </div>
                     </div>
 
                     <button class="chip password-chip" type="button" id="passwordFilterBtn" aria-pressed="false">
+                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <rect x="4" y="10" width="16" height="10" rx="2"></rect>
+                            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                        </svg>
                         <span>Password protected</span>
-                        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
-                        <span class="switch-state" aria-hidden="true"></span>
                     </button>
 
                     <button class="button ghost reset-button" type="button" id="resetServerFilters">
@@ -158,21 +153,15 @@
             </section>
 
             <div class="result-bar">
-                <p class="result-count" id="serverCount" role="status" aria-live="polite"><span id="serverCountText">Loading servers…</span> <time class="count-asof" id="serverCountAsOf" hidden></time></p>
-                <p class="result-hint">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                        <circle cx="12" cy="12" r="9"></circle>
-                        <path d="M12 11v5"></path>
-                        <path d="M12 8h.01"></path>
-                    </svg>
-                    <span>Select a server for details</span>
-                </p>
-                <nav class="pager pager-top" id="serverPagerTop" aria-label="Server pages (top)" hidden>
-                    <button class="button ghost button-sm" type="button" data-server-prev>Previous</button>
-                    <span class="pager-status" data-server-page-status role="status"></span>
-                    <button class="button ghost button-sm" type="button" data-server-next>Next</button>
-                </nav>
+                <p class="result-count" id="serverCount" role="status" aria-live="polite">Loading servers…</p>
+                <p class="result-hint">Select a server for details</p>
             </div>
+
+            <nav class="pager pager-top" id="serverPagerTop" aria-label="Server pages (top)" hidden>
+                <button class="button ghost button-sm" type="button" data-server-prev>Previous</button>
+                <span class="pager-status" data-server-page-status role="status"></span>
+                <button class="button ghost button-sm" type="button" data-server-next>Next</button>
+            </nav>
 
             <div class="table-shell" id="serversTableWrap">
                 <table class="table server-table" id="serversTable">
@@ -192,7 +181,7 @@
                                 <button class="sort-button" type="button" data-sort="players">Players <span class="sort-mark" aria-hidden="true"></span></button>
                             </th>
                             <th scope="col">Version</th>
-                            <th scope="col" class="action-col">Details</th>
+                            <th scope="col" class="action-col"><span class="visually-hidden">Action</span></th>
                         </tr>
                     </thead>
                     <tbody id="serversTableBody">
@@ -365,6 +354,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -376,7 +366,7 @@
 
             var allServers = [];
             var duplicateNameCount = {};
-            var currentSort = { column: "players", direction: "desc" };
+            var currentSort = { column: "relevanceScore", direction: "desc" };
             var filteredAndSortedServers = [];
             var serversPerPage = 50;
             var currentPage = 1;
@@ -389,7 +379,6 @@
             var lastServerTrigger = null;
             var failureCount = 0;
             var numberFormat = new Intl.NumberFormat("en-US");
-            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
 
             if (typeof Chart !== "undefined") {
                 Chart.defaults.font.size = 13;
@@ -405,8 +394,6 @@
                 dom.cards = document.getElementById("serversCardList");
                 dom.state = document.getElementById("serversState");
                 dom.count = document.getElementById("serverCount");
-                dom.countText = document.getElementById("serverCountText");
-                dom.countAsOf = document.getElementById("serverCountAsOf");
                 dom.resultNote = document.getElementById("serverResultNote");
                 dom.showMore = document.getElementById("showMoreServersBtn");
                 dom.pagers = document.querySelectorAll(".pager");
@@ -542,19 +529,10 @@
                     return "";
                 }
 
-                var match = short.match(/\d+(?:\.\d+)*/);
-
-                if (!match) {
-                    return short;
-                }
-
-                var parts = match[0].split(".");
-
-                while (parts.length < 4) {
-                    parts.push("0");
-                }
-
-                return "v" + parts.slice(0, 4).join(".");
+                var parts = short.replace(/,/g, "").split(/\s+/);
+                return parts.length > 1
+                    ? parts[0] + " / build " + parts.slice(1).join(" ")
+                    : short;
             }
 
             function serverCapacity(server) {
@@ -574,15 +552,6 @@
                 return url + "#retry=" + Date.now();
             }
 
-            function markCountAsOf(text) {
-                if (!dom.countAsOf) {
-                    return;
-                }
-
-                dom.countAsOf.textContent = text ? "Updated " + text : "";
-                dom.countAsOf.hidden = !text;
-            }
-
             function hidePagers() {
                 for (var i = 0; i < dom.pagers.length; i += 1) {
                     dom.pagers[i].hidden = true;
@@ -594,8 +563,7 @@
                 dom.state.hidden = true;
                 dom.tableWrap.hidden = false;
                 dom.cards.hidden = false;
-                dom.countText.textContent = "Loading servers…";
-                markCountAsOf("");
+                dom.count.textContent = "Loading servers…";
                 dom.resultNote.textContent = "";
                 dom.showMore.hidden = true;
                 dom.tableBody.innerHTML = "";
@@ -648,15 +616,13 @@
             }
 
             function showListError() {
-                dom.countText.textContent = "Servers unavailable";
-                markCountAsOf("");
+                dom.count.textContent = "Servers unavailable";
                 dom.resultNote.textContent = "";
                 statePanel("error", "Could not load servers", "Live server data is unavailable right now.", "Retry", "retry-list");
             }
 
             function showEmptyFilters() {
-                dom.countText.textContent = "No matching servers";
-                markCountAsOf("");
+                dom.count.textContent = "No matching servers";
                 dom.resultNote.textContent = "";
                 statePanel("empty", "No servers match these filters", "Try a wider search, another game type, or a lower player minimum.", "Reset filters", "reset-filters");
             }
@@ -760,55 +726,8 @@
                 return serverVersion(server).indexOf(protocol) === 0;
             }
 
-            function updateFilterLabel() {
-                var toggle = document.getElementById("filterToggle");
-
-                if (!toggle) {
-                    return;
-                }
-
-                var active = 0;
-
-                if (dom.search.value.trim()) {
-                    active += 1;
-                }
-                if (dom.gameType.value) {
-                    active += 1;
-                }
-                if (dom.map.value) {
-                    active += 1;
-                }
-                if (dom.minPlayers.value) {
-                    active += 1;
-                }
-                if (dom.password.getAttribute("aria-pressed") === "true") {
-                    active += 1;
-                }
-                if (activeProtocol) {
-                    active += 1;
-                }
-
-                var count = document.getElementById("filterCount");
-
-                if (count) {
-                    count.textContent = String(active);
-                    count.hidden = !active;
-                }
-
-                var label = toggle.querySelector("span");
-
-                if (label) {
-                    label.textContent = active ? "Filters · " + active + " active" : "Filters";
-                }
-
-                toggle.setAttribute("aria-label", active
-                    ? "Filters, " + active + " active"
-                    : "Filters");
-            }
-
             function filterAndSortServers() {
                 currentPage = 1;
-                updateFilterLabel();
 
                 var searchTerm = dom.search.value.trim().toLowerCase();
                 var gameType = dom.gameType.value;
@@ -901,8 +820,7 @@
                 var firstShown = total ? startIndex + 1 : 0;
                 var shown = Math.min(endIndex, total);
 
-                dom.countText.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " servers";
-                markCountAsOf(timeFormat.format(new Date()));
+                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " servers";
                 dom.resultNote.textContent = total === allServers.length
                     ? "Live network total"
                     : "Filtered from " + formatNumber(allServers.length) + " servers";
@@ -947,12 +865,13 @@
                     : '<span class="muted">—</span>';
 
                 return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0" role="button" aria-label="Open server ' + escapeHtml(serverName(server)) + '">' +
-                    '<td class="server-name-cell"><a class="server-name table-link" href="servers.html?ip=' + encodeURIComponent(server.ip) + "&port=" + encodeURIComponent(server.port) + '" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</a>" + passwordIcon(server) + "</td>" +
+                    '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + "</span></span>" +
+                        '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</td>" +
-                    '<td class="mono cell-version" title="' + (version ? escapeHtml(formatVersionLabel(version)) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
+                    '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
                     '<td class="action-col"><span class="row-chevron" aria-hidden="true">→</span></td>' +
                     "</tr>";
             }
@@ -971,16 +890,13 @@
                         '<h3 class="server-card-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</h3>" +
                         (server.hasPassword ? passwordIcon(server) : "") +
                     "</div>" +
-                    '<div class="server-card-meta">' +
-                        '<div class="card-meta-row"><span class="card-meta-label">Map</span><span class="card-meta-value">' + mapMarkup + "</span></div>" +
-                        '<div class="card-meta-row"><span class="card-meta-label">Type</span><span class="card-meta-value">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></div>" +
-                    "</div>" +
+                    '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
                     '<div class="server-card-capacity">' +
-                        '<span class="card-meta-label">Players</span>' +
                         '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
+                        '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</div>" +
                     '<div class="server-card-foot">' +
-                        '<span class="mono cell-version" title="' + (version ? escapeHtml(formatVersionLabel(version)) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</span>" +
+                        '<span class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</span>" +
                         '<span class="row-chevron" aria-hidden="true">→</span>' +
                     "</div>" +
                     "</article>";
@@ -1045,15 +961,15 @@
                 dom.gameType.value = "";
                 dom.map.value = "";
                 dom.minPlayers.value = "";
-                dom.sort.value = "players";
+                dom.sort.value = "relevanceScore";
                 dom.password.setAttribute("aria-pressed", "false");
                 activeProtocol = "";
-                currentSort = { column: "players", direction: "desc" };
+                currentSort = { column: "relevanceScore", direction: "desc" };
 
                 var protocolButtons = document.querySelectorAll("[data-protocol]");
 
                 for (var i = 0; i < protocolButtons.length; i += 1) {
-                    protocolButtons[i].setAttribute("aria-pressed", protocolButtons[i].getAttribute("data-protocol") === "" ? "true" : "false");
+                    protocolButtons[i].setAttribute("aria-pressed", "false");
                 }
 
                 filterAndSortServers();
@@ -1096,7 +1012,7 @@
                     ["Address", '<span class="mono">' + escapeHtml(server.ip) + ":" + escapeHtml(server.port) + "</span>"],
                     ["Map", map ? escapeHtml(map) : "Unknown"],
                     ["Game type", gameType ? escapeHtml(gameType) : "Unknown"],
-                    ["Version", version ? '<span class="mono cell-version">' + escapeHtml(formatVersionLabel(version)) + "</span>" : "Unknown"],
+                    ["Version", version ? '<span class="mono">' + escapeHtml(version) + "</span>" : "Unknown"],
                     ["Password", server.hasPassword ? "Protected" : "Open"],
                     ["Clients", formatNumber(server.numClients) + " of " + formatNumber(server.maxClients || maxPlayers)]
                 ];
@@ -1119,8 +1035,8 @@
 
                 dom.info.innerHTML =
                     '<div class="capacity-block">' +
-                        '<div class="capacity-head"><span>' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span></div>" +
-                        '<progress class="capacity-bar" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full">' + capacityPercent(server) + "%</progress>" +
+                        '<div class="capacity-head"><span>' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + '</span><span class="capacity-percent">' + capacityPercent(server) + "%</span></div>" +
+                        '<progress class="capacity-bar" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="Server capacity">' + capacityPercent(server) + "%</progress>" +
                     "</div>" +
                     '<dl class="info-list">' + infoRows + "</dl>";
             }
@@ -1130,11 +1046,11 @@
                 var version = serverVersion(server);
 
                 if (version) {
-                    parts.push('<span class="badge cell-version">' + escapeHtml(formatVersionLabel(version)) + "</span>");
+                    parts.push('<span class="badge">' + escapeHtml(version) + "</span>");
                 }
 
                 if (server.supports6 && server.supports7) {
-                    parts.push('<span class="badge accent">0.6 / 0.7</span>');
+                    parts.push('<span class="badge accent">0.6 + 0.7</span>');
                 } else if (server.supports6) {
                     parts.push('<span class="badge accent">0.6</span>');
                 } else if (server.supports7) {
@@ -1457,7 +1373,7 @@
                                 bodyColor: colors.text,
                                 callbacks: {
                                     label: function (context) {
-                                        return context.dataset.label + ": " + numberFormat.format(context.parsed.y);
+                                        return context.dataset.label + ": " + context.parsed.y.toFixed(0);
                                     }
                                 }
                             }
@@ -1488,10 +1404,7 @@
                                 },
                                 ticks: {
                                     color: colors.muted,
-                                    precision: 0,
-                                    callback: function (value) {
-                                        return numberFormat.format(value);
-                                    }
+                                    precision: 0
                                 }
                             }
                         }
@@ -1752,7 +1665,6 @@
 
             function init() {
                 getDom();
-                updateFilterLabel();
 
                 var filterToggle = document.getElementById("filterToggle");
                 var filterPanel = document.getElementById("serverFilterPanel");

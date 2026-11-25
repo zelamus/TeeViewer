@@ -28,14 +28,13 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
-                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -48,7 +47,6 @@
                     <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
                     </svg>
-                    <span class="theme-toggle-label">Theme</span>
                 </button>
                 <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
                     <span class="menu-bars" aria-hidden="true">
@@ -66,7 +64,7 @@
             <header class="page-head">
                 <div>
                     <h1 class="page-title">Maps</h1>
-                    <p class="page-sub">Browse maps by difficulty, server, and mapper.</p>
+                    <p class="page-sub">Browse the Teeworlds map index by difficulty, mapper, and server type. Open a map for its live servers, top rankings, playtime, and preview.</p>
                 </div>
             </header>
 
@@ -93,7 +91,7 @@
                     </label>
 
                     <label class="field">
-                        <span class="field-label">Server type</span>
+                        <span class="field-label">Server</span>
                         <select class="select" id="typeFilter">
                             <option value="">All server types</option>
                         </select>
@@ -135,14 +133,15 @@
             </section>
 
             <div class="result-bar">
-                <p class="result-count" id="mapCount" role="status" aria-live="polite"><span id="mapCountText">Loading maps…</span> <time class="count-asof" id="mapCountAsOf" hidden></time></p>
+                <p class="result-count" id="mapCount" role="status" aria-live="polite">Loading maps…</p>
                 <p class="filter-legend"><span class="filter-legend-star" aria-hidden="true">★</span> Stars: 1-5, higher is harder</p>
-                <nav class="pager pager-top" id="mapPagerTop" aria-label="Map pages (top)">
-                    <button class="button ghost button-sm" type="button" data-pager-prev>Previous</button>
-                    <span class="pager-status" data-map-page-status role="status"></span>
-                    <button class="button ghost button-sm" type="button" data-pager-next>Next</button>
-                </nav>
             </div>
+
+            <nav class="pager pager-top" id="mapPagerTop" aria-label="Map pages (top)">
+                <button class="button ghost button-sm" type="button" data-pager-prev>Previous</button>
+                <span class="pager-status" data-map-page-status role="status"></span>
+                <button class="button ghost button-sm" type="button" data-pager-next>Next</button>
+            </nav>
 
             <div class="map-grid" id="mapsTableBody" aria-label="Map index">
                 <div class="map-card is-skeleton" aria-hidden="true">
@@ -399,6 +398,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -421,7 +421,6 @@
             var lastServerTrigger = null;
             var lastMaximizeTrigger = null;
             var numberFormat = new Intl.NumberFormat("en-US");
-            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
             var dom = {};
 
             function getDom() {
@@ -429,8 +428,6 @@
                 dom.grid = document.getElementById("mapsTableBody");
                 dom.state = document.getElementById("mapsState");
                 dom.count = document.getElementById("mapCount");
-                dom.countText = document.getElementById("mapCountText");
-                dom.countAsOf = document.getElementById("mapCountAsOf");
                 dom.resultNote = document.getElementById("mapResultNote");
                 dom.showMore = document.getElementById("mapNextBtn");
             dom.pagers = document.querySelectorAll(".pager");
@@ -571,9 +568,9 @@
                 var stars = clampStars(value);
                 var filled = new Array(stars + 1).join("★");
                 var empty = new Array(6 - stars).join("☆");
-                var label = stars > 0 ? stars + " of 5 stars" : "0 stars";
+                var label = stars > 0 ? stars + " of 5 stars" : "Not rated";
 
-                return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + '</span></span></span>';
+                return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + "</span></span></span>";
             }
 
             function skeletonCards(count) {
@@ -606,15 +603,6 @@
                 return markup;
             }
 
-            function markCountAsOf(text) {
-                if (!dom.countAsOf) {
-                    return;
-                }
-
-                dom.countAsOf.textContent = text ? "Updated " + text : "";
-                dom.countAsOf.hidden = !text;
-            }
-
             function hidePagers() {
                 for (var i = 0; i < dom.pagers.length; i += 1) {
                     dom.pagers[i].hidden = true;
@@ -625,8 +613,7 @@
                 dom.state.hidden = true;
                 dom.grid.hidden = false;
                 hidePagers();
-                dom.countText.textContent = "Loading maps…";
-                markCountAsOf("");
+                dom.count.textContent = "Loading maps…";
                 dom.resultNote.textContent = "";
                 dom.grid.innerHTML = skeletonCards(8);
             }
@@ -651,15 +638,13 @@
             }
 
             function showMapsError() {
-                dom.countText.textContent = "Maps unavailable";
-                markCountAsOf("");
+                dom.count.textContent = "Maps unavailable";
                 dom.resultNote.textContent = "";
                 statePanel("error", "Could not load the map index", "The map data source is unavailable right now.", "Retry", "retry-maps");
             }
 
             function showMapsEmpty() {
-                dom.countText.textContent = "No matching maps";
-                markCountAsOf("");
+                dom.count.textContent = "No matching maps";
                 dom.resultNote.textContent = "";
                 statePanel("empty", "No maps match these filters", "Try another mapper, a different difficulty, or a wider search.", "Reset filters", "reset-map-filters");
             }
@@ -787,35 +772,19 @@
                 displayMaps(filteredAndSortedMaps);
             }
 
-            function mapTone(name) {
-                var text = String(name || "");
-                var hash = 2166136261;
-
-                for (var i = 0; i < text.length; i += 1) {
-                    hash ^= text.charCodeAt(i);
-                    hash = Math.imul(hash, 16777619);
-                }
-
-                var value = hash >>> 0;
-                return { hue: value % 360, pattern: value % 3, shift: value % 4 };
-            }
-
             function mapCard(item) {
                 var mapName = item && item.map ? item.map : "Unnamed map";
                 var server = item && item.server ? item.server : "Unknown";
                 var mapper = item && item.mapper ? item.mapper : "Unknown";
                 var points = item ? item.points : 0;
-                var tone = mapTone(mapName);
-                var initial = (mapName.match(/[A-Za-z]/) || mapName.match(/[0-9]/) || ["?"])[0].toUpperCase();
 
                 return '<button class="map-card" type="button" data-map="' + escapeHtml(mapName) + '">' +
-                    '<span class="map-card-tile tile-pattern-' + tone.pattern + '" style="--tile-hue:' + tone.hue + ';--tile-shift:' + tone.shift + '" aria-hidden="true"><span class="map-tile-mark">' + escapeHtml(initial) + '</span></span>' +
                     '<span class="map-card-head">' +
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
+                        starsMarkup(points === undefined ? 0 : (item ? item.stars : 0)) +
                     "</span>" +
                     '<span class="map-card-tags">' +
-                        '<span class="map-card-chip-row"><span class="badge difficulty-badge" title="Difficulty">' + starsMarkup(item ? item.stars : 0) + "</span></span>" +
-                        '<span class="map-card-chip-row"><span class="badge server-badge" title="Server type">' + escapeHtml(server) + "</span></span>" +
+                        '<span class="badge">' + escapeHtml(server) + "</span>" +
                         '<span class="map-card-mapper"> by ' + escapeHtml(mapper) + "</span>" +
                     "</span>" +
                     '<span class="map-card-foot">' +
@@ -850,8 +819,7 @@
                 var lastPage = Math.max(1, Math.ceil(total / mapPageSize));
                 var firstShown = total ? startIndex + 1 : 0;
                 var shown = Math.min(endIndex, total);
-                dom.countText.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " maps";
-                markCountAsOf(timeFormat.format(new Date()));
+                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " maps";
                 dom.resultNote.textContent = total === allMaps.length
                     ? "Full map index"
                     : "Filtered from " + formatNumber(allMaps.length) + " maps";

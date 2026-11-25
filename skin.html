@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skin preview — TeeViewer</title>
-    <meta name="description" content="Preview a Teeworlds skin with custom body and feet colors, then download the recolored image.">
+    <meta name="description" content="Preview a Teeworlds skin with custom body and feet colours, then download the recoloured image.">
     <meta name="color-scheme" content="dark light">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -29,14 +29,13 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
-                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -49,7 +48,6 @@
                     <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
                     </svg>
-                    <span class="theme-toggle-label">Theme</span>
                 </button>
                 <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
                     <span class="menu-bars" aria-hidden="true">
@@ -66,7 +64,7 @@
         <header class="page-head">
             <div>
                 <h1 class="page-title">Skin</h1>
-                <p class="page-sub">Preview a Teeworlds skin with your colors, then download the recolored skin image.</p>
+                <p class="page-sub">Preview a Teeworlds skin with your colours, then download the recoloured skin image.</p>
             </div>
         </header>
 
@@ -74,6 +72,7 @@
             <section class="card skin-preview-card" aria-labelledby="preview-title" aria-busy="true">
                 <div class="section-head">
                     <p class="section-title" id="preview-title">Preview</p>
+                    <p class="skin-status" id="status" role="status">Loading skin…</p>
                 </div>
 
                 <div class="skin-stage" id="skin-display-container">
@@ -96,6 +95,12 @@
                     </div>
                 </div>
 
+                <div class="skin-preview-foot">
+                    <div class="skin-swatches" aria-label="Selected colours">
+                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
+                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
+                    </div>
+                </div>
             </section>
 
             <section class="card skin-controls" aria-labelledby="controls-title">
@@ -107,44 +112,45 @@
                     <div class="field">
                         <label for="skinName">Skin name</label>
                         <input class="input" type="text" id="skinName" name="skinname" value="default" autocomplete="off" spellcheck="false" placeholder="default">
-                        <p class="field-hint">Name of the Teeworlds skin file on ddnet.org.</p>
+                        <p class="field-hint">Name of the skin file on ddnet.org.</p>
                     </div>
 
                     <div class="field">
-                        <label for="bodyColorPicker">Body color <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span></span></label>
+                        <label for="bodyColor">Body colour, decimal code</label>
                         <div class="color-row">
-                            <input class="color-picker" type="color" id="bodyColorPicker" value="#ffffff" aria-label="Pick body color">
-                            <input class="input color-hex" type="text" id="bodyHex" value="#ffffff" autocomplete="off" spellcheck="false" aria-label="Body color hex value" aria-describedby="color-help">
+                            <input class="input" type="text" id="bodyColor" name="color_body" value="65535" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
+                            <input class="color-picker" type="color" id="bodyColorPicker" value="#0000ff" aria-label="Pick body colour">
+                            <output class="color-hex" id="bodyHex" for="bodyColor" aria-label="Body colour hex value">Hex #0000ff</output>
                         </div>
-                        <p class="field-hint color-code">Teeworlds code <span class="mono" id="bodyCode">—</span></p>
                     </div>
 
                     <div class="field">
-                        <label for="feetColorPicker">Feet color <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span></span></label>
+                        <label for="feetColor">Feet colour, decimal code</label>
                         <div class="color-row">
-                            <input class="color-picker" type="color" id="feetColorPicker" value="#868686" aria-label="Pick feet color">
-                            <input class="input color-hex" type="text" id="feetHex" value="#868686" autocomplete="off" spellcheck="false" aria-label="Feet color hex value" aria-describedby="color-help">
+                            <input class="input" type="text" id="feetColor" name="color_feet" value="16711680" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
+                            <input class="color-picker" type="color" id="feetColorPicker" value="#ff0000" aria-label="Pick feet colour">
+                            <output class="color-hex" id="feetHex" for="feetColor" aria-label="Feet colour hex value">Hex #ff0000</output>
                         </div>
-                        <p class="field-hint color-code">Teeworlds code <span class="mono" id="feetCode">—</span></p>
                     </div>
 
-                    <p class="field-hint" id="color-help">Pick a color or enter a six-digit hex value. The Teeworlds code is read-only.</p>
-                    <p class="field-hint is-error" id="color-error" hidden>Enter a six-digit hex value for both colors, for example #ff0000.</p>
+                    <p class="field-hint" id="color-help">Use Teeworlds colour codes from 0 to 16777215. Each code stores hue, saturation, and lightness.</p>
+                    <p class="field-hint is-error" id="color-error" hidden>Enter whole numbers from 0 to 16777215 for both colour codes.</p>
 
+                    <div class="skin-actions">
+                        <button class="button ghost" type="submit" id="skin-submit">Apply changes</button>
+                        <button class="button ghost" type="button" id="resetSkin">Reset</button>
+                        <a class="button primary" id="downloadSkin" download="tee-skin.png" hidden>Download skin</a>
+                    </div>
                 </form>
 
-                <p class="skin-note">Colors follow the Teeworlds skin format. The download saves the recolored 256 × 128 skin image.</p>
-
-                <div class="skin-actions">
-                    <a class="button primary" id="downloadSkin" download="tee-skin.png" hidden>Download skin</a>
-                    <button class="button ghost" type="button" id="resetSkin">Reset</button>
-                </div>
+                <p class="skin-note">Colours follow the Teeworlds skin format. The download saves the recoloured 256 × 128 skin image.</p>
             </section>
         </div>
     </main>
 
     <footer class="site-footer">
         <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -157,8 +163,7 @@
             "use strict";
 
             var SKIN_BASE = "https://ddnet.org/skins/skin/";
-            var DEFAULTS = { name: "default", body: "#ffffff", feet: "#868686" };
-            var DEFAULT_CODES = { body: 65535, feet: 16711680 };
+            var DEFAULTS = { name: "default", body: "65535", feet: "16711680" };
             var MAX_CODE = 16777215;
             var tee = null;
             var renderToken = 0;
@@ -173,100 +178,14 @@
                 return [(code >> 16) & 255, (code >> 8) & 255, code & 255];
             }
 
-            function teeChannels(hue, saturation, lightness) {
-                var chroma = (1 - Math.abs(((2 * lightness) / 100) - 1)) * (saturation / 100);
-                var sector = hue / 60;
-                var second = chroma * (1 - Math.abs((sector % 2) - 1));
-                var red = 0;
-                var green = 0;
-                var blue = 0;
-
-                sector = Math.floor(sector);
-
-                if (sector === 0) {
-                    red = chroma;
-                    green = second;
-                } else if (sector === 1) {
-                    red = second;
-                    green = chroma;
-                } else if (sector === 2) {
-                    green = chroma;
-                    blue = second;
-                } else if (sector === 3) {
-                    green = second;
-                    blue = chroma;
-                } else if (sector === 4) {
-                    red = second;
-                    blue = chroma;
-                } else if (sector === 5) {
-                    red = chroma;
-                    blue = second;
-                }
-
-                var shift = (lightness / 100) - (chroma / 2);
-                return [red, green, blue].map(function (part) {
-                    return Math.round((part + shift) * 255);
-                });
-            }
-
             function skinColor(value) {
-                var bytes = skinRGB(value);
-                var hue = bytes[0] === 255 ? 0 : (bytes[0] * 360) / 255;
-                var saturation = (bytes[1] * 100) / 255;
-                var lightness = (((bytes[2] / 255) / 2) + 0.5) * 100;
-
-                if (lightness < 52.5) {
-                    lightness = 52.5;
-                }
-
-                return "#" + teeChannels(hue, saturation, lightness).map(function (part) {
+                return "#" + skinRGB(value).map(function (part) {
                     return part.toString(16).padStart(2, "0");
                 }).join("");
             }
 
             function hexToCode(hex) {
-                var match = /^#?([0-9a-f]{6})$/i.exec(String(hex).trim());
-
-                if (!match) {
-                    return 0;
-                }
-
-                var value = parseInt(match[1], 16);
-                var red = ((value >> 16) & 255) / 255;
-                var green = ((value >> 8) & 255) / 255;
-                var blue = (value & 255) / 255;
-                var max = Math.max(red, green, blue);
-                var min = Math.min(red, green, blue);
-                var delta = max - min;
-                var lightness = ((max + min) / 2) * 100;
-                var saturation = delta === 0 ? 0 : (delta / (1 - Math.abs((2 * lightness / 100) - 1))) * 100;
-                var hue = 0;
-
-                if (delta !== 0) {
-                    if (max === red) {
-                        hue = ((green - blue) / delta) % 6;
-                    } else if (max === green) {
-                        hue = ((blue - red) / delta) + 2;
-                    } else {
-                        hue = ((red - green) / delta) + 4;
-                    }
-
-                    hue *= 60;
-
-                    if (hue < 0) {
-                        hue += 360;
-                    }
-                }
-
-                if (lightness < 52.5) {
-                    lightness = 52.5;
-                }
-
-                var hueByte = Math.min(254, Math.round((hue * 255) / 360));
-                var satByte = Math.max(0, Math.min(255, Math.round((saturation * 255) / 100)));
-                var lightByte = Math.max(0, Math.min(255, Math.round(((lightness / 100 - 0.5) * 2) * 255)));
-
-                return ((hueByte << 16) | (satByte << 8) | lightByte) >>> 0;
+                return parseInt(String(hex).replace("#", ""), 16);
             }
 
             function setText(id, text) {
@@ -290,7 +209,7 @@
                 if (!node) {
                     return;
                 }
-                node.textContent = name ? "Preview ready · " + name : "No skin selected";
+                node.textContent = name ? "Preview ready" : "No skin selected";
                 node.setAttribute("data-tone", name ? "ready" : "idle");
             }
 
@@ -312,33 +231,15 @@
                 return number >= 0 && number <= MAX_CODE ? number : null;
             }
 
-            function parseHex(value) {
-                var text = String(value == null ? "" : value).trim();
-
-                if (!/^#?[0-9a-f]{6}$/i.test(text)) {
-                    return null;
-                }
-
-                return skinColor(hexToCode(text));
-            }
-
-            function hexToRgbString(hex) {
-                var value = hex.replace("#", "");
-
-                return [0, 2, 4].map(function (index) {
-                    return parseInt(value.substr(index, 2), 16);
-                }).join(",");
-            }
-
             function readState() {
                 var nameInput = $("skinName");
-                var bodyInput = $("bodyHex");
-                var feetInput = $("feetHex");
+                var bodyInput = $("bodyColor");
+                var feetInput = $("feetColor");
 
                 return {
                     name: nameInput ? nameInput.value.trim() : "",
-                    body: bodyInput ? parseHex(bodyInput.value) : null,
-                    feet: feetInput ? parseHex(feetInput.value) : null,
+                    body: bodyInput ? parseCode(bodyInput.value) : null,
+                    feet: feetInput ? parseCode(feetInput.value) : null,
                     bodyInput: bodyInput,
                     feetInput: feetInput
                 };
@@ -348,28 +249,28 @@
                 if ($("skinName")) {
                     $("skinName").value = state.name;
                 }
-                if ($("bodyHex")) {
-                    $("bodyHex").value = state.body;
+                if ($("bodyColor")) {
+                    $("bodyColor").value = state.body;
                 }
-                if ($("feetHex")) {
-                    $("feetHex").value = state.feet;
+                if ($("feetColor")) {
+                    $("feetColor").value = state.feet;
                 }
                 if ($("bodyColorPicker")) {
-                    $("bodyColorPicker").value = state.body;
+                    $("bodyColorPicker").value = skinColor(state.body);
                 }
                 if ($("feetColorPicker")) {
-                    $("feetColorPicker").value = state.feet;
+                    $("feetColorPicker").value = skinColor(state.feet);
                 }
-                setText("bodyCode", hexToCode(state.body));
-                setText("feetCode", hexToCode(state.feet));
+                setText("bodyHex", "Hex " + skinColor(state.body));
+                setText("feetHex", "Hex " + skinColor(state.feet));
             }
 
             function applyUrl(state) {
                 try {
                     var params = new URLSearchParams();
                     params.set("skinname", state.name);
-                    params.set("color_body", hexToCode(state.body));
-                    params.set("color_feet", hexToCode(state.feet));
+                    params.set("color_body", state.body);
+                    params.set("color_feet", state.feet);
 
                     window.history.replaceState(
                         null,
@@ -448,10 +349,10 @@
                 var feetSwatch = $("skin-feet-swatch");
 
                 if (bodySwatch) {
-                    bodySwatch.style.backgroundColor = state.body;
+                    bodySwatch.style.backgroundColor = skinColor(state.body);
                 }
                 if (feetSwatch) {
-                    feetSwatch.style.backgroundColor = state.feet;
+                    feetSwatch.style.backgroundColor = skinColor(state.feet);
                 }
             }
 
@@ -496,8 +397,8 @@
                 try {
                     var instance = new TeeAssembler.Tee({
                         imageLink: imageLink,
-                        bodyColor: hexToRgbString(state.body),
-                        feetColor: hexToRgbString(state.feet),
+                        bodyColor: skinRGB(state.body).join(","),
+                        feetColor: skinRGB(state.feet).join(","),
                         colorFormat: "rgb"
                     });
 
@@ -522,7 +423,7 @@
                         hideState();
                         hideDownload();
                         setBusy(false);
-                        setStatus("Preview ready · " + (state.name || "skin"), "ready");
+                        setStatus("Preview ready", "ready");
                         updateMeta(state);
                         updateDownload(instance, state.name);
                     }).catch(function () {
@@ -585,8 +486,8 @@
             }
 
             function clearInvalid() {
-                var bodyInput = $("bodyHex");
-                var feetInput = $("feetHex");
+                var bodyInput = $("bodyColor");
+                var feetInput = $("feetColor");
                 var error = $("color-error");
 
                 if (bodyInput) {
@@ -620,7 +521,7 @@
                     if (error) {
                         error.hidden = false;
                     }
-                    setStatus("Fix the color codes and try again.", "error");
+                    setStatus("Fix the colour codes and try again.", "error");
                     return;
                 }
 
@@ -630,8 +531,8 @@
 
                 var normalized = {
                     name: state.name,
-                    body: state.body,
-                    feet: state.feet
+                    body: String(state.body),
+                    feet: String(state.feet)
                 };
 
                 syncForm(normalized);
@@ -671,13 +572,13 @@
             function readUrlState() {
                 var params = new URLSearchParams(window.location.search);
                 var name = (params.get("skinname") || DEFAULTS.name).trim();
-                var body = parseCode(params.get("color_body"));
-                var feet = parseCode(params.get("color_feet"));
+                var body = parseCode(params.get("color_body") || DEFAULTS.body);
+                var feet = parseCode(params.get("color_feet") || DEFAULTS.feet);
 
                 return {
                     name: name,
-                    body: skinColor(body === null ? DEFAULT_CODES.body : body),
-                    feet: skinColor(feet === null ? DEFAULT_CODES.feet : feet)
+                    body: String(body === null ? DEFAULTS.body : body),
+                    feet: String(feet === null ? DEFAULTS.feet : feet)
                 };
             }
 
@@ -703,26 +604,23 @@
                 previewTimer = window.setTimeout(onSubmit, 200);
             }
 
-            ["skinName", "bodyHex", "feetHex"].forEach(function (id) {
+            ["bodyColor", "feetColor"].forEach(function (id) {
                 var input = $(id);
                 if (input) {
                     input.addEventListener("input", function () {
                         clearInvalid();
-                        setText(id === "bodyHex" ? "bodyCode" : "feetCode", hexToCode(this.value));
                         schedulePreview();
                     });
                 }
             });
 
-            [["bodyHex", "bodyColorPicker", "bodyCode"], ["feetHex", "feetColorPicker", "feetCode"]].forEach(function (ids) {
+            [["bodyColor", "bodyColorPicker", "bodyHex"], ["feetColor", "feetColorPicker", "feetHex"]].forEach(function (ids) {
                 var picker = $(ids[1]);
 
                 if (picker) {
                     picker.addEventListener("input", function () {
-                        var hex = parseHex(picker.value);
-                        $(ids[0]).value = hex;
-                        picker.value = hex;
-                        setText(ids[2], hexToCode(hex));
+                        $(ids[0]).value = hexToCode(picker.value);
+                        $(ids[2]).textContent = "Hex " + picker.value.toLowerCase();
                         clearInvalid();
                         onSubmit();
                     });

@@ -33,14 +33,13 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
-                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer" title="Discord Bot (opens in new tab)">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -53,7 +52,6 @@
                     <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
                     </svg>
-                    <span class="theme-toggle-label">Theme</span>
                 </button>
                 <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
                     <span class="menu-bars" aria-hidden="true">
@@ -68,10 +66,13 @@
 
     <main class="page" id="main">
         <header class="page-head">
-            <div class="page-head-row">
+            <div>
                 <h1 class="page-title">Players</h1>
+                <p class="page-sub">Search a Teeworlds player to see their profile, playtime, and points history.</p>
             </div>
-            <p class="page-sub">Search a Teeworlds player to see their profile, playtime, and points history.</p>
+            <div class="page-head-actions">
+                <a class="button ghost" href="#playerComparisonSection">Compare two players</a>
+            </div>
         </header>
 
         <section class="toolbar" aria-labelledby="player-search-title">
@@ -85,7 +86,6 @@
                     <button class="button primary" id="searchPlayerButton" type="submit">Search</button>
                 </div>
             </form>
-            <a class="button ghost compare-shortcut" href="#playerComparisonSection">Compare two players</a>
             <div class="example-row">
                 <span class="example-label">Try</span>
                 <button class="chip" type="button" data-player-example="Nameless Tee">Nameless Tee</button>
@@ -136,8 +136,7 @@
                         <div class="teeassembler-tee" role="button" tabindex="0" aria-label="Copy tee skin settings"></div>
                     </div>
                     <div class="tee-caption">
-                        <button class="button ghost button-sm copy-skin-button" type="button" id="copySkinButton" title="Copy this tee's skin settings to the clipboard">Copy skin</button>
-                        <span class="tee-hint">Or click the tee</span>
+                        <span class="tee-hint">Click the tee to copy skin settings</span>
                     </div>
                     <div class="player-avatar" id="playerAvatar" hidden></div>
                 </div>
@@ -147,13 +146,11 @@
                         <div>
                             <h2 class="identity-name" id="playerName">Player</h2>
                             <div class="identity-badges">
-                                <span class="badge clan-chip" id="playerClan" data-state="empty"><span class="badge-label">Clan</span><a id="playerClanLink" href="#">No clan</a></span>
-                                <span class="identity-country country-chip">
-                                    <span class="badge-label">Country</span>
+                                <span class="badge" id="playerClan"><a id="playerClanLink" href="#">No clan</a></span>
+                                <span class="identity-country">
                                     <img class="identity-flag" id="countryFlag" alt="" width="22" height="15" hidden>
                                     <span id="playerCountry"></span>
                                 </span>
-                                <span class="badge status-chip status-value" id="onlineStatus" data-state="pending">Checking…</span>
                             </div>
                         </div>
                         <div class="identity-actions">
@@ -163,6 +160,14 @@
 
                     <dl class="identity-meta">
                         <div class="meta-item">
+                            <dt class="meta-label">Points</dt>
+                            <dd class="meta-value" id="playerPoints"></dd>
+                        </div>
+                        <div class="meta-item">
+                            <dt class="meta-label">Playtime</dt>
+                            <dd class="meta-value" id="totalSecondsPlayed"></dd>
+                        </div>
+                        <div class="meta-item">
                             <dt class="meta-label">Joined</dt>
                             <dd class="meta-value" id="playerStartPlaytime"></dd>
                         </div>
@@ -170,30 +175,26 @@
                             <dt class="meta-label">Last seen</dt>
                             <dd class="meta-value" id="lastSeen"></dd>
                         </div>
-                        <div class="meta-item">
-                            <dt class="meta-label">Skin</dt>
-                            <dd class="meta-value" id="playerSkinName"></dd>
-                        </div>
-                        <div class="meta-item" id="mapperTile">
-                            <dt class="meta-label">Mapper</dt>
-                            <dd class="meta-value" id="isMapper"></dd>
-                        </div>
                     </dl>
                 </div>
             </section>
 
             <section class="profile-stats" aria-label="Profile statistics">
                 <div class="stat-box">
-                    <span class="stat-value" id="playerPoints"></span>
-                    <span class="stat-label">Points</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value" id="totalSecondsPlayed"></span>
-                    <span class="stat-label">Playtime</span>
-                </div>
-                <div class="stat-box">
                     <span class="stat-value" id="totalFinishes"></span>
                     <span class="stat-label">Finishes</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="playerSkinName"></span>
+                    <span class="stat-label">Skin</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="isMapper"></span>
+                    <span class="stat-label">Mapper</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value status-value" id="onlineStatus" data-state="pending">Checking…</span>
+                    <span class="stat-label">Status</span>
                 </div>
             </section>
 
@@ -222,6 +223,7 @@
             <section class="panel" id="onlineStatusSection" aria-labelledby="online-title">
                 <div class="panel-head">
                     <h2 class="panel-title" id="online-title">Current server</h2>
+                    <span class="panel-note">Live from status.tw</span>
                 </div>
                 <div class="server-details" id="serverDetails" hidden>
                     <dl class="server-detail">
@@ -254,11 +256,11 @@
                 </div>
                 <dl class="detail-list cols-2">
                     <div class="detail-item">
-                        <dt>Body color</dt>
+                        <dt>Body colour</dt>
                         <dd id="playerBodyColor"></dd>
                     </div>
                     <div class="detail-item">
-                        <dt>Feet color</dt>
+                        <dt>Feet colour</dt>
                         <dd id="playerFeetColor"></dd>
                     </div>
                 </dl>
@@ -458,6 +460,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -554,36 +557,23 @@
                 return colors;
             }
 
-            function countryIso(code) {
-                if (code === undefined || code === null || code === "") {
-                    return null;
-                }
-
-                var text = String(code);
-
-                if (window.COUNTRY_CODES && window.COUNTRY_CODES[text]) {
-                    return window.COUNTRY_CODES[text];
-                }
-
-                if (/^[A-Za-z]{2}$/.test(text)) {
-                    return text.toUpperCase();
-                }
-
-                return null;
-            }
-
             function countryLabel(code) {
-                var iso = countryIso(code);
+                if (code === undefined || code === null || code === "") {
+                    return "Default";
+                }
 
-                if (!iso || iso === "default") {
+                var stored = window.COUNTRY_CODES ? window.COUNTRY_CODES[String(code)] : null;
+                var value = stored || String(code);
+
+                if (!value || value === "default") {
                     return "Default";
                 }
 
                 try {
                     var regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-                    return regionNames.of(iso) || iso;
+                    return regionNames.of(value) || value;
                 } catch (error) {
-                    return iso;
+                    return value;
                 }
             }
 
@@ -849,48 +839,32 @@
                 document.getElementById("playerPoints").textContent = formatCount(playerData.profile.points || 0);
 
                 var playerClan = document.getElementById("playerClanLink");
-                var clanBadge = document.getElementById("playerClan");
 
                 if (profile.clan && profile.clan !== "") {
                     playerClan.textContent = profile.clan;
                     playerClan.href = "clans.html?clanName=" + encodeURIComponent(profile.clan);
-                    clanBadge.setAttribute("data-state", "set");
-                    clanBadge.hidden = false;
                 } else {
+                    playerClan.textContent = "No clan";
                     playerClan.removeAttribute("href");
-                    clanBadge.hidden = true;
                 }
 
                 var countryCode = profile.country !== undefined && profile.country !== null
                     ? profile.country.toString()
                     : "-1";
                 var countryName = countryLabel(countryCode);
-                var countryIsoCode = countryIso(countryCode);
                 var countryFlag = document.getElementById("countryFlag");
 
                 document.getElementById("playerCountry").textContent = countryName;
-
-                if (countryIsoCode && countryIsoCode !== "default" && countryIsoCode.indexOf("-") === -1) {
-                    countryFlag.src = "countryflags/" + countryIsoCode + ".png";
-                    countryFlag.alt = countryName + " flag";
-                    countryFlag.hidden = false;
-                } else {
-                    countryFlag.removeAttribute("src");
-                    countryFlag.alt = "";
-                    countryFlag.hidden = true;
-                }
+                countryFlag.src = "countryflags/" + (window.COUNTRY_CODES ? window.COUNTRY_CODES[countryCode] || "default" : "default") + ".png";
+                countryFlag.alt = countryName + " flag";
+                countryFlag.hidden = !profile.clan || countryCode === "-1" || countryName === "Default";
 
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
-                var mapperTile = document.getElementById("mapperTile");
-
-                if (playerData.is_mapper) {
-                    mapperTile.hidden = false;
-                    document.getElementById("isMapper").textContent = profile.name || "N/A";
-                } else {
-                    mapperTile.hidden = true;
-                }
+                document.getElementById("isMapper").textContent = playerData.is_mapper === undefined || playerData.is_mapper === null
+                    ? "Unknown"
+                    : (playerData.is_mapper ? "Yes" : "No");
 
                 document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 
@@ -1000,7 +974,7 @@
                     var teammateCell = teammateRow.insertCell();
                     teammateCell.colSpan = 2;
                     teammateCell.className = "table-empty";
-                    teammateCell.textContent = "No favorite teammates found.";
+                    teammateCell.textContent = "No favourite teammates found.";
                 }
 
                 renderPieCharts(playerData);
@@ -1015,27 +989,14 @@
 
                 if (typeof TeeAssembler !== "undefined" && TeeAssembler.Tee) {
                     try {
-                        var teeInstance = new TeeAssembler.Tee({
+                        currentTeeInstance = new TeeAssembler.Tee({
+                            container: teeContainer,
                             imageLink: "https://ddstats.tw/skins/" + skinName + ".png",
                             bodyColor: effectiveBodyColor,
                             feetColor: effectiveFeetColor,
                             colorFormat: "code"
                         });
-                        currentTeeInstance = teeInstance;
-                        teeInstance.api.functions.setContainer(teeContainer).then(function () {
-                            if (currentTeeInstance !== teeInstance) {
-                                return;
-                            }
-                            try {
-                                teeInstance.api.functions.lookAtCursor();
-                            } catch (error) {
-                                return;
-                            }
-                        }).catch(function () {
-                            if (currentTeeInstance === teeInstance) {
-                                teeContainer.textContent = "Tee preview not available.";
-                            }
-                        });
+                        currentTeeInstance.api.functions.lookAtCursor();
                     } catch (error) {
                         teeContainer.textContent = "Tee preview not available.";
                     }
@@ -1098,7 +1059,7 @@
                                     ticks: {
                                         color: axisColor,
                                         callback: function (value) {
-                                            return numberFormat.format(value) + "h";
+                                            return value + "h";
                                         }
                                     },
                                     grid: {
@@ -1183,10 +1144,7 @@
                                 y: {
                                     beginAtZero: true,
                                     ticks: {
-                                        color: axisColor,
-                                        callback: function (value) {
-                                            return numberFormat.format(value);
-                                        }
+                                        color: axisColor
                                     },
                                     grid: {
                                         color: gridColor
@@ -1285,7 +1243,7 @@
                                                     return a + b;
                                                 }, 0);
                                                 var percentage = total > 0 ? ((context.parsed / total) * 100).toFixed(1) : "0.0";
-                                                return context.label + ": " + numberFormat.format(context.parsed) + "h (" + percentage + "%)";
+                                                return context.label + ": " + context.parsed + "h (" + percentage + "%)";
                                             }
                                         }
                                     }
@@ -1489,7 +1447,7 @@
                     country: countryLabel(info.country),
                     finishes: formatCount(playerData.finishes ? playerData.finishes.length : 0),
                     playtime: playerData.general_activity ? formatTime(playerData.general_activity.total_seconds_played) : "N/A",
-                    mapper: playerData.is_mapper ? (playerData.profile.name || "N/A") : "Not a mapper"
+                    mapper: playerData.is_mapper ? "Yes" : "No"
                 };
             }
 
@@ -1644,12 +1602,6 @@
                 tempInput.remove();
             }
 
-            var copySkinButton = document.getElementById("copySkinButton");
-
-            if (copySkinButton) {
-                copySkinButton.addEventListener("click", copyTeeSettings);
-            }
-
             teeContainer.addEventListener("click", copyTeeSettings);
             teeContainer.addEventListener("keydown", function (event) {
                 if (event.key === "Enter" || event.key === " ") {
@@ -1697,11 +1649,6 @@
             } else {
                 playerSearchInput.value = "Cireme";
                 searchPlayer();
-            }
-
-            if (urlParams.get("focus") === "1") {
-                playerSearchInput.focus();
-                playerSearchInput.select();
             }
         })();
     </script>
