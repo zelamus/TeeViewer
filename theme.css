@@ -1,0 +1,54 @@
+/* ==========================================================================
+   TeeViewer theme glue
+   --------------------------------------------------------------------------
+   Load this file after style.css. It holds no component styles. It only:
+   - mirrors color-scheme for native controls and scrollbars
+   - enforces the [hidden] contract
+   - disables motion for people who ask for less of it
+   ========================================================================== */
+
+:root {
+    color-scheme: dark;
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        color-scheme: light;
+    }
+}
+
+[hidden] {
+    display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .categories,
+    .theme-toggle,
+    .menu-toggle,
+    .menu-bars span,
+    .stat-tile,
+    .stat-number,
+    a.card,
+    .quick-arrow,
+    .button,
+    .chip,
+    .input,
+    .select,
+    .table tbody tr,
+    .nav {
+        transition: none;
+    }
+
+    .skeleton::after,
+    .spinner {
+        animation: none;
+    }
+}
