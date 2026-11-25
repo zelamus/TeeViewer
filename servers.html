@@ -104,7 +104,14 @@
 
                     <label class="field">
                         <span class="field-label">Minimum players</span>
-                        <input class="input" type="number" id="minPlayersFilter" min="0" step="1" inputmode="numeric" placeholder="Any">
+                        <select class="select" id="minPlayersFilter">
+                            <option value="">Any</option>
+                            <option value="1">1+</option>
+                            <option value="2">2+</option>
+                            <option value="4">4+</option>
+                            <option value="8">8+</option>
+                            <option value="16">16+</option>
+                        </select>
                     </label>
 
                     <label class="field">
@@ -149,6 +156,10 @@
             <div class="result-bar">
                 <p class="result-count" id="serverCount" role="status" aria-live="polite">Loading servers…</p>
                 <p class="result-hint">Select a server for details</p>
+                <p class="lock-legend">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
+                    Lock = password protected
+                </p>
             </div>
 
             <div class="table-shell" id="serversTableWrap">
@@ -344,17 +355,8 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-brand">TeeViewer</p>
             <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
-            <nav class="footer-links" aria-label="Footer">
-                <a href="players.html">Players</a>
-                <a href="clans.html">Clans</a>
-                <a href="maps.html">Maps</a>
-                <a href="servers.html">Servers</a>
-                <a href="status.html">Status</a>
-                <a href="skin.html">Skin</a>
-                <a href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
-            </nav>
+            <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
 
@@ -377,6 +379,10 @@
             var lastServerTrigger = null;
             var failureCount = 0;
             var numberFormat = new Intl.NumberFormat("en-US");
+
+            if (typeof Chart !== "undefined") {
+                Chart.defaults.font.size = 13;
+            }
 
             var dom = {};
 
@@ -792,9 +798,7 @@
 
             function passwordIcon(server) {
                 if (!server.hasPassword) {
-                    return '<span class="password-none" role="img" aria-label="No password" title="No password">' +
-                        '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 7.5-2"></path></svg>' +
-                        "</span>";
+                    return "";
                 }
 
                 return '<span class="password-flag" role="img" aria-label="Password protected" title="Password protected">' +
@@ -1263,11 +1267,7 @@
                         return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
                     }
 
-                    if (range === "week") {
-                        return date.toLocaleDateString([], { weekday: "short", month: "short", day: "numeric" });
-                    }
-
-                    return date.toLocaleDateString([], { month: "short", day: "numeric" });
+                    return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
                 });
                 var values = chartData.map(function (item) {
                     return number(item.maxPlayers);
@@ -1613,6 +1613,7 @@
                 dom.gameType.addEventListener("change", filterAndSortServers);
                 dom.map.addEventListener("change", filterAndSortServers);
                 dom.minPlayers.addEventListener("input", filterAndSortServers);
+                dom.minPlayers.addEventListener("change", filterAndSortServers);
                 dom.sort.addEventListener("change", filterAndSortServers);
 
                 loadServers(false);

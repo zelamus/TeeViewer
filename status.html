@@ -176,12 +176,10 @@
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <p class="chart-title">Player count</p>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-item"><span class="legend-swatch"></span>Avg</span>
-                    <span class="legend-item"><span class="legend-swatch is-max"></span>Max</span>
-                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total</span>
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
                 </div>
                 <div class="chart-box">
-                    <canvas id="playerStatsChart" role="img" aria-label="Average, maximum, and total players over time"></canvas>
+                    <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
                         <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
                     </div>
@@ -214,12 +212,10 @@
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <p class="chart-title">Server count</p>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-item"><span class="legend-swatch"></span>Avg</span>
-                    <span class="legend-item"><span class="legend-swatch is-max"></span>Max</span>
-                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total</span>
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
                 </div>
                 <div class="chart-box">
-                    <canvas id="serverStatsChart" role="img" aria-label="Average, maximum, and total servers over time"></canvas>
+                    <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
                         <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
                     </div>
@@ -336,17 +332,8 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-brand">TeeViewer</p>
             <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
-            <nav class="footer-links" aria-label="Footer">
-                <a href="players.html">Players</a>
-                <a href="clans.html">Clans</a>
-                <a href="maps.html">Maps</a>
-                <a href="servers.html">Servers</a>
-                <a href="status.html">Status</a>
-                <a href="skin.html">Skin</a>
-                <a href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
-            </nav>
+            <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
 
@@ -356,6 +343,11 @@
 
             var STATS_URL = "https://api.status.tw/stats";
             var numberFormat = new Intl.NumberFormat("en-US");
+
+            if (typeof window.Chart !== "undefined") {
+                window.Chart.defaults.font.size = 13;
+            }
+
             var stale = 0;
             var overviewRequest = 0;
 
@@ -375,8 +367,6 @@
                         month: "https://api.status.tw/stats/players/month"
                     },
                     totalKey: "totalPlayers",
-                    avgKey: "avgPlayers",
-                    maxKey: "maxPlayers",
                     unit: "players",
                     noun: "player"
                 },
@@ -395,8 +385,6 @@
                         month: "https://api.status.tw/stats/servers/month"
                     },
                     totalKey: "totalServers",
-                    avgKey: "avgServers",
-                    maxKey: "maxServers",
                     unit: "servers",
                     noun: "server"
                 }
@@ -587,9 +575,7 @@
 
                     samples.push({
                         date: date,
-                        total: toNumber(item[config.totalKey]),
-                        avg: toNumber(item[config.avgKey]),
-                        max: toNumber(item[config.maxKey])
+                        total: toNumber(item[config.totalKey])
                     });
                 });
 
@@ -606,13 +592,11 @@
                     }
                 }
 
-                var series = { labels: [], total: [], avg: [], max: [] };
+                var series = { labels: [], total: [] };
 
                 samples.forEach(function (sample) {
                     series.labels.push(formatLabel(sample.date, period));
                     series.total.push(sample.total);
-                    series.avg.push(sample.avg);
-                    series.max.push(sample.max);
                 });
 
                 return series;
@@ -638,6 +622,7 @@
 
                 var colors = {
                     accent: token("--accent"),
+                    accentSoft: token("--accent-soft"),
                     warning: token("--warning"),
                     success: token("--success"),
                     text: token("--text"),
@@ -655,43 +640,17 @@
                         labels: config.data.labels,
                         datasets: [
                             {
-                                label: "Max",
-                                data: config.data.max,
-                                borderColor: colors.warning,
-                                backgroundColor: colors.warning,
-                                borderWidth: 2,
-                                borderDash: [6, 3],
-                                pointRadius: 0,
-                                pointHoverRadius: 4,
-                                pointHoverBackgroundColor: colors.warning,
-                                tension: 0.4,
-                                yAxisID: "y"
-                            },
-                            {
-                                label: "Avg",
-                                data: config.data.avg,
+                                label: "Total",
+                                data: config.data.total,
                                 borderColor: colors.accent,
-                                backgroundColor: colors.accent,
-                                borderWidth: 3,
-                                borderDash: [],
+                                backgroundColor: colors.accentSoft,
+                                borderWidth: 2,
                                 pointRadius: 0,
                                 pointHoverRadius: 4,
                                 pointHoverBackgroundColor: colors.accent,
-                                tension: 0.4,
+                                tension: 0.3,
+                                fill: true,
                                 yAxisID: "y"
-                            },
-                            {
-                                label: "Total",
-                                data: config.data.total,
-                                borderColor: colors.success,
-                                backgroundColor: colors.success,
-                                borderWidth: 2,
-                                borderDash: [2, 3],
-                                pointRadius: 0,
-                                pointHoverRadius: 4,
-                                pointHoverBackgroundColor: colors.success,
-                                tension: 0.4,
-                                yAxisID: "y1"
                             }
                         ]
                     },
@@ -727,7 +686,7 @@
                                     autoSkipPadding: 12,
                                     maxRotation: 0,
                                     autoSkip: true,
-                                    font: { size: 12 },
+                                    font: { size: 13 },
                                     callback: function (value) {
                                         var label = this.getLabelForValue(value);
 
@@ -748,32 +707,13 @@
                                     color: colors.muted,
                                     precision: 0,
                                     maxTicksLimit: tickLimit,
-                                    font: { size: 12 }
+                                    font: { size: 13 }
                                 },
                                 title: {
                                     display: true,
                                     text: config.unit,
                                     color: colors.muted,
-                                    font: { size: 12 }
-                                }
-                            },
-                            y1: {
-                                min: 0,
-                                beginAtZero: true,
-                                position: "right",
-                                border: { display: false },
-                                grid: { display: false, drawOnChartArea: false },
-                                ticks: {
-                                    color: colors.success,
-                                    precision: 0,
-                                    maxTicksLimit: tickLimit,
-                                    font: { size: 12 }
-                                },
-                                title: {
-                                    display: true,
-                                    text: "total " + config.unit,
-                                    color: colors.success,
-                                    font: { size: 12 }
+                                    font: { size: 13 }
                                 }
                             }
                         }

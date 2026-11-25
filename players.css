@@ -331,6 +331,11 @@
     text-decoration: underline;
 }
 
+.identity-badges a:not([href]) {
+    color: var(--text-2);
+    cursor: default;
+}
+
 .identity-country {
     display: inline-flex;
     align-items: center;
@@ -727,7 +732,7 @@
     background: var(--accent);
     color: var(--on-accent);
     font-family: var(--font-mono);
-    font-size: 0.75rem;
+    font-size: var(--text-xs);
     font-weight: 600;
     line-height: 1;
     white-space: nowrap;
@@ -833,6 +838,15 @@
     gap: var(--space-3);
 }
 
+.clan-toolbar-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+}
+
 .clan-table .rank-col {
     width: 64px;
     text-align: right;
@@ -841,11 +855,6 @@
 .clan-table-wrap {
     --table-sticky-top: calc(var(--topbar-h) + 1px);
     overflow: visible;
-}
-
-.clan-table .action-col {
-    width: 104px;
-    text-align: right;
 }
 
 .clan-table th .th-sort {
@@ -870,7 +879,8 @@
     cursor: pointer;
 }
 
-.clan-row:focus-within {
+.clan-row:focus-visible,
+.clan-card:focus-visible {
     background: var(--surface-2);
 }
 
@@ -900,11 +910,6 @@
     white-space: nowrap;
 }
 
-.clan-view {
-    display: flex;
-    justify-content: flex-end;
-}
-
 .clan-cards {
     display: none;
     gap: var(--space-3);
@@ -917,6 +922,7 @@
     border: 1px solid var(--border);
     border-radius: var(--radius-4);
     background: var(--surface);
+    cursor: pointer;
 }
 
 .clan-card-head {
@@ -953,11 +959,6 @@
 .clan-card-meta strong {
     color: var(--text);
     font-variant-numeric: tabular-nums;
-}
-
-.clan-card-actions {
-    display: flex;
-    justify-content: flex-end;
 }
 
 /* --------------------------------------------------------------------------
@@ -1360,6 +1361,16 @@
 
     .tee-panel {
         flex-direction: column;
+    }
+
+    .tee-stage {
+        min-height: 260px;
+        padding: var(--space-4);
+    }
+
+    .tee-stage .teeassembler-tee {
+        margin-left: 0;
+        transform: scale(1.6);
     }
 
     .tee-caption {

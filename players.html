@@ -146,7 +146,7 @@
                         <div>
                             <h2 class="identity-name" id="playerName">Player</h2>
                             <div class="identity-badges">
-                                <span class="badge" id="playerClan">Clan <a id="playerClanLink" href="#">N/A</a></span>
+                                <span class="badge" id="playerClan"><a id="playerClanLink" href="#">No clan</a></span>
                                 <span class="identity-country">
                                     <img class="identity-flag" id="countryFlag" alt="" width="22" height="15" hidden>
                                     <span id="playerCountry"></span>
@@ -460,17 +460,8 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-brand">TeeViewer</p>
             <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
-            <nav class="footer-links" aria-label="Footer">
-                <a href="players.html">Players</a>
-                <a href="clans.html">Clans</a>
-                <a href="maps.html">Maps</a>
-                <a href="servers.html">Servers</a>
-                <a href="status.html">Status</a>
-                <a href="skin.html">Skin</a>
-                <a href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
-            </nav>
+            <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
 
@@ -501,6 +492,34 @@
             var lastPlayerData = null;
             var onlineAttempts = {};
             var toastTimer = null;
+            var numberFormat = new Intl.NumberFormat("en-US");
+
+            if (typeof Chart !== "undefined") {
+                Chart.defaults.font.size = 13;
+            }
+
+            function formatCount(value) {
+                var number = Number(value);
+                return Number.isFinite(number) ? numberFormat.format(number) : "0";
+            }
+
+            function formatDate(value) {
+                if (!value) {
+                    return "N/A";
+                }
+
+                var date = new Date(value);
+
+                if (isNaN(date.getTime())) {
+                    return "N/A";
+                }
+
+                return date.toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                });
+            }
 
             function token(name) {
                 return window.getComputedStyle(document.documentElement)
@@ -817,7 +836,7 @@
                 lastPlayerData = playerData;
 
                 document.getElementById("playerName").textContent = profile.name || "N/A";
-                document.getElementById("playerPoints").textContent = playerData.profile.points || 0;
+                document.getElementById("playerPoints").textContent = formatCount(playerData.profile.points || 0);
 
                 var playerClan = document.getElementById("playerClanLink");
 
@@ -825,8 +844,8 @@
                     playerClan.textContent = profile.clan;
                     playerClan.href = "clans.html?clanName=" + encodeURIComponent(profile.clan);
                 } else {
-                    playerClan.textContent = "N/A";
-                    playerClan.href = "#";
+                    playerClan.textContent = "No clan";
+                    playerClan.removeAttribute("href");
                 }
 
                 var countryCode = profile.country !== undefined && profile.country !== null
@@ -845,7 +864,7 @@
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
                 document.getElementById("isMapper").textContent = playerData.is_mapper ? "Yes" : "No";
 
-                document.getElementById("totalFinishes").textContent = playerData.finishes ? playerData.finishes.length : 0;
+                document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 
                 var earliestFinishDate = null;
                 var mapPlaytime = {};
@@ -873,12 +892,8 @@
                 document.getElementById("totalSecondsPlayed").textContent = playerData.general_activity
                     ? formatTime(playerData.general_activity.total_seconds_played)
                     : "N/A";
-                document.getElementById("lastSeen").textContent = profile.last_seen
-                    ? new Date(profile.last_seen).toLocaleDateString()
-                    : "N/A";
-                document.getElementById("playerStartPlaytime").textContent = earliestFinishDate
-                    ? earliestFinishDate.toLocaleDateString()
-                    : "N/A";
+                document.getElementById("lastSeen").textContent = formatDate(profile.last_seen);
+                document.getElementById("playerStartPlaytime").textContent = formatDate(earliestFinishDate);
 
                 var mostPlayedMapsTableBody = document.getElementById("mostPlayedMapsTableBody");
                 mostPlayedMapsTableBody.innerHTML = "";
@@ -918,7 +933,7 @@
                         row.insertCell().textContent = finish.server;
                         row.insertCell().textContent = finish.time ? formatTime(finish.time.toFixed(2)) : "N/A";
                         row.cells[2].className = "num";
-                        row.insertCell().textContent = finish.timestamp ? new Date(finish.timestamp).toLocaleDateString() : "N/A";
+                        row.insertCell().textContent = formatDate(finish.timestamp);
                         row.insertCell().textContent = finish.rank
                             ? finish.rank.rank || finish.rank
                             : "N/A";
@@ -949,7 +964,7 @@
                     playerData.favourite_teammates.forEach(function (teammate) {
                         var row = favouriteTeammatesTableBody.insertRow();
                         row.insertCell().textContent = teammate.name || "N/A";
-                        row.insertCell().textContent = teammate.ranks_together || 0;
+                        row.insertCell().textContent = formatCount(teammate.ranks_together || 0);
                         row.cells[1].className = "num";
                     });
                 } else {
@@ -1086,7 +1101,7 @@
                     });
                 } else {
                     playtimeCtx.clearRect(0, 0, playtimeCtx.canvas.width, playtimeCtx.canvas.height);
-                    playtimeCtx.font = "600 12px " + token("--font-mono");
+                    playtimeCtx.font = "600 13px " + token("--font-mono");
                     playtimeCtx.fillStyle = token("--muted");
                     playtimeCtx.textAlign = "center";
                     playtimeCtx.fillText("No playtime data available.", playtimeCtx.canvas.width / 2, playtimeCtx.canvas.height / 2);
@@ -1185,7 +1200,7 @@
                     });
                 } else {
                     pointsCtx.clearRect(0, 0, pointsCtx.canvas.width, pointsCtx.canvas.height);
-                    pointsCtx.font = "600 12px " + token("--font-mono");
+                    pointsCtx.font = "600 13px " + token("--font-mono");
                     pointsCtx.fillStyle = token("--muted");
                     pointsCtx.textAlign = "center";
                     pointsCtx.fillText("No points data available.", pointsCtx.canvas.width / 2, pointsCtx.canvas.height / 2);
@@ -1268,7 +1283,7 @@
                     }
 
                     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
-                    context.font = "600 12px " + token("--font-mono");
+                    context.font = "600 13px " + token("--font-mono");
                     context.fillStyle = token("--muted");
                     context.textAlign = "center";
                     context.fillText("No " + label + " data available.", context.canvas.width / 2, context.canvas.height / 2);
@@ -1308,7 +1323,7 @@
                         track.appendChild(bar);
                         progressCell.appendChild(track);
 
-                        row.insertCell().textContent = category.maps_finished + " / " + category.maps_total;
+                        row.insertCell().textContent = formatCount(category.maps_finished) + " / " + formatCount(category.maps_total);
                         row.cells[2].className = "num";
                         row.insertCell().textContent = percentage + "%";
                         row.cells[3].className = "num";
@@ -1317,7 +1332,7 @@
                     var totalPercentage = totalMapsTotal > 0
                         ? ((totalMapsFinished / totalMapsTotal) * 100).toFixed(1)
                         : 0;
-                    document.getElementById("totalCompletionText").textContent = totalMapsFinished + " / " + totalMapsTotal + " maps completed (" + totalPercentage + "%)";
+                    document.getElementById("totalCompletionText").textContent = formatCount(totalMapsFinished) + " / " + formatCount(totalMapsTotal) + " maps completed (" + totalPercentage + "%)";
                     document.getElementById("totalProgressBar").style.width = totalPercentage + "%";
                     document.getElementById("totalProgressBar").textContent = totalPercentage + "%";
                 } else {
@@ -1383,7 +1398,7 @@
                             row.insertCell().textContent = formatTime(item.time);
                             row.cells[3].className = "num";
                             row.insertCell().textContent = item.server;
-                            row.insertCell().textContent = item.timestamp ? new Date(item.timestamp).toLocaleDateString() : "N/A";
+                            row.insertCell().textContent = formatDate(item.timestamp);
                         });
                     } else {
                         tableMessage(recentBody, 6, "No recent top 10s found.");
@@ -1399,7 +1414,7 @@
                     for (var rank = 1; rank <= 10; rank += 1) {
                         var row = rankBody.insertRow();
                         row.insertCell().textContent = getOrdinalSuffix(rank);
-                        row.insertCell().textContent = rankCounts[rank] || 0;
+                        row.insertCell().textContent = formatCount(rankCounts[rank] || 0);
                         row.cells[1].className = "num";
                     }
 
@@ -1414,7 +1429,7 @@
                             row.insertCell().textContent = formatTime(item.time);
                             row.cells[2].className = "num";
                             row.insertCell().textContent = item.map.server;
-                            row.insertCell().textContent = item.map.timestamp ? new Date(item.map.timestamp).toLocaleDateString() : "N/A";
+                            row.insertCell().textContent = formatDate(item.map.timestamp);
                         });
                     } else {
                         tableMessage(allBody, 5, "No top 10s found.");
@@ -1457,10 +1472,10 @@
 
                 return {
                     name: playerData.profile.name || "N/A",
-                    points: playerData.profile.points || 0,
-                    clan: info.clan || "N/A",
+                    points: formatCount(playerData.profile.points || 0),
+                    clan: info.clan || "No clan",
                     country: countryLabel(info.country),
-                    finishes: playerData.finishes ? playerData.finishes.length : 0,
+                    finishes: formatCount(playerData.finishes ? playerData.finishes.length : 0),
                     playtime: playerData.general_activity ? formatTime(playerData.general_activity.total_seconds_played) : "N/A",
                     mapper: playerData.is_mapper ? "Yes" : "No"
                 };

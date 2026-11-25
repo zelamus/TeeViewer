@@ -168,6 +168,19 @@
     line-height: var(--leading-snug);
 }
 
+.lock-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: var(--text-xs);
+    line-height: var(--leading-snug);
+}
+
+.lock-legend svg {
+    color: var(--warning);
+}
+
 .table-shell {
     border: 1px solid var(--border);
     border-radius: var(--radius-4);
@@ -242,7 +255,7 @@
 
 .sort-mark::before {
     color: var(--muted);
-    font-size: 12px;
+    font-size: var(--text-xs);
     content: "↕";
 }
 

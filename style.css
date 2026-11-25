@@ -135,7 +135,7 @@
     --border-strong: #34373d;
     --text: #f2f3f5;
     --text-2: #b9bcc2;
-    --muted: #8a8f98;
+    --muted: #c6c9cf;
     --accent: #4c8dff;
     --accent-hover: #6ba0ff;
     --on-accent: #08111f;
@@ -163,12 +163,12 @@
         "Segoe UI Emoji";
     --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
         "Liberation Mono", monospace;
-    --text-xs: 0.75rem;
-    --text-sm: 0.875rem;
-    --text-base: 0.875rem;
-    --text-h1: 1.75rem;
-    --text-h2: 1.125rem;
-    --text-h3: 0.9375rem;
+    --text-xs: 0.8125rem;
+    --text-sm: 0.9375rem;
+    --text-base: 0.9375rem;
+    --text-h1: 1.875rem;
+    --text-h2: 1.25rem;
+    --text-h3: 1.0625rem;
     --text-lg: 1.25rem;
     --text-xl: 1.5rem;
     --text-2xl: 1.75rem;
@@ -311,6 +311,8 @@ html {
 }
 
 body {
+    display: flex;
+    flex-direction: column;
     min-height: 100vh;
     margin: 0;
     background: var(--bg);
@@ -449,7 +451,7 @@ button:disabled {
 .logo {
     display: block;
     width: auto;
-    height: 34px;
+    height: 44px;
 }
 
 .nav {
@@ -494,13 +496,6 @@ button:disabled {
 
 .categories.is-active,
 .categories[aria-current="page"] {
-    border-color: var(--border);
-    background: var(--surface-2);
-    color: var(--text);
-}
-
-[data-theme="light"] .categories.is-active,
-[data-theme="light"] .categories[aria-current="page"] {
     border-color: var(--accent-border);
     background: var(--accent-soft);
     color: var(--accent);
@@ -564,12 +559,6 @@ button:disabled {
         display: block;
     }
 
-    :root:not([data-theme]) .categories.is-active,
-    :root:not([data-theme]) .categories[aria-current="page"] {
-        border-color: var(--accent-border);
-        background: var(--accent-soft);
-        color: var(--accent);
-    }
 }
 
 .menu-toggle {
@@ -705,8 +694,7 @@ button:disabled {
 .hero {
     position: relative;
     isolation: isolate;
-    padding: var(--space-4) 0 var(--space-4);
-    text-align: center;
+    padding: var(--space-4) 0;
 }
 
 .hero::before {
@@ -724,20 +712,31 @@ button:disabled {
 
 .hero-inner {
     position: relative;
-    max-width: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-5);
+    width: 100%;
+    max-width: var(--page-max);
     margin-inline: auto;
+}
+
+.hero-copy {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    min-width: 0;
 }
 
 .hero-logo {
     display: block;
-    width: min(120px, 40vw);
-    height: auto;
-    margin: 0 auto var(--space-3);
+    flex: none;
+    width: auto;
+    height: 44px;
 }
 
 .hero-title {
-    max-width: 26ch;
-    margin-inline: auto;
+    max-width: 34ch;
     font-weight: 600;
     letter-spacing: -0.025em;
     line-height: var(--leading-tight);
@@ -748,20 +747,19 @@ button:disabled {
 }
 
 .hero-sub {
-    max-width: 52ch;
-    margin: var(--space-2) auto 0;
+    max-width: 60ch;
+    margin-top: var(--space-1);
     color: var(--text-2);
     font-size: var(--text-sm);
-    line-height: var(--leading-relaxed);
+    line-height: var(--leading-snug);
     text-wrap: balance;
 }
 
 .hero-actions {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    flex: none;
+    flex-wrap: nowrap;
     gap: var(--space-2);
-    margin-top: var(--space-4);
 }
 
 /* --------------------------------------------------------------------------
@@ -957,6 +955,7 @@ a.card:hover {
    -------------------------------------------------------------------------- */
 
 .site-footer {
+    margin-top: auto;
     border-top: 1px solid var(--border);
 }
 
@@ -1552,12 +1551,14 @@ textarea.input {
         display: none;
     }
 
-    .hero {
-        padding: var(--space-4) 0;
+    .hero-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-3);
     }
 
-    .hero-sub {
-        font-size: var(--text-sm);
+    .hero-actions {
+        flex-wrap: wrap;
     }
 
     .stat-grid {
@@ -1636,7 +1637,7 @@ textarea.input {
     }
 
     .logo {
-        height: 30px;
+        height: 38px;
     }
 
     .hero {
@@ -1644,8 +1645,13 @@ textarea.input {
     }
 
     .hero-logo {
-        width: 104px;
-        margin-bottom: var(--space-3);
+        height: 36px;
+    }
+
+    .hero-copy {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--space-2);
     }
 
     .hero-actions {
@@ -1699,7 +1705,7 @@ textarea.input {
     }
 
     .logo {
-        height: 26px;
+        height: 32px;
     }
 
     .nav .categories {
@@ -1707,7 +1713,7 @@ textarea.input {
     }
 
     .hero-logo {
-        width: 92px;
+        height: 32px;
     }
 
     .quick-card {
