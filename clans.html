@@ -169,7 +169,7 @@
 
             <div id="clansResults" hidden>
                 <div class="result-bar clan-result-bar">
-                    <p class="result-count" id="clanCount" role="status">Loading clans…</p>
+                    <p class="result-count" id="clanCount" role="status"><span id="clanCountText">Loading clans…</span> <time class="count-asof" id="clanCountAsOf" hidden></time></p>
                     <nav class="pager pager-top" id="clanPagerTop" aria-label="Clan pages (top)">
                         <button class="button ghost button-sm" type="button" data-clan-prev>Previous</button>
                         <span class="pager-status" data-clan-page-status role="status"></span>
@@ -275,6 +275,8 @@
             var clanSearch = document.getElementById("clanSearch");
             var sortBy = document.getElementById("sortBy");
             var clanCount = document.getElementById("clanCount");
+            var clanCountText = document.getElementById("clanCountText");
+            var clanCountAsOf = document.getElementById("clanCountAsOf");
             var clansLoading = document.getElementById("clansLoading");
             var clansError = document.getElementById("clansError");
             var clansEmpty = document.getElementById("clansEmpty");
@@ -308,14 +310,18 @@
 
                 (clan && clan.players ? clan.players : []).forEach(function (player) {
                     var name = displayName(player && player.name);
+                    var clean = name
+                        .replace(/^[\s\-–—·•|,;:.]+/u, "")
+                        .replace(/[\s\-–—·•|,;:.]+$/u, "")
+                        .trim();
 
-                    if (name && !seen[name]) {
-                        seen[name] = true;
-                        names.push(name);
+                    if (clean && /[\p{L}\p{N}]/u.test(clean) && hasVisibleName(clean) && !seen[clean]) {
+                        seen[clean] = true;
+                        names.push(clean);
                     }
                 });
 
-                return names.slice(0, 3);
+                return names.slice(0, 2);
             }
 
             function isTestClan(clan) {
@@ -361,6 +367,15 @@
                 }
             }
 
+            function markCountAsOf(text) {
+                if (!clanCountAsOf) {
+                    return;
+                }
+
+                clanCountAsOf.textContent = text ? "as of " + text : "";
+                clanCountAsOf.hidden = !text;
+            }
+
             function setLoading(loading) {
                 clansLoading.hidden = !loading;
 
@@ -369,7 +384,8 @@
                     clansEmpty.hidden = true;
                     clansResults.hidden = true;
                     clanPager.hidden = true;
-                    clanCount.textContent = "Loading clans…";
+                    clanCountText.textContent = "Loading clans…";
+                markCountAsOf("");
                 }
             }
 
@@ -379,7 +395,8 @@
                 clansResults.hidden = true;
                 clanPager.hidden = true;
                 clansError.hidden = false;
-                clanCount.textContent = "Clans are unavailable";
+                clanCountText.textContent = "Clans are unavailable";
+                markCountAsOf("");
             }
 
             async function loadClans() {
@@ -489,7 +506,8 @@
                     return result || String(a.name || "").localeCompare(String(b.name || ""));
                 });
 
-                clanCount.textContent = filteredAndSortedClans.length + " of " + allClans.length + " clans";
+                clanCountText.textContent = filteredAndSortedClans.length + " of " + allClans.length + " clans";
+                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
                 currentClanPage = 1;
                 displayClans(filteredAndSortedClans);            }
 
@@ -504,7 +522,8 @@
                     clansEmpty.hidden = false;
                     clanPager.hidden = true;
                     clanPagerTop.hidden = true;
-                    clanCount.textContent = "No clans match this search";
+                    clanCountText.textContent = "No clans match this search";
+                    markCountAsOf("");
                     return;
                 }
 
@@ -524,7 +543,8 @@
                 var endIndex = Math.min(startIndex + clanPageSize, total);
                 var pageClans = clans.slice(startIndex, endIndex);
 
-                clanCount.textContent = "Showing " + (startIndex + 1) + "–" + endIndex + " of " + total + " clans";
+                clanCountText.textContent = "Showing " + (startIndex + 1) + "–" + endIndex + " of " + total + " clans";
+                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
                 clanPager.hidden = total <= clanPageSize;
                 clanPagerTop.hidden = total <= clanPageSize;
 

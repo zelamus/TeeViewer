@@ -134,7 +134,7 @@
             </section>
 
             <div class="result-bar">
-                <p class="result-count" id="mapCount" role="status" aria-live="polite">Loading maps…</p>
+                <p class="result-count" id="mapCount" role="status" aria-live="polite"><span id="mapCountText">Loading maps…</span> <time class="count-asof" id="mapCountAsOf" hidden></time></p>
                 <p class="filter-legend"><span class="filter-legend-star" aria-hidden="true">★</span> Stars: 1-5, higher is harder</p>
                 <nav class="pager pager-top" id="mapPagerTop" aria-label="Map pages (top)">
                     <button class="button ghost button-sm" type="button" data-pager-prev>Previous</button>
@@ -427,6 +427,8 @@
                 dom.grid = document.getElementById("mapsTableBody");
                 dom.state = document.getElementById("mapsState");
                 dom.count = document.getElementById("mapCount");
+                dom.countText = document.getElementById("mapCountText");
+                dom.countAsOf = document.getElementById("mapCountAsOf");
                 dom.resultNote = document.getElementById("mapResultNote");
                 dom.showMore = document.getElementById("mapNextBtn");
             dom.pagers = document.querySelectorAll(".pager");
@@ -569,7 +571,7 @@
                 var empty = new Array(6 - stars).join("☆");
                 var label = stars > 0 ? stars + " of 5 stars" : "0 stars";
 
-                return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + "</span></span></span>";
+                return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + '</span><span class="map-stars-num">' + stars + '/5</span></span></span>';
             }
 
             function skeletonCards(count) {
@@ -602,6 +604,15 @@
                 return markup;
             }
 
+            function markCountAsOf(text) {
+                if (!dom.countAsOf) {
+                    return;
+                }
+
+                dom.countAsOf.textContent = text ? "as of " + text : "";
+                dom.countAsOf.hidden = !text;
+            }
+
             function hidePagers() {
                 for (var i = 0; i < dom.pagers.length; i += 1) {
                     dom.pagers[i].hidden = true;
@@ -612,7 +623,8 @@
                 dom.state.hidden = true;
                 dom.grid.hidden = false;
                 hidePagers();
-                dom.count.textContent = "Loading maps…";
+                dom.countText.textContent = "Loading maps…";
+                markCountAsOf("");
                 dom.resultNote.textContent = "";
                 dom.grid.innerHTML = skeletonCards(8);
             }
@@ -637,13 +649,15 @@
             }
 
             function showMapsError() {
-                dom.count.textContent = "Maps unavailable";
+                dom.countText.textContent = "Maps unavailable";
+                markCountAsOf("");
                 dom.resultNote.textContent = "";
                 statePanel("error", "Could not load the map index", "The map data source is unavailable right now.", "Retry", "retry-maps");
             }
 
             function showMapsEmpty() {
-                dom.count.textContent = "No matching maps";
+                dom.countText.textContent = "No matching maps";
+                markCountAsOf("");
                 dom.resultNote.textContent = "";
                 statePanel("empty", "No maps match these filters", "Try another mapper, a different difficulty, or a wider search.", "Reset filters", "reset-map-filters");
             }
@@ -782,8 +796,8 @@
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
                     "</span>" +
                     '<span class="map-card-tags">' +
-                        '<span class="badge difficulty-badge"><span class="pill-label">Difficulty</span>' + starsMarkup(item ? item.stars : 0) + "</span>" +
-                        '<span class="badge server-badge"><span class="pill-label">Server</span>' + escapeHtml(server) + "</span>" +
+                        '<span class="map-card-chip-row"><span class="badge difficulty-badge"><span class="pill-label">Difficulty</span>' + starsMarkup(item ? item.stars : 0) + "</span></span>" +
+                        '<span class="map-card-chip-row"><span class="badge server-badge"><span class="pill-label">Server</span>' + escapeHtml(server) + "</span></span>" +
                         '<span class="map-card-mapper"> by ' + escapeHtml(mapper) + "</span>" +
                     "</span>" +
                     '<span class="map-card-foot">' +
@@ -818,7 +832,8 @@
                 var lastPage = Math.max(1, Math.ceil(total / mapPageSize));
                 var firstShown = total ? startIndex + 1 : 0;
                 var shown = Math.min(endIndex, total);
-                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " maps";
+                dom.countText.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " maps";
+                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
                 dom.resultNote.textContent = total === allMaps.length
                     ? "Full map index"
                     : "Filtered from " + formatNumber(allMaps.length) + " maps";

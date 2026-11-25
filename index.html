@@ -89,6 +89,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Online now</span>
+                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
 
                 <a class="stat-tile" href="servers.html">
@@ -98,6 +99,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Reporting in</span>
+                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
 
                 <a class="stat-tile" href="clans.html">
@@ -107,6 +109,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Tracked</span>
+                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
 
                 <a class="stat-tile" href="maps.html">
@@ -116,6 +119,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Active maps</span>
+                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
             </div>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
@@ -221,6 +225,7 @@
                     if (asOfSep) {
                         asOfSep.hidden = false;
                     }
+                    markTileAsOf("snapshot");
                 })
                 .catch(function () {
                     return;
@@ -247,6 +252,13 @@
                 }
             }
 
+            function markTileAsOf(text) {
+                grid.querySelectorAll("[data-stat-asof]").forEach(function (node) {
+                    node.textContent = "as of " + text;
+                    node.hidden = false;
+                });
+            }
+
             function markAsOf() {
                 if (!asOfLine) {
                     return;
@@ -258,6 +270,7 @@
 
                 asOfLine.textContent = hours + ":" + minutes;
                 asOfLine.hidden = false;
+                markTileAsOf(hours + ":" + minutes);
 
                 if (asOfSep) {
                     asOfSep.hidden = false;
@@ -279,6 +292,7 @@
                         return;
                     }
                     asOfLine.textContent = "Snapshot";
+                    markTileAsOf("Snapshot");
                 })
                 .finally(function () {
                     window.clearTimeout(timeout);
@@ -393,17 +407,10 @@
                 }
             }
 
-            function serverLabel(server, list) {
+            function serverLabel(server) {
                 var name = server && server.name ? server.name : "Unnamed server";
-                var count = 0;
 
-                (list || []).forEach(function (item) {
-                    if (item && (item.name || "Unnamed server") === name) {
-                        count += 1;
-                    }
-                });
-
-                if (count > 1 && server && server.ip) {
+                if (server && server.ip) {
                     var parts = String(server.ip).split(".");
                     var shortIp = parts.length >= 2 ? parts.slice(-2).join(".") : String(server.ip);
                     return name + " (" + shortIp + ":" + server.port + ")";

@@ -116,7 +116,7 @@
                     <label class="field">
                         <span class="field-label">Sort by</span>
                         <select class="select" id="sortBy">
-                            <option value="relevanceScore">Relevance</option>
+                            <option value="players" selected>Players (most first)</option>
                             <option value="name">Name</option>
                             <option value="players">Players</option>
                             <option value="map">Map</option>
@@ -152,7 +152,7 @@
             </section>
 
             <div class="result-bar">
-                <p class="result-count" id="serverCount" role="status" aria-live="polite">Loading servers…</p>
+                <p class="result-count" id="serverCount" role="status" aria-live="polite"><span id="serverCountText">Loading servers…</span> <time class="count-asof" id="serverCountAsOf" hidden></time></p>
                 <p class="result-hint">
                     <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                         <circle cx="12" cy="12" r="9"></circle>
@@ -370,7 +370,7 @@
 
             var allServers = [];
             var duplicateNameCount = {};
-            var currentSort = { column: "relevanceScore", direction: "desc" };
+            var currentSort = { column: "players", direction: "desc" };
             var filteredAndSortedServers = [];
             var serversPerPage = 50;
             var currentPage = 1;
@@ -398,6 +398,8 @@
                 dom.cards = document.getElementById("serversCardList");
                 dom.state = document.getElementById("serversState");
                 dom.count = document.getElementById("serverCount");
+                dom.countText = document.getElementById("serverCountText");
+                dom.countAsOf = document.getElementById("serverCountAsOf");
                 dom.resultNote = document.getElementById("serverResultNote");
                 dom.showMore = document.getElementById("showMoreServersBtn");
                 dom.pagers = document.querySelectorAll(".pager");
@@ -565,6 +567,15 @@
                 return url + "#retry=" + Date.now();
             }
 
+            function markCountAsOf(text) {
+                if (!dom.countAsOf) {
+                    return;
+                }
+
+                dom.countAsOf.textContent = text ? "as of " + text : "";
+                dom.countAsOf.hidden = !text;
+            }
+
             function hidePagers() {
                 for (var i = 0; i < dom.pagers.length; i += 1) {
                     dom.pagers[i].hidden = true;
@@ -576,7 +587,8 @@
                 dom.state.hidden = true;
                 dom.tableWrap.hidden = false;
                 dom.cards.hidden = false;
-                dom.count.textContent = "Loading servers…";
+                dom.countText.textContent = "Loading servers…";
+                markCountAsOf("");
                 dom.resultNote.textContent = "";
                 dom.showMore.hidden = true;
                 dom.tableBody.innerHTML = "";
@@ -629,13 +641,15 @@
             }
 
             function showListError() {
-                dom.count.textContent = "Servers unavailable";
+                dom.countText.textContent = "Servers unavailable";
+                markCountAsOf("");
                 dom.resultNote.textContent = "";
                 statePanel("error", "Could not load servers", "Live server data is unavailable right now.", "Retry", "retry-list");
             }
 
             function showEmptyFilters() {
-                dom.count.textContent = "No matching servers";
+                dom.countText.textContent = "No matching servers";
+                markCountAsOf("");
                 dom.resultNote.textContent = "";
                 statePanel("empty", "No servers match these filters", "Try a wider search, another game type, or a lower player minimum.", "Reset filters", "reset-filters");
             }
@@ -870,7 +884,8 @@
                 var firstShown = total ? startIndex + 1 : 0;
                 var shown = Math.min(endIndex, total);
 
-                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " servers";
+                dom.countText.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " servers";
+                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
                 dom.resultNote.textContent = total === allServers.length
                     ? "Live network total"
                     : "Filtered from " + formatNumber(allServers.length) + " servers";
@@ -918,7 +933,7 @@
                     '<td class="server-name-cell"><a class="server-name table-link" href="servers.html?ip=' + encodeURIComponent(server.ip) + "&port=" + encodeURIComponent(server.port) + '" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</a>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
-                    '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + '</span> <span class="capacity-mini-pct">' + capacityPercent(server) + "%</span></span>" +
+                    '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + "</span></span>" +
                     "</td>" +
                     '<td class="mono cell-version" title="' + (version ? escapeHtml(formatVersionLabel(version)) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
                     '<td class="action-col"><span class="row-chevron" aria-hidden="true">→</span></td>' +
@@ -942,7 +957,6 @@
                     '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
                     '<div class="server-card-capacity">' +
                         '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
-                        '<span class="capacity-mini-pct">' + capacityPercent(server) + "%</span>" +
                     "</div>" +
                     '<div class="server-card-foot">' +
                         '<span class="mono cell-version" title="' + (version ? escapeHtml(formatVersionLabel(version)) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</span>" +
@@ -1010,10 +1024,10 @@
                 dom.gameType.value = "";
                 dom.map.value = "";
                 dom.minPlayers.value = "";
-                dom.sort.value = "relevanceScore";
+                dom.sort.value = "players";
                 dom.password.setAttribute("aria-pressed", "false");
                 activeProtocol = "";
-                currentSort = { column: "relevanceScore", direction: "desc" };
+                currentSort = { column: "players", direction: "desc" };
 
                 var protocolButtons = document.querySelectorAll("[data-protocol]");
 

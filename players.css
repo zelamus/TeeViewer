@@ -242,7 +242,7 @@
 .profile-layout {
     display: grid;
     grid-template-columns: 300px minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: var(--space-4);
     margin-bottom: var(--space-4);
 }
@@ -265,7 +265,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 224px;
+    min-height: 150px;
     overflow: hidden;
 }
 
@@ -278,6 +278,7 @@
 .tee-stage .teeassembler-tee {
     flex: none;
     margin-left: 0;
+    transform: scale(1.4);
     cursor: pointer;
 }
 
@@ -937,7 +938,7 @@
 }
 
 .clan-result-bar .pager-top {
-    margin: 0;
+    margin: 0 0 0 auto;
 }
 
 .clan-table {
@@ -1437,6 +1438,7 @@
         grid-column: 1;
         grid-row: auto;
         justify-content: flex-start;
+        margin: 0;
     }
 
     .state-card {
@@ -1601,14 +1603,15 @@
     .tee-stage {
         flex: none;
         width: 100%;
-        min-height: 100px;
-        padding: var(--space-2);
-        overflow: clip;
+        height: 104px;
+        min-height: 0;
+        padding: var(--space-1);
+        overflow: hidden;
     }
 
     .tee-stage .teeassembler-tee {
         margin-left: 0;
-        transform: scale(1.1);
+        transform: scale(0.9);
     }
 
     .tee-caption {
@@ -1651,6 +1654,7 @@
     .identity-badges {
         flex-wrap: nowrap;
         gap: var(--space-1);
+        overflow: hidden;
     }
 
     .identity-badges .badge-label {
@@ -1659,9 +1663,23 @@
 
     .identity-badges .badge,
     .identity-badges .identity-country {
+        flex: 0 1 auto;
         min-width: 0;
         padding-inline: var(--space-2);
         font-size: var(--text-xs);
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .identity-badges a {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .identity-badges .status-chip {
+        flex: none;
     }
 }
 
