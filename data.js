@@ -12,6 +12,27 @@
   ];
 
   var cache = new Map();
+  var CACHE_PREFIX = 'teeviewer-cache:';
+  var CACHE_TTL = 10 * 60 * 1000;
+
+  function readStored(url) {
+    try {
+      var raw = window.localStorage.getItem(CACHE_PREFIX + url);
+      if (!raw) return null;
+      var entry = JSON.parse(raw);
+      return entry && entry.ts && entry.data ? entry : null;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeStored(url, data) {
+    try {
+      window.localStorage.setItem(CACHE_PREFIX + url, JSON.stringify({ ts: Date.now(), data: data }));
+    } catch (error) {
+      /* storage may be unavailable */
+    }
+  }
 
   function timeout(ms) {
     if (typeof AbortSignal !== 'undefined' && AbortSignal.timeout) {
@@ -49,15 +70,24 @@
   }
 
   window.fetchJSON = function (url) {
+    var stored = readStored(url);
+
+    if (stored && Date.now() - stored.ts < CACHE_TTL) {
+      return Promise.resolve(stored.data);
+    }
+
     if (cache.has(url)) return cache.get(url);
     var task = (async function () {
       for (var i = 0; i < RELAYS.length; i += 1) {
         try {
-          return await getJSON(RELAYS[i].url(url), RELAYS[i].text);
+          var data = await getJSON(RELAYS[i].url(url), RELAYS[i].text);
+          writeStored(url, data);
+          return data;
         } catch (relayError) {
           /* try the next relay */
         }
       }
+      if (stored) return stored.data;
       throw new Error('Live data unavailable');
     })();
     cache.set(url, task);
