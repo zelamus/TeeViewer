@@ -410,7 +410,7 @@
 
             function applyFiltersAndSort() {
                 var searchTerm = clanSearch.value.trim().toLowerCase();
-                var sortValue = sortBy.value;
+                var sortValue = currentSort.column;
 
                 filteredAndSortedClans = allClans.filter(function (clan) {
                     if (showTestClansBtn.getAttribute("aria-pressed") !== "true" && isTestClan(clan)) {
@@ -447,11 +447,11 @@
                             bValue = String(b.name || "").toLowerCase();
                     }
 
-                    if (typeof aValue === "string") {
-                        return aValue.localeCompare(bValue) * (currentSort.direction === "asc" ? 1 : -1);
-                    }
+                    var result = typeof aValue === "string"
+                        ? aValue.localeCompare(bValue) * (currentSort.direction === "asc" ? 1 : -1)
+                        : (aValue - bValue) * (currentSort.direction === "asc" ? 1 : -1);
 
-                    return (aValue - bValue) * (currentSort.direction === "asc" ? 1 : -1);
+                    return result || String(a.name || "").localeCompare(String(b.name || ""));
                 });
 
                 clanCount.textContent = filteredAndSortedClans.length + " of " + allClans.length + " clans";

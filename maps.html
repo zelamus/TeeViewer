@@ -1009,7 +1009,6 @@
                 dom.subtitle.textContent = type + " · " + formatNumber(points) + " points · by " + mapper;
                 dom.badges.innerHTML =
                     '<span class="badge">' + escapeHtml(type) + "</span>" +
-                    '<span class="badge map-stars-badge">' + starsMarkup(stars) + "</span>" +
                     '<span class="badge">' + formatNumber(points) + " points</span>";
                 dom.ddnetLink.href = mapUrl(mapInfo.map);
 

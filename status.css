@@ -36,7 +36,6 @@
     border-radius: var(--radius-pill);
     background: var(--surface);
     color: var(--text-2);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     letter-spacing: var(--tracking-wide);
     line-height: 1;
@@ -150,7 +149,6 @@
     align-items: center;
     gap: var(--space-2);
     color: var(--text-2);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     line-height: 1;
 }
@@ -271,7 +269,6 @@ html.js .chart-card.is-loading .chart-box canvas {
     min-height: 1.4em;
     margin-top: var(--space-3);
     color: var(--muted);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
 }
 
@@ -522,7 +519,6 @@ html.js .chart-card.is-loading .chart-box canvas {
 .kv-key {
     min-width: 0;
     color: var(--text-2);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     overflow-wrap: anywhere;
 }
@@ -652,7 +648,6 @@ html.js .chart-card.is-loading .chart-box canvas {
     border-radius: var(--radius-pill);
     background: var(--surface);
     color: var(--text-2);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     line-height: 1;
 }

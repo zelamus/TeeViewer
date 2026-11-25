@@ -156,10 +156,6 @@
             <div class="result-bar">
                 <p class="result-count" id="serverCount" role="status" aria-live="polite">Loading servers…</p>
                 <p class="result-hint">Select a server for details</p>
-                <p class="lock-legend">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>
-                    Lock = password protected
-                </p>
             </div>
 
             <div class="table-shell" id="serversTableWrap">
@@ -180,7 +176,6 @@
                                 <button class="sort-button" type="button" data-sort="players">Players <span class="sort-mark" aria-hidden="true"></span></button>
                             </th>
                             <th scope="col">Version</th>
-                            <th scope="col" class="icon-col" title="Password protected">Lock</th>
                             <th scope="col" class="action-col"><span class="visually-hidden">Action</span></th>
                         </tr>
                     </thead>
@@ -191,7 +186,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-icon"></span></td>
                             <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
@@ -200,7 +194,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-icon"></span></td>
                             <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
@@ -209,7 +202,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-icon"></span></td>
                             <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
@@ -218,7 +210,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-icon"></span></td>
                             <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
@@ -227,7 +218,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-icon"></span></td>
                             <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
@@ -236,7 +226,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-icon"></span></td>
                             <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                     </tbody>
@@ -546,7 +535,6 @@
                         '<td><span class="skeleton sk sk-type"></span></td>' +
                         '<td><span class="skeleton sk sk-num"></span></td>' +
                         '<td><span class="skeleton sk sk-ver"></span></td>' +
-                        '<td><span class="skeleton sk sk-icon"></span></td>' +
                         '<td><span class="skeleton sk sk-action"></span></td>';
                     dom.tableBody.appendChild(row);
                 }
@@ -816,14 +804,13 @@
                     : '<span class="muted">—</span>';
 
                 return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0">' +
-                    '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span></td>" +
+                    '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</td>" +
                     '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(shortVersion(version)) : "—") + "</td>" +
-                    '<td class="icon-col">' + passwordIcon(server) + "</td>" +
                     '<td class="action-col"><button class="button ghost button-sm" type="button" data-open-server>Details</button></td>' +
                     "</tr>";
             }

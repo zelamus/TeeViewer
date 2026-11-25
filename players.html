@@ -201,7 +201,7 @@
             <div class="chart-grid">
                 <section class="panel" aria-labelledby="points-chart-title">
                     <div class="panel-head">
-                        <h2 class="panel-title" id="points-chart-title">Points over time</h2>
+                        <h2 class="panel-title" id="points-chart-title">Points</h2>
                         <span class="panel-note">Recorded point changes</span>
                     </div>
                     <div class="chart-frame">
@@ -862,7 +862,7 @@
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
-                document.getElementById("isMapper").textContent = playerData.is_mapper ? "Yes" : "No";
+                document.getElementById("isMapper").textContent = playerData.is_mapper ? "Yes" : "Unknown";
 
                 document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 
@@ -1047,18 +1047,13 @@
                             animation: false,
                             layout: {
                                 padding: {
-                                    top: 4,
-                                    right: 8
+                                    top: 12,
+                                    right: 12
                                 }
                             },
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: "Hours played",
-                                        color: axisColor
-                                    },
                                     ticks: {
                                         color: axisColor,
                                         callback: function (value) {
@@ -1071,11 +1066,6 @@
                                 },
                                 x: {
                                     reverse: true,
-                                    title: {
-                                        display: true,
-                                        text: "Month",
-                                        color: axisColor
-                                    },
                                     ticks: {
                                         color: axisColor,
                                         autoSkip: true,
@@ -1150,18 +1140,13 @@
                             animation: false,
                             layout: {
                                 padding: {
-                                    top: 4,
-                                    right: 8
+                                    top: 12,
+                                    right: 12
                                 }
                             },
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    title: {
-                                        display: true,
-                                        text: "Points",
-                                        color: axisColor
-                                    },
                                     ticks: {
                                         color: axisColor
                                     },
@@ -1170,11 +1155,6 @@
                                     }
                                 },
                                 x: {
-                                    title: {
-                                        display: true,
-                                        text: "Date",
-                                        color: axisColor
-                                    },
                                     ticks: {
                                         color: axisColor,
                                         autoSkip: true,

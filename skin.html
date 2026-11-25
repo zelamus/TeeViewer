@@ -127,9 +127,9 @@
                     <p class="field-hint is-error" id="color-error" hidden>Enter whole numbers from 0 to 16777215 for both colour codes.</p>
 
                     <div class="skin-actions">
-                        <button class="button primary" type="submit" id="skin-submit">Update preview</button>
+                        <button class="button ghost" type="submit" id="skin-submit">Update preview</button>
                         <button class="button ghost" type="button" id="resetSkin">Reset</button>
-                        <a class="button ghost" id="downloadSkin" download="tee-skin.png" hidden>Download skin</a>
+                        <a class="button primary" id="downloadSkin" download="tee-skin.png" hidden>Download skin</a>
                     </div>
                 </form>
 
@@ -164,7 +164,52 @@
             }
 
             function skinColor(value) {
-                return "#" + (Number(value) >>> 0).toString(16).padStart(6, "0").slice(-6);
+                var code = Number(value) >>> 0;
+                var hueByte = (code >> 16) & 255;
+                var hue = hueByte === 255 ? 0 : (hueByte * 360) / 255;
+                var saturation = (((code >> 8) & 255) * 100) / 255;
+                var lightness = ((((code & 255) / 255) / 2) + 0.5) * 100;
+                var chroma;
+                var second;
+                var huePrime;
+                var adjustment;
+                var red = 0;
+                var green = 0;
+                var blue = 0;
+
+                if (lightness < 52.5) {
+                    lightness = 52.5;
+                }
+
+                chroma = (1 - Math.abs(((2 * lightness) / 100) - 1)) * (saturation / 100);
+                huePrime = hue / 60;
+                second = chroma * (1 - Math.abs((huePrime % 2) - 1));
+                huePrime = Math.floor(huePrime);
+
+                if (huePrime === 1) {
+                    red = second;
+                    green = chroma;
+                } else if (huePrime === 2) {
+                    green = chroma;
+                    blue = second;
+                } else if (huePrime === 3) {
+                    green = second;
+                    blue = chroma;
+                } else if (huePrime === 4) {
+                    red = second;
+                    blue = chroma;
+                } else if (huePrime === 5) {
+                    red = chroma;
+                    blue = second;
+                } else {
+                    red = chroma;
+                }
+
+                adjustment = (lightness / 100) - (chroma / 2);
+
+                return "#" + [red, green, blue].map(function (part) {
+                    return Math.round((part + adjustment) * 255).toString(16).padStart(2, "0");
+                }).join("");
             }
 
             function setText(id, text) {

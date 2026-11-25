@@ -66,7 +66,6 @@
 
 .field-label {
     color: var(--muted);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     font-weight: 500;
     letter-spacing: var(--tracking-wide);
@@ -208,8 +207,8 @@
 
 .map-card-mapper {
     min-width: 0;
-    color: var(--muted);
-    font-size: var(--text-xs);
+    color: var(--text-2);
+    font-size: 13px;
     line-height: var(--leading-snug);
     overflow-wrap: anywhere;
 }
@@ -460,7 +459,6 @@ body.map-modal-open {
 .detail-kicker {
     margin-bottom: var(--space-2);
     color: var(--muted);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     font-weight: 500;
     letter-spacing: var(--tracking-wide);
@@ -484,15 +482,6 @@ body.map-modal-open {
     flex-wrap: wrap;
     justify-content: flex-end;
     gap: var(--space-2);
-}
-
-.map-stars-badge {
-    font-family: var(--font-mono);
-}
-
-.map-stars-badge .map-stars {
-    font-size: var(--text-xs);
-    letter-spacing: 0;
 }
 
 .map-detail-grid {
@@ -523,7 +512,6 @@ body.map-modal-open {
 
 .detail-section-title {
     color: var(--text-2);
-    font-family: var(--font-mono);
     font-size: var(--text-xs);
     font-weight: 600;
     letter-spacing: var(--tracking-wide);
