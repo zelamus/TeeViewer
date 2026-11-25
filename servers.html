@@ -383,6 +383,7 @@
             var lastServerTrigger = null;
             var failureCount = 0;
             var numberFormat = new Intl.NumberFormat("en-US");
+            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
 
             if (typeof Chart !== "undefined") {
                 Chart.defaults.font.size = 13;
@@ -885,7 +886,7 @@
                 var shown = Math.min(endIndex, total);
 
                 dom.countText.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " servers";
-                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+                markCountAsOf(timeFormat.format(new Date()));
                 dom.resultNote.textContent = total === allServers.length
                     ? "Live network total"
                     : "Filtered from " + formatNumber(allServers.length) + " servers";
@@ -954,7 +955,7 @@
                         '<h3 class="server-card-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</h3>" +
                         (server.hasPassword ? passwordIcon(server) : "") +
                     "</div>" +
-                    '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
+                    '<p class="server-card-meta"><span class="card-meta-label">Map</span> ' + mapMarkup + '<span class="card-meta-sep"> · </span><span class="card-meta-label">Type</span> ' + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
                     '<div class="server-card-capacity">' +
                         '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
                     "</div>" +

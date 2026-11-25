@@ -1357,10 +1357,6 @@
         grid-template-columns: 1fr;
     }
 
-    .identity-card {
-        order: -1;
-    }
-
     .tee-panel {
         flex-direction: row;
         justify-content: center;

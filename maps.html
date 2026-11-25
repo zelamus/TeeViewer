@@ -92,7 +92,7 @@
                     </label>
 
                     <label class="field">
-                        <span class="field-label">Server</span>
+                        <span class="field-label">Server type</span>
                         <select class="select" id="typeFilter">
                             <option value="">All server types</option>
                         </select>
@@ -420,6 +420,7 @@
             var lastServerTrigger = null;
             var lastMaximizeTrigger = null;
             var numberFormat = new Intl.NumberFormat("en-US");
+            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
             var dom = {};
 
             function getDom() {
@@ -792,6 +793,7 @@
                 var points = item ? item.points : 0;
 
                 return '<button class="map-card" type="button" data-map="' + escapeHtml(mapName) + '">' +
+                    '<span class="map-card-tile" aria-hidden="true"><span class="map-tile-mark"></span></span>' +
                     '<span class="map-card-head">' +
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
                     "</span>" +
@@ -833,7 +835,7 @@
                 var firstShown = total ? startIndex + 1 : 0;
                 var shown = Math.min(endIndex, total);
                 dom.countText.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " maps";
-                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+                markCountAsOf(timeFormat.format(new Date()));
                 dom.resultNote.textContent = total === allMaps.length
                     ? "Full map index"
                     : "Filtered from " + formatNumber(allMaps.length) + " maps";

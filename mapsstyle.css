@@ -41,24 +41,27 @@
 
 .filter-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.5fr);
     align-items: end;
     gap: var(--space-3);
 }
 
 .filter-row-end {
     display: flex;
+    flex-wrap: wrap;
     align-items: end;
     gap: var(--space-3);
     min-width: 0;
 }
 
 .filter-row-end .field {
-    flex: 1 1 auto;
+    flex: 1 1 120px;
+    min-width: 0;
 }
 
 .filter-row-end .reset-button {
     flex: none;
+    min-width: 0;
 }
 
 .filter-legend {
@@ -189,6 +192,30 @@
 
 .map-card:focus-visible {
     border-color: var(--accent-border);
+}
+
+.map-card-tile {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 72px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-2);
+    background-color: var(--accent-soft);
+    background-image:
+        linear-gradient(var(--border) 1px, transparent 1px),
+        linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-position: 0 0;
+    background-size: 18px 18px;
+}
+
+.map-tile-mark {
+    position: absolute;
+    inset: 16px 22px;
+    border: 2px solid var(--accent);
+    border-radius: 2px;
+    opacity: 0.7;
 }
 
 .map-card-head {
@@ -421,6 +448,18 @@
 .pager-top {
     justify-content: flex-end;
     margin: 0;
+}
+
+.pager .button {
+    border-color: transparent;
+    background: transparent;
+    color: var(--text-2);
+}
+
+.pager .button:hover:not(:disabled) {
+    border-color: var(--border);
+    background: var(--surface-2);
+    color: var(--text);
 }
 
 .pager-status {

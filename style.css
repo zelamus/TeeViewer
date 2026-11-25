@@ -552,10 +552,16 @@ button:disabled {
 
 .nav-buttons a[href^="https://discord.com/"] {
     margin-left: var(--space-3);
-    border-color: var(--accent-border);
-    background: var(--accent-soft);
-    color: var(--accent);
-    font-weight: 600;
+    border-color: transparent;
+    background: transparent;
+    color: var(--muted);
+    font-weight: 500;
+}
+
+.nav-buttons a[href^="https://discord.com/"]:hover {
+    border-color: transparent;
+    background: var(--surface-2);
+    color: var(--text-2);
 }
 
 .nav-buttons a[href^="https://discord.com/"]::after {

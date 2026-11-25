@@ -89,7 +89,6 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Online now</span>
-                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
 
                 <a class="stat-tile" href="servers.html">
@@ -99,7 +98,6 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Reporting in</span>
-                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
 
                 <a class="stat-tile" href="clans.html">
@@ -109,7 +107,6 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Tracked</span>
-                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
 
                 <a class="stat-tile" href="maps.html">
@@ -119,7 +116,6 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Active maps</span>
-                    <span class="stat-asof" data-stat-asof hidden></span>
                 </a>
             </div>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
@@ -195,6 +191,7 @@
                 { key: "maps", source: "numMaps" }
             ];
             var numberFormat = new Intl.NumberFormat("en-US");
+            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
             var statusLine = document.getElementById("statStatus");
             var asOfLine = document.getElementById("statAsOf");
             var asOfSep = document.querySelector(".asof-sep");
@@ -219,13 +216,12 @@
                     settle("Snapshot values shown. Live data loading.");
 
                     if (asOfLine) {
-                        asOfLine.textContent = "snapshot";
+                        asOfLine.textContent = "Snapshot";
                         asOfLine.hidden = false;
                     }
                     if (asOfSep) {
                         asOfSep.hidden = false;
                     }
-                    markTileAsOf("snapshot");
                 })
                 .catch(function () {
                     return;
@@ -252,25 +248,13 @@
                 }
             }
 
-            function markTileAsOf(text) {
-                grid.querySelectorAll("[data-stat-asof]").forEach(function (node) {
-                    node.textContent = "as of " + text;
-                    node.hidden = false;
-                });
-            }
-
             function markAsOf() {
                 if (!asOfLine) {
                     return;
                 }
 
-                var now = new Date();
-                var hours = String(now.getHours()).padStart(2, "0");
-                var minutes = String(now.getMinutes()).padStart(2, "0");
-
-                asOfLine.textContent = hours + ":" + minutes;
+                asOfLine.textContent = timeFormat.format(new Date());
                 asOfLine.hidden = false;
-                markTileAsOf(hours + ":" + minutes);
 
                 if (asOfSep) {
                     asOfSep.hidden = false;
@@ -292,7 +276,6 @@
                         return;
                     }
                     asOfLine.textContent = "Snapshot";
-                    markTileAsOf("Snapshot");
                 })
                 .finally(function () {
                     window.clearTimeout(timeout);

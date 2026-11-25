@@ -264,6 +264,7 @@
         (function () {
             "use strict";
 
+            var timeFormat = new Intl.DateTimeFormat("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
             var allClans = [];
             var filteredAndSortedClans = [];
             var currentSort = { column: "members", direction: "desc" };
@@ -290,14 +291,21 @@
             var clanPrevBtns = document.querySelectorAll("[data-clan-prev]");
             var clanNextBtns = document.querySelectorAll("[data-clan-next]");
 
+            function stripGlyphs(value) {
+                return String(value || "")
+                    .replace(/[\p{So}\p{Sk}\p{Me}\p{Cn}\p{Cc}\p{Cf}\u{E0000}-\u{E007F}]/gu, "")
+                    .replace(/\s+/gu, " ")
+                    .trim();
+            }
+
             function hasVisibleName(name) {
-                var value = typeof name === "string" ? name : "";
-                var visible = value.replace(/[\p{Cc}\p{Cf}\u{E0000}-\u{E007F}]/gu, "").trim();
-                return visible.length > 0;
+                return stripGlyphs(name).length > 0;
             }
 
             function clanLabel(clan) {
-                return hasVisibleName(clan.name) ? clan.name : "Unnamed clan";
+                var clean = stripGlyphs(clan && clan.name);
+
+                return /[\p{L}\p{N}]/u.test(clean) ? clean : "Unnamed clan";
             }
 
             function displayName(name) {
@@ -310,12 +318,12 @@
 
                 (clan && clan.players ? clan.players : []).forEach(function (player) {
                     var name = displayName(player && player.name);
-                    var clean = name
-                        .replace(/^[\s\-–—·•|,;:.]+/u, "")
-                        .replace(/[\s\-–—·•|,;:.]+$/u, "")
+                    var clean = stripGlyphs(name)
+                        .replace(/^[\s\-–—·•|,;:.?*]+/u, "")
+                        .replace(/[\s\-–—·•|,;:.?*]+$/u, "")
                         .trim();
 
-                    if (clean && /[\p{L}\p{N}]/u.test(clean) && hasVisibleName(clean) && !seen[clean]) {
+                    if (clean.length >= 2 && /[\p{L}\p{N}]/u.test(clean) && hasVisibleName(clean) && !seen[clean]) {
                         seen[clean] = true;
                         names.push(clean);
                     }
@@ -507,7 +515,7 @@
                 });
 
                 clanCountText.textContent = filteredAndSortedClans.length + " of " + allClans.length + " clans";
-                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+                markCountAsOf(timeFormat.format(new Date()));
                 currentClanPage = 1;
                 displayClans(filteredAndSortedClans);            }
 
@@ -544,7 +552,7 @@
                 var pageClans = clans.slice(startIndex, endIndex);
 
                 clanCountText.textContent = "Showing " + (startIndex + 1) + "–" + endIndex + " of " + total + " clans";
-                markCountAsOf(new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }));
+                markCountAsOf(timeFormat.format(new Date()));
                 clanPager.hidden = total <= clanPageSize;
                 clanPagerTop.hidden = total <= clanPageSize;
 
@@ -599,7 +607,7 @@
 
                     var membersPreviewCell = document.createElement("td");
                     membersPreviewCell.className = "clan-members-preview";
-                    membersPreviewCell.textContent = topMemberNames(clan).join(" · ");
+                    membersPreviewCell.textContent = topMemberNames(clan).join(" | ");
 
                     row.appendChild(rankCell);
                     row.appendChild(nameCell);
@@ -647,13 +655,13 @@
                         ["Members", clan.memberCount],
                         ["Created", created],
                         ["AFK", clan.afkPlayers],
-                        ["Top members", topMemberNames(clan).join(" · ")]
+                        ["Top members", topMemberNames(clan).join(" | ")]
                     ];
                     metaRows.forEach(function (row) {
                         var metaRow = document.createElement("div");
                         metaRow.className = "clan-card-meta-row";
                         var label = document.createElement("dt");
-                        label.textContent = row[0] + ":";
+                        label.textContent = row[0];
                         var value = document.createElement("dd");
                         value.textContent = row[1];
                         if (row[0] === "AFK") {

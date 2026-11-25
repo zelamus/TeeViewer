@@ -583,6 +583,19 @@
     overflow-wrap: anywhere;
 }
 
+.card-meta-label {
+    color: var(--muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}
+
+.card-meta-sep {
+    margin: 0 var(--space-1);
+    color: var(--muted);
+}
+
 .server-card-capacity {
     display: flex;
     align-items: center;
