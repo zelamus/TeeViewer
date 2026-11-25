@@ -244,8 +244,11 @@
             <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <nav class="footer-links" aria-label="Footer">
                 <a href="players.html">Players</a>
+                <a href="clans.html">Clans</a>
+                <a href="maps.html">Maps</a>
                 <a href="servers.html">Servers</a>
                 <a href="status.html">Status</a>
+                <a href="skin.html">Skin</a>
                 <a href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord</a>
             </nav>
         </div>
@@ -271,6 +274,16 @@
             var clansTableBody = document.getElementById("clansTableBody");
             var clanCards = document.getElementById("clanCards");
             var clanDialog = document.getElementById("clanDialog");
+
+            function hasVisibleName(name) {
+                var value = typeof name === "string" ? name : "";
+                var visible = value.replace(/[\p{Cc}\p{Cf}\u{E0000}-\u{E007F}]/gu, "").trim();
+                return visible.length > 0;
+            }
+
+            function clanLabel(clan) {
+                return hasVisibleName(clan.name) ? clan.name : "Unnamed clan";
+            }
 
             function formatDate(timestamp) {
                 if (!timestamp) {
@@ -444,18 +457,20 @@
 
                 clans.forEach(function (clan, index) {
                     var rank = index + 1;
+                    var label = clanLabel(clan);
+                    var named = hasVisibleName(clan.name);
                     var created = formatDate(clan.createdAt);
                     var row = document.createElement("tr");
                     row.className = "clan-row";
 
                     var rankCell = document.createElement("td");
                     rankCell.className = "clan-rank";
-                    rankCell.textContent = clan.name ? rank : "—";
+                    rankCell.textContent = named ? rank : "—";
 
                     var nameCell = document.createElement("td");
                     var name = document.createElement("span");
                     name.className = "clan-name";
-                    name.textContent = clan.name;
+                    name.textContent = label;
                     nameCell.appendChild(name);
 
                     var membersCell = document.createElement("td");
@@ -473,7 +488,7 @@
                     viewButton.type = "button";
                     viewButton.className = "button ghost";
                     viewButton.textContent = "View";
-                    viewButton.setAttribute("aria-label", "View " + clan.name);
+                    viewButton.setAttribute("aria-label", "View " + label);
                     viewButton.addEventListener("click", function (event) {
                         event.stopPropagation();
                         openClanDialog(index);
@@ -499,10 +514,10 @@
                     cardHead.className = "clan-card-head";
                     var cardName = document.createElement("h3");
                     cardName.className = "clan-card-name";
-                    cardName.textContent = clan.name;
+                    cardName.textContent = label;
                     var cardRank = document.createElement("span");
                     cardRank.className = "clan-card-rank";
-                    cardRank.textContent = clan.name ? "#" + rank : "Unnamed";
+                    cardRank.textContent = named ? "#" + rank : "—";
                     cardHead.appendChild(cardName);
                     cardHead.appendChild(cardRank);
 
@@ -524,7 +539,7 @@
                     cardButton.type = "button";
                     cardButton.className = "button ghost";
                     cardButton.textContent = "View members";
-                    cardButton.setAttribute("aria-label", "View members of " + clan.name);
+                    cardButton.setAttribute("aria-label", "View members of " + label);
                     cardButton.addEventListener("click", function () {
                         openClanDialog(index);
                     });
@@ -544,7 +559,7 @@
                     return;
                 }
 
-                document.getElementById("clanDialogTitle").textContent = clan.name;
+                document.getElementById("clanDialogTitle").textContent = clanLabel(clan);
                 document.getElementById("clanDialogSub").textContent = "Created " + formatDate(clan.createdAt);
                 document.getElementById("clanDialogMembers").textContent = clan.memberCount;
                 document.getElementById("clanDialogOnline").textContent = clan.onlinePlayers;
