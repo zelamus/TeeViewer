@@ -422,10 +422,12 @@
 .identity-meta {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-content: space-between;
-    gap: var(--space-3);
-    padding-left: var(--space-5);
-    border-left: 1px solid var(--border);
+    grid-auto-rows: minmax(0, 1fr);
+    align-content: stretch;
+    gap: var(--space-3) var(--space-4);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-3);
+    background: var(--surface-2);
 }
 
 .meta-item {
@@ -926,10 +928,48 @@
     white-space: nowrap;
 }
 
-.clan-toolbar .field-inline input {
-    width: 18px;
+.clan-toolbar .select {
+    background-color: var(--surface-2);
+    color: var(--text);
+}
+
+.clan-toolbar .field-inline input[type="checkbox"] {
+    position: relative;
+    flex: none;
+    width: 34px;
     height: 18px;
-    accent-color: var(--accent);
+    margin: 0;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-pill);
+    background: var(--surface-2);
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition:
+        background-color var(--dur-1) var(--ease-standard),
+        border-color var(--dur-1) var(--ease-standard);
+}
+
+.clan-toolbar .field-inline input[type="checkbox"]::after {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--text-2);
+    content: "";
+    transition: transform var(--dur-1) var(--ease-standard);
+}
+
+.clan-toolbar .field-inline input[type="checkbox"]:checked {
+    border-color: var(--accent);
+    background: var(--accent);
+}
+
+.clan-toolbar .field-inline input[type="checkbox"]:checked::after {
+    background: var(--on-accent);
+    transform: translateX(16px);
 }
 
 .clan-result-head {
@@ -1392,11 +1432,15 @@
     main.page > *,
     #playerStatsContainer > *,
     .profile-layout > * {
-        order: 3;
+        order: 4;
+    }
+
+    main.page > .page-head {
+        order: 0;
     }
 
     .tee-panel {
-        order: 0;
+        order: 3;
         margin-bottom: var(--space-4);
     }
 
@@ -1459,6 +1503,25 @@
 
     .clan-cards {
         display: grid;
+    }
+
+    .clan-card-head {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        align-items: baseline;
+        gap: var(--space-3);
+    }
+
+    .clan-card-rank {
+        grid-column: 1;
+        grid-row: 1;
+        text-align: left;
+        white-space: nowrap;
+    }
+
+    .clan-card-name {
+        grid-column: 2;
+        grid-row: 1;
     }
 
     .clan-toolbar {

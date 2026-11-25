@@ -609,8 +609,25 @@
 }
 
 .server-card-meta {
+    display: grid;
+    gap: var(--space-1);
     color: var(--muted);
     font-size: var(--text-sm);
+    overflow-wrap: anywhere;
+}
+
+.card-meta-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-width: 0;
+}
+
+.card-meta-value {
+    min-width: 0;
+    color: var(--text);
+    text-align: right;
     overflow-wrap: anywhere;
 }
 
@@ -1382,12 +1399,6 @@
     .filter-panel.is-open .filter-toggle {
         border-color: transparent;
         background: none;
-    }
-
-    .server-card-meta {
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
     }
 
     .filter-grid {

@@ -971,7 +971,10 @@
                         '<h3 class="server-card-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</h3>" +
                         (server.hasPassword ? passwordIcon(server) : "") +
                     "</div>" +
-                    '<p class="server-card-meta"><span class="card-meta-label">Map</span> ' + mapMarkup + '<span class="card-meta-sep"> · </span><span class="card-meta-label">Type</span> ' + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
+                    '<div class="server-card-meta">' +
+                        '<div class="card-meta-row"><span class="card-meta-label">Map</span><span class="card-meta-value">' + mapMarkup + "</span></div>" +
+                        '<div class="card-meta-row"><span class="card-meta-label">Type</span><span class="card-meta-value">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></div>" +
+                    "</div>" +
                     '<div class="server-card-capacity">' +
                         '<span class="card-meta-label">Players</span>' +
                         '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
