@@ -137,7 +137,8 @@
                         <div class="teeassembler-tee" role="button" tabindex="0" aria-label="Copy tee skin settings"></div>
                     </div>
                     <div class="tee-caption">
-                        <span class="tee-hint">Click the tee to copy skin settings</span>
+                        <button class="button ghost button-sm copy-skin-button" type="button" id="copySkinButton" title="Copy this tee's skin settings to the clipboard">Copy skin</button>
+                        <span class="tee-hint">Or click the tee</span>
                     </div>
                     <div class="player-avatar" id="playerAvatar" hidden></div>
                 </div>
@@ -174,7 +175,7 @@
                             <dt class="meta-label">Skin</dt>
                             <dd class="meta-value" id="playerSkinName"></dd>
                         </div>
-                        <div class="meta-item">
+                        <div class="meta-item" id="mapperTile">
                             <dt class="meta-label">Mapper</dt>
                             <dd class="meta-value" id="isMapper"></dd>
                         </div>
@@ -862,9 +863,14 @@
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
-                document.getElementById("isMapper").textContent = playerData.is_mapper
-                    ? (profile.name || "N/A")
-                    : "Not a mapper";
+                var mapperTile = document.getElementById("mapperTile");
+
+                if (playerData.is_mapper) {
+                    mapperTile.hidden = false;
+                    document.getElementById("isMapper").textContent = profile.name || "N/A";
+                } else {
+                    mapperTile.hidden = true;
+                }
 
                 document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 
@@ -1616,6 +1622,12 @@
                 }
 
                 tempInput.remove();
+            }
+
+            var copySkinButton = document.getElementById("copySkinButton");
+
+            if (copySkinButton) {
+                copySkinButton.addEventListener("click", copyTeeSettings);
             }
 
             teeContainer.addEventListener("click", copyTeeSettings);

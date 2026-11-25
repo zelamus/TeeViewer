@@ -136,11 +136,9 @@
                     </div>
 
                     <button class="chip password-chip" type="button" id="passwordFilterBtn" aria-pressed="false">
-                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
-                            <rect x="4" y="10" width="16" height="10" rx="2"></rect>
-                            <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
-                        </svg>
                         <span>Password protected</span>
+                        <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+                        <span class="switch-state" aria-hidden="true"></span>
                     </button>
 
                     <button class="button ghost reset-button" type="button" id="resetServerFilters">
@@ -921,7 +919,6 @@
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + '</span> <span class="capacity-mini-pct">' + capacityPercent(server) + "%</span></span>" +
-                        '<div class="capacity-cell"><progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress></div>' +
                     "</td>" +
                     '<td class="mono cell-version" title="' + (version ? escapeHtml(formatVersionLabel(version)) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
                     '<td class="action-col"><span class="row-chevron" aria-hidden="true">→</span></td>' +
@@ -945,7 +942,6 @@
                     '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
                     '<div class="server-card-capacity">' +
                         '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
-                        '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                         '<span class="capacity-mini-pct">' + capacityPercent(server) + "%</span>" +
                     "</div>" +
                     '<div class="server-card-foot">' +
@@ -1088,8 +1084,8 @@
 
                 dom.info.innerHTML =
                     '<div class="capacity-block">' +
-                        '<div class="capacity-head"><span>' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + '</span><span class="capacity-percent">' + capacityPercent(server) + "%</span></div>" +
-                        '<progress class="capacity-bar" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="Server capacity">' + capacityPercent(server) + "%</progress>" +
+                        '<div class="capacity-head"><span>' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span></div>" +
+                        '<progress class="capacity-bar" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full">' + capacityPercent(server) + "%</progress>" +
                     "</div>" +
                     '<dl class="info-list">' + infoRows + "</dl>";
             }

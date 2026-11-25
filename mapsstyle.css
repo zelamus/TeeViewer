@@ -249,13 +249,29 @@
     overflow-wrap: anywhere;
 }
 
+.map-card-tags .pill-label {
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+}
+
 .difficulty-badge {
     gap: var(--space-1);
-    color: var(--text-2);
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--accent);
 }
 
 .difficulty-badge .map-stars {
     font-size: 14px;
+}
+
+.server-badge {
+    border-style: dashed;
+    background: var(--surface);
+    color: var(--text-2);
 }
 
 .map-card-foot {

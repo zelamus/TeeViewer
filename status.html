@@ -87,7 +87,7 @@
             <div class="section-head">
                 <p class="section-title" id="overview-title">Overview</p>
             </div>
-            <p class="section-note data-provenance">History samples come from the stats history endpoints. Live totals come from /stats, so sample times and counts can differ.</p>
+            <p class="section-note data-provenance">History totals are not the current online count.</p>
 
             <div class="stat-grid status-overview is-loading" id="overall-stats" aria-busy="true">
                 <article class="stat-tile">
@@ -168,8 +168,7 @@
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
                     <div class="chart-heading">
-                        <p class="chart-title" id="player-chart-title">Players over 24 hours</p>
-                        <time class="chart-asof" id="player-chart-asof" datetime="">Latest sample —</time>
+                        <p class="chart-title" id="player-chart-title">Unique players seen over 24 hours</p>
                     </div>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
                         <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
@@ -187,7 +186,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
-                <p class="chart-scope">Chart covers available samples in this range, not an exact time window.</p>
+                <p class="chart-scope">History totals, not the live count.</p>
                 <p class="chart-note" id="player-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="player-chart-state" hidden>
@@ -208,7 +207,6 @@
                 <div class="chart-head">
                     <div class="chart-heading">
                         <p class="chart-title" id="server-chart-title">Servers over 7 days</p>
-                        <time class="chart-asof" id="server-chart-asof" datetime="">Latest sample —</time>
                     </div>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
                         <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
@@ -226,7 +224,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
-                <p class="chart-scope">Chart covers available samples in this range, not an exact time window.</p>
+                <p class="chart-scope">History totals, not the live count.</p>
                 <p class="chart-note" id="server-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="server-chart-state" hidden>
@@ -572,6 +570,10 @@
             }
 
             function chartTitle(period, unit) {
+                if (unit === "players") {
+                    return "Unique players seen over " + rangeSpan(period);
+                }
+
                 return unit.charAt(0).toUpperCase() + unit.slice(1) + " over " + rangeSpan(period);
             }
 

@@ -65,7 +65,7 @@
             <header class="page-head">
                 <div>
                     <h1 class="page-title">Maps</h1>
-                    <p class="page-sub">Browse the Teeworlds map index. Each card shows difficulty, server, mapper, and points.</p>
+                    <p class="page-sub">Browse maps by difficulty, server, and mapper.</p>
                 </div>
             </header>
 
@@ -782,8 +782,8 @@
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
                     "</span>" +
                     '<span class="map-card-tags">' +
-                        '<span class="badge difficulty-badge" aria-label="Difficulty rating">' + starsMarkup(item ? item.stars : 0) + "</span>" +
-                        '<span class="badge">' + escapeHtml(server) + "</span>" +
+                        '<span class="badge difficulty-badge"><span class="pill-label">Difficulty</span>' + starsMarkup(item ? item.stars : 0) + "</span>" +
+                        '<span class="badge server-badge"><span class="pill-label">Server</span>' + escapeHtml(server) + "</span>" +
                         '<span class="map-card-mapper"> by ' + escapeHtml(mapper) + "</span>" +
                     "</span>" +
                     '<span class="map-card-foot">' +
