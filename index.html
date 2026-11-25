@@ -118,6 +118,7 @@
                 </a>
             </div>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
+            <p class="stat-asof" id="statAsOf" hidden></p>
         </section>
 
         <section class="quick-section" aria-labelledby="explore-title">
@@ -192,6 +193,7 @@
             ];
             var numberFormat = new Intl.NumberFormat("en-US");
             var statusLine = document.getElementById("statStatus");
+            var asOfLine = document.getElementById("statAsOf");
             var controller = new AbortController();
             var timeout = window.setTimeout(function () {
                 controller.abort();
@@ -218,18 +220,35 @@
                 }
             }
 
+            function markAsOf() {
+                if (!asOfLine) {
+                    return;
+                }
+
+                var now = new Date();
+                var hours = String(now.getHours()).padStart(2, "0");
+                var minutes = String(now.getMinutes()).padStart(2, "0");
+
+                asOfLine.textContent = "as of " + hours + ":" + minutes;
+                asOfLine.hidden = false;
+            }
+
             window.fetchJSON("https://api.status.tw/stats")
                 .then(function (data) {
                     fields.forEach(function (field) {
                         writeValue(field.key, data[field.source]);
                     });
                     settle("Live network statistics loaded.");
+                    markAsOf();
                 })
                 .catch(function () {
                     fields.forEach(function (field) {
                         writeValue(field.key, null);
                     });
                     settle("Live network statistics are unavailable.");
+                    if (asOfLine) {
+                        asOfLine.hidden = true;
+                    }
                 })
                 .finally(function () {
                     window.clearTimeout(timeout);

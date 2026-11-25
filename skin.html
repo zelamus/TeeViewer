@@ -174,6 +174,10 @@
                 return document.getElementById(id);
             }
 
+            function skinColor(value) {
+                return "#" + (Number(value) >>> 0).toString(16).padStart(6, "0").slice(-6);
+            }
+
             function setText(id, text) {
                 var node = $(id);
                 if (node) {
@@ -181,8 +185,13 @@
                 }
             }
 
-            function setStatus(text) {
-                setText("status", text);
+            function setStatus(text, tone) {
+                var node = $("status");
+                if (!node) {
+                    return;
+                }
+                node.textContent = text;
+                node.setAttribute("data-tone", tone || "idle");
             }
 
             function setBusy(busy) {
@@ -346,7 +355,7 @@
                 destroyTee();
                 hideDownload();
                 setBusy(false);
-                setStatus("Preview unavailable.");
+                setStatus("Preview unavailable.", "error");
                 showState("error", "Preview unavailable", message, "Retry");
             }
 
@@ -354,7 +363,7 @@
                 destroyTee();
                 hideDownload();
                 setBusy(false);
-                setStatus("No skin selected.");
+                setStatus("No skin selected.", "idle");
                 showState("empty", "No skin selected", "Enter a skin name or reset to the default skin.", "Use default");
             }
 
@@ -395,7 +404,7 @@
                         hideState();
                         hideDownload();
                         setBusy(false);
-                        setStatus("Preview updated.");
+                        setStatus("Preview ready", "ready");
                         updateMeta(state);
                         updateBadge(state.name);
                         updateDownload(instance, state.name);
@@ -421,7 +430,7 @@
                 hideState();
                 hideDownload();
                 setBusy(true);
-                setStatus("Loading skin…");
+                setStatus("Loading skin…", "busy");
 
                 if (container) {
                     container.replaceChildren();
@@ -494,7 +503,7 @@
                     if (error) {
                         error.hidden = false;
                     }
-                    setStatus("Fix the colour codes and try again.");
+                    setStatus("Fix the colour codes and try again.", "error");
                     return;
                 }
 

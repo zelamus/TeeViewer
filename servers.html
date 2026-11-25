@@ -169,7 +169,7 @@
                                 <button class="sort-button" type="button" data-sort="players">Players <span class="sort-mark" aria-hidden="true"></span></button>
                             </th>
                             <th scope="col">Version</th>
-                            <th scope="col" class="icon-col"><span class="visually-hidden">Password</span></th>
+                            <th scope="col" class="icon-col"><span class="visually-hidden">Lock</span></th>
                             <th scope="col" class="action-col"><span class="visually-hidden">Action</span></th>
                         </tr>
                     </thead>
@@ -489,14 +489,19 @@
 
             function shortVersion(version) {
                 var text = String(version == null ? "" : version).trim();
+
                 if (!text) {
                     return "";
                 }
 
-                return text.replace(/~/g, "").split(/([,\/]|\s+)/).map(function (part) {
-                    var match = part.match(/^(\d+\.\d+)/);
-                    return match ? match[1] : part;
-                }).join("");
+                var parts = text.replace(/~/g, "").split(/\s+/).filter(function (part) {
+                    // Drop build hashes: long tokens with letters and digits but no dots.
+                    var isHash = /^[a-z0-9]{8,}$/i.test(part) && /[a-z]/i.test(part) && /\d/.test(part);
+
+                    return !isHash;
+                });
+
+                return parts.join(" ");
             }
 
             function serverCapacity(server) {
@@ -1599,7 +1604,6 @@
                     filterToggle.addEventListener("click", function () {
                         var open = filterPanel.classList.toggle("is-open");
                         filterToggle.setAttribute("aria-expanded", open ? "true" : "false");
-                        filterToggle.textContent = open ? "Hide filters" : "Filters";
                     });
                 }
 

@@ -41,7 +41,8 @@
 
 .filter-grid {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    align-items: end;
     gap: var(--space-3);
 }
 
@@ -80,18 +81,9 @@
     padding-left: 36px;
 }
 
-.filter-foot {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: var(--space-3);
-    margin-top: var(--space-4);
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--border);
-}
-
 .reset-button {
-    margin-left: auto;
+    justify-self: end;
+    align-self: end;
 }
 
 /* --------------------------------------------------------------------------
@@ -169,7 +161,6 @@
 .map-card-name {
     min-width: 0;
     color: var(--text);
-    font-size: var(--text-base);
     font-weight: 600;
     letter-spacing: -0.01em;
     line-height: var(--leading-snug);
@@ -180,7 +171,7 @@
     display: inline-flex;
     flex: none;
     color: var(--accent);
-    font-size: var(--text-sm);
+    font-size: 16px;
     letter-spacing: 1px;
     line-height: var(--leading-snug);
     white-space: nowrap;
@@ -191,7 +182,7 @@
 }
 
 .stars-empty {
-    color: var(--muted);
+    color: var(--text-2);
 }
 
 .map-card-tags {
@@ -464,7 +455,6 @@ body.map-modal-open {
 }
 
 .detail-title {
-    font-size: var(--text-lg);
     overflow-wrap: anywhere;
 }
 
@@ -762,7 +752,6 @@ body.map-modal-open {
 }
 
 .popup-title {
-    font-size: var(--text-base);
     overflow-wrap: anywhere;
 }
 
@@ -1059,10 +1048,6 @@ body.map-modal-open {
         padding: var(--space-3);
     }
 
-    .detail-title {
-        font-size: var(--text-xl);
-    }
-
     .servers-popup {
         width: calc(100vw - (2 * var(--space-2)));
         max-height: calc(100vh - (2 * var(--space-2)));
@@ -1109,10 +1094,6 @@ body.map-modal-open {
 
     .map-modal-actions {
         margin-left: auto;
-    }
-
-    .map-stars {
-        font-size: var(--text-xs);
     }
 
     .info-label,

@@ -302,7 +302,7 @@
     overflow: hidden;
     color: var(--text-2);
     font-size: var(--text-xs);
-    max-width: 15ch;
+    max-width: 22ch;
     text-overflow: ellipsis;
     white-space: nowrap;
 }
@@ -313,7 +313,7 @@
 
 .password-flag {
     display: inline-flex;
-    color: var(--text-2);
+    color: var(--text);
 }
 
 .password-none {
@@ -403,7 +403,6 @@
 
 .server-card-name {
     min-width: 0;
-    font-size: var(--text-base);
     overflow-wrap: anywhere;
 }
 
@@ -577,7 +576,6 @@
 }
 
 .detail-title {
-    font-size: var(--text-lg);
     overflow-wrap: anywhere;
 }
 
@@ -1063,6 +1061,25 @@
     }
 
     /* Keep results above the fold: filters collapse behind a summary bar. */
+    .filter-panel-head {
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: var(--space-2);
+        margin-bottom: 0;
+    }
+
+    .filter-panel-head .section-title {
+        white-space: nowrap;
+    }
+
+    .filter-panel .section-note {
+        display: none;
+    }
+
+    .filter-panel.is-open .filter-panel-head {
+        margin-bottom: var(--space-3);
+    }
+
     .filter-panel .filter-grid,
     .filter-panel .filter-foot {
         display: none;
@@ -1102,16 +1119,15 @@
     }
 
     .empty {
-        padding: var(--space-7) var(--space-3);
+        max-height: 130px;
+        padding: var(--space-4) var(--space-3);
     }
 
     .detail-card {
         padding: var(--space-4);
     }
 
-    .detail-title {
-        font-size: var(--text-xl);
-    }
+
 
     .detail-toolbar .button {
         flex: 1 1 auto;

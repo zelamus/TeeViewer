@@ -191,6 +191,14 @@
                 </div>
 
                 <div class="clan-cards" id="clanCards"></div>
+
+                <div class="list-footer" id="clanPager" hidden>
+                    <nav class="pager" aria-label="Clan pages">
+                        <button class="button ghost button-sm" type="button" id="clanPrevBtn">Previous</button>
+                        <span class="pager-status" id="clanPageStatus" role="status"></span>
+                        <button class="button ghost button-sm" type="button" id="clanNextBtn">Next</button>
+                    </nav>
+                </div>
             </div>
         </section>
     </main>
@@ -263,6 +271,8 @@
             var currentSort = { column: "name", direction: "asc" };
             var clanToExpand = null;
             var loadAttempt = 0;
+            var clanPageSize = 50;
+            var currentClanPage = 1;
 
             var clanSearch = document.getElementById("clanSearch");
             var sortBy = document.getElementById("sortBy");
@@ -274,6 +284,10 @@
             var clansTableBody = document.getElementById("clansTableBody");
             var clanCards = document.getElementById("clanCards");
             var clanDialog = document.getElementById("clanDialog");
+            var clanPager = document.getElementById("clanPager");
+            var clanPageStatus = document.getElementById("clanPageStatus");
+            var clanPrevBtn = document.getElementById("clanPrevBtn");
+            var clanNextBtn = document.getElementById("clanNextBtn");
 
             function hasVisibleName(name) {
                 var value = typeof name === "string" ? name : "";
@@ -330,6 +344,7 @@
                     clansError.hidden = true;
                     clansEmpty.hidden = true;
                     clansResults.hidden = true;
+                    clanPager.hidden = true;
                     clanCount.textContent = "Loading clans…";
                 }
             }
@@ -338,6 +353,7 @@
                 clansLoading.hidden = true;
                 clansEmpty.hidden = true;
                 clansResults.hidden = true;
+                clanPager.hidden = true;
                 clansError.hidden = false;
                 clanCount.textContent = "Clans are unavailable";
             }
@@ -377,10 +393,12 @@
 
                     if (clanToExpand) {
                         var index = filteredAndSortedClans.findIndex(function (clan) {
-                            return clan.name.toLowerCase() === clanToExpand.toLowerCase();
+                            return String(clan.name || "").toLowerCase() === clanToExpand.toLowerCase();
                         });
 
                         if (index !== -1) {
+                            currentClanPage = Math.floor(index / clanPageSize) + 1;
+                            displayClans(filteredAndSortedClans);
                             openClanDialog(index);
                         }
 
@@ -400,10 +418,9 @@
                         return true;
                     }
 
-                    if (clan.name.toLowerCase().indexOf(searchTerm) !== -1) {
+                    if (String(clan.name || "").toLowerCase().indexOf(searchTerm) !== -1) {
                         return true;
                     }
-
                     return clan.players.some(function (player) {
                         return String(player.name || "").toLowerCase().indexOf(searchTerm) !== -1;
                     });
@@ -423,8 +440,8 @@
                             bValue = new Date(b.createdAt).getTime() || 0;
                             break;
                         default:
-                            aValue = a.name.toLowerCase();
-                            bValue = b.name.toLowerCase();
+                            aValue = String(a.name || "").toLowerCase();
+                            bValue = String(b.name || "").toLowerCase();
                     }
 
                     if (typeof aValue === "string") {
@@ -435,8 +452,8 @@
                 });
 
                 clanCount.textContent = filteredAndSortedClans.length + " of " + allClans.length + " clans";
-                displayClans(filteredAndSortedClans);
-            }
+                currentClanPage = 1;
+                displayClans(filteredAndSortedClans);            }
 
             function displayClans(clans) {
                 clansTableBody.innerHTML = "";
@@ -447,6 +464,8 @@
                     clansResults.hidden = true;
                     clansError.hidden = true;
                     clansEmpty.hidden = false;
+                    clanPager.hidden = true;
+                    clanCount.textContent = "No clans match this search";
                     return;
                 }
 
@@ -455,7 +474,25 @@
                 clansLoading.hidden = true;
                 clansResults.hidden = false;
 
-                clans.forEach(function (clan, index) {
+                var total = clans.length;
+                var lastPage = Math.max(1, Math.ceil(total / clanPageSize));
+
+                if (currentClanPage > lastPage) {
+                    currentClanPage = lastPage;
+                }
+
+                var startIndex = (currentClanPage - 1) * clanPageSize;
+                var endIndex = Math.min(startIndex + clanPageSize, total);
+                var pageClans = clans.slice(startIndex, endIndex);
+
+                clanCount.textContent = "Showing " + (startIndex + 1) + "–" + endIndex + " of " + total + " clans";
+                clanPager.hidden = total <= clanPageSize;
+                clanPageStatus.textContent = "Page " + currentClanPage + " of " + lastPage;
+                clanPrevBtn.disabled = currentClanPage <= 1;
+                clanNextBtn.disabled = currentClanPage >= lastPage;
+
+                pageClans.forEach(function (clan, offset) {
+                    var index = startIndex + offset;
                     var rank = index + 1;
                     var label = clanLabel(clan);
                     var named = hasVisibleName(clan.name);
@@ -636,6 +673,27 @@
                 sortBy.value = column;
                 applyFiltersAndSort();
             }
+
+            function goToClanPage(delta) {
+                var lastPage = Math.max(1, Math.ceil(filteredAndSortedClans.length / clanPageSize));
+                var nextPage = currentClanPage + delta;
+
+                if (nextPage < 1 || nextPage > lastPage || nextPage === currentClanPage) {
+                    return;
+                }
+
+                currentClanPage = nextPage;
+                displayClans(filteredAndSortedClans);
+                document.getElementById("clan-list-title").scrollIntoView({ block: "start" });
+            }
+
+            clanPrevBtn.addEventListener("click", function () {
+                goToClanPage(-1);
+            });
+
+            clanNextBtn.addEventListener("click", function () {
+                goToClanPage(1);
+            });
 
             clanSearch.addEventListener("input", applyFiltersAndSort);
 

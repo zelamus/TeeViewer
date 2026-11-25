@@ -148,17 +148,21 @@
 }
 
 .legend-swatch {
-    width: 18px;
-    height: 0;
-    border-top: 2px solid var(--accent);
+    width: 20px;
+    height: 2px;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: var(--accent);
 }
 
 .legend-swatch.is-max {
-    border-top: 2px dashed var(--text-2);
+    border-radius: 0;
+    background: repeating-linear-gradient(90deg, var(--text-2) 0 8px, transparent 8px 12px);
 }
 
 .legend-swatch.is-total {
-    border-top: 2px dotted var(--muted);
+    border-radius: 0;
+    background: repeating-linear-gradient(90deg, var(--muted) 0 2px, transparent 2px 5px);
 }
 
 .chart-box {
@@ -251,6 +255,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 
 .chart-card .state-card {
     margin-top: var(--space-2);
+    max-height: none;
     border: 1px solid var(--border);
     background: var(--surface-2);
 }
@@ -322,7 +327,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 
 .state-title {
     color: var(--text);
-    font-size: var(--text-base);
+    font-size: var(--text-h3);
     font-weight: 600;
     line-height: var(--leading-snug);
 }
@@ -527,7 +532,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
     gap: var(--space-4);
-    align-items: start;
+    align-items: stretch;
 }
 
 .skin-preview-card,
@@ -598,6 +603,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     position: absolute;
     inset: 0;
     justify-content: center;
+    max-height: none;
     border: 0;
     border-radius: 0;
     background: var(--surface-2);
@@ -622,10 +628,49 @@ html.js .chart-card.is-loading .chart-box canvas {
 }
 
 .skin-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 24px;
     margin-top: var(--space-3);
-    color: var(--muted);
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface);
+    color: var(--text-2);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
+    line-height: 1;
+}
+
+.skin-status::before {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--muted);
+    content: "";
+}
+
+.skin-status[data-tone="ready"] {
+    border-color: color-mix(in srgb, var(--success) 40%, var(--border));
+    color: var(--text);
+}
+
+.skin-status[data-tone="ready"]::before {
+    background: var(--success);
+}
+
+.skin-status[data-tone="busy"]::before {
+    background: var(--warning);
+}
+
+.skin-status[data-tone="error"] {
+    border-color: color-mix(in srgb, var(--danger) 40%, var(--border));
+}
+
+.skin-status[data-tone="error"]::before {
+    background: var(--danger);
 }
 
 .skin-meta {

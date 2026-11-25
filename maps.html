@@ -120,9 +120,7 @@
                             <option value="timestamp">Release date</option>
                         </select>
                     </label>
-                </div>
 
-                <div class="filter-foot">
                     <button class="button ghost reset-button" type="button" id="resetMapFilters">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                             <path d="M3 12a9 9 0 1 0 3-6.7"></path>
@@ -781,7 +779,7 @@
                         '<span class="map-card-mapper">by ' + escapeHtml(mapper) + "</span>" +
                     "</span>" +
                     '<span class="map-card-foot">' +
-                        '<span class="map-points"><span class="map-points-value">' + formatNumber(points) + "</span> points</span>" +
+                        '<span class="map-points" title="Points awarded for completing this map"><span class="map-points-value">' + formatNumber(points) + "</span> points</span>" +
                         '<span class="map-card-arrow" aria-hidden="true">→</span>' +
                     "</span>" +
                 "</button>";
