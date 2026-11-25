@@ -725,8 +725,40 @@
                 return serverVersion(server).indexOf(protocol) === 0;
             }
 
+            function updateFilterLabel() {
+                var toggle = document.getElementById("filterToggle");
+
+                if (!toggle) {
+                    return;
+                }
+
+                var active = 0;
+
+                if (dom.search.value.trim()) {
+                    active += 1;
+                }
+                if (dom.gameType.value) {
+                    active += 1;
+                }
+                if (dom.map.value) {
+                    active += 1;
+                }
+                if (dom.minPlayers.value) {
+                    active += 1;
+                }
+                if (dom.password.getAttribute("aria-pressed") === "true") {
+                    active += 1;
+                }
+                if (activeProtocol) {
+                    active += 1;
+                }
+
+                toggle.textContent = active ? "Filters · " + active + " active" : "Filters";
+            }
+
             function filterAndSortServers() {
                 currentPage = 1;
+                updateFilterLabel();
 
                 var searchTerm = dom.search.value.trim().toLowerCase();
                 var gameType = dom.gameType.value;
@@ -1669,6 +1701,7 @@
 
             function init() {
                 getDom();
+                updateFilterLabel();
 
                 var filterToggle = document.getElementById("filterToggle");
                 var filterPanel = document.getElementById("serverFilterPanel");

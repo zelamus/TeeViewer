@@ -598,8 +598,22 @@
                     membersText.appendChild(membersValue);
                     var createdText = document.createElement("span");
                     createdText.textContent = "Created " + created;
+                    var afkText = document.createElement("span");
+                    afkText.textContent = "AFK ";
+                    var afkValue = document.createElement("strong");
+                    afkValue.textContent = clan.afkPlayers;
+                    afkText.appendChild(afkValue);
+                    var topMembersText = document.createElement("span");
+                    topMembersText.textContent = "Top members ";
+                    var topMembersValue = document.createElement("strong");
+                    topMembersValue.textContent = clan.players.slice(0, 3).map(function (player) {
+                        return player.name;
+                    }).join(", ");
+                    topMembersText.appendChild(topMembersValue);
                     cardMeta.appendChild(membersText);
                     cardMeta.appendChild(createdText);
+                    cardMeta.appendChild(afkText);
+                    cardMeta.appendChild(topMembersText);
 
                     card.tabIndex = 0;
                     card.setAttribute("aria-label", "Open clan " + label);

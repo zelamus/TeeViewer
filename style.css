@@ -131,8 +131,8 @@
     --bg: #0a0a0a;
     --surface: #111214;
     --surface-2: #17181b;
-    --border: #3d424a;
-    --border-strong: #555d68;
+    --border: #454951;
+    --border-strong: #6a7180;
     --text: #f2f3f5;
     --text-2: #e6e9ef;
     --muted: #dfe5ee;
@@ -809,9 +809,8 @@ button:disabled {
     margin-top: var(--space-4);
 }
 
-.home .hero-inner,
-.home .section-head {
-    padding-left: var(--space-4);
+.home .stat-section {
+    margin-top: var(--space-6);
 }
 
 .network-section {
@@ -825,8 +824,8 @@ button:disabled {
 
 .network-section .stat-source {
     align-self: flex-end;
-    order: 1;
-    margin: calc(-1 * var(--space-2)) 0 var(--space-2);
+    order: 3;
+    margin: var(--space-2) 0 0;
 }
 
 .network-section .stat-grid {
@@ -1731,20 +1730,12 @@ textarea.input {
         gap: var(--space-3);
     }
 
-    .home .hero-inner,
-    .home .section-head {
-        padding-left: var(--space-3);
-    }
-
     .network-section .stat-grid {
         order: 1;
     }
 
     .network-section .stat-source {
         align-self: flex-start;
-        order: 2;
-        margin: var(--space-2) 0 0;
-        padding-left: var(--space-3);
     }
 
     .home .preview-section .section-head {

@@ -570,11 +570,13 @@ html.js .chart-card.is-loading .chart-box canvas {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
     gap: var(--space-4);
-    align-items: start;
+    align-items: stretch;
 }
 
 .skin-preview-card,
 .skin-controls {
+    display: flex;
+    flex-direction: column;
     padding: var(--space-5);
 }
 
@@ -586,6 +588,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 .skin-stage {
     position: relative;
     display: flex;
+    flex: 1 1 auto;
     align-items: center;
     justify-content: center;
     min-height: 0;
@@ -728,6 +731,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     display: flex;
     flex-direction: column;
     gap: var(--space-4);
+    margin-bottom: var(--space-4);
 }
 
 .field {
@@ -793,7 +797,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 }
 
 .skin-note {
-    margin-top: var(--space-4);
+    margin-top: auto;
     padding-top: var(--space-4);
     border-top: 1px solid var(--border);
     color: var(--muted);

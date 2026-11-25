@@ -96,7 +96,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Online now</span>
-                    <span class="stat-foot">Across all servers</span>
+                    <span class="stat-foot">Across the live network</span>
                 </article>
 
                 <article class="stat-tile">
@@ -105,7 +105,7 @@
                         <span class="stat-number" id="stat-servers">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Connected</span>
+                    <span class="stat-label">Reporting in</span>
                     <span class="stat-foot">Public game servers</span>
                 </article>
 
@@ -125,8 +125,8 @@
                         <span class="stat-number" id="stat-maps">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Available</span>
-                    <span class="stat-foot">Across game types</span>
+                    <span class="stat-label">Active maps</span>
+                    <span class="stat-foot">Across all game types</span>
                 </article>
 
                 <article class="stat-tile">
@@ -166,7 +166,7 @@
         <section aria-labelledby="player-chart-title">
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="player-chart-title">24-hour sample peak</p>
+                    <p class="chart-title" id="player-chart-title">Players over 24 hours</p>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
                         <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
                         <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
@@ -174,10 +174,10 @@
                     </div>
                 </div>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Players</span>
                 </div>
                 <div class="chart-box">
-                    <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
+                    <canvas id="playerStatsChart" role="img" aria-label="Players over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
                         <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
                     </div>
@@ -201,7 +201,7 @@
         <section aria-labelledby="server-chart-title">
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="server-chart-title">7-day sample peak</p>
+                    <p class="chart-title" id="server-chart-title">Servers over 7 days</p>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
                         <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
                         <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
@@ -209,10 +209,10 @@
                     </div>
                 </div>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Servers</span>
                 </div>
                 <div class="chart-box">
-                    <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
+                    <canvas id="serverStatsChart" role="img" aria-label="Servers over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
                         <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
                     </div>
@@ -551,14 +551,18 @@
                 return "Last 24 hours";
             }
 
-            function peakTitle(period) {
+            function rangeSpan(period) {
                 if (period === "week") {
-                    return "7-day sample peak";
+                    return "7 days";
                 }
                 if (period === "month") {
-                    return "30-day sample peak";
+                    return "30 days";
                 }
-                return "24-hour sample peak";
+                return "24 hours";
+            }
+
+            function chartTitle(period, unit) {
+                return unit.charAt(0).toUpperCase() + unit.slice(1) + " over " + rangeSpan(period);
             }
 
             function formatLabel(date, period) {
@@ -767,7 +771,7 @@
                     buttons[i].setAttribute("aria-pressed", active ? "true" : "false");
                 }
 
-                setText(config.titleId, peakTitle(config.period));
+                setText(config.titleId, chartTitle(config.period, config.unit));
             }
 
             function refreshNotes() {
@@ -796,18 +800,18 @@
                 var peak = Math.max.apply(null, values);
                 var current = overviewValues[config.overviewId === "stat-players" ? "players" : "servers"];
                 var live = typeof current === "number" && Number.isFinite(current);
-                var label = peakTitle(config.period);
+                var span = rangeSpan(config.period);
 
                 if (!live) {
                     current = values[values.length - 1];
                 }
 
                 if (peak === current) {
-                    setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
+                    setText(config.noteId, "The peak was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ", the same as the current count.");
                     return;
                 }
 
-                setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
+                setText(config.noteId, "The peak was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ", the current count is " + numberFormat.format(current) + " " + config.unit + ", " + numberFormat.format(peak - current) + " below the peak.");
             }
 
             function loadChart(kind, period) {

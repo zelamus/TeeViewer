@@ -146,8 +146,9 @@
                         <div>
                             <h2 class="identity-name" id="playerName">Player</h2>
                             <div class="identity-badges">
-                                <span class="badge" id="playerClan"><a id="playerClanLink" href="#">No clan</a></span>
+                                <span class="badge" id="playerClan" data-state="empty"><span class="badge-label">Clan</span><a id="playerClanLink" href="#">No clan</a></span>
                                 <span class="identity-country">
+                                    <span class="badge-label">Country</span>
                                     <img class="identity-flag" id="countryFlag" alt="" width="22" height="15" hidden>
                                     <span id="playerCountry"></span>
                                 </span>
@@ -839,13 +840,16 @@
                 document.getElementById("playerPoints").textContent = formatCount(playerData.profile.points || 0);
 
                 var playerClan = document.getElementById("playerClanLink");
+                var clanBadge = document.getElementById("playerClan");
 
                 if (profile.clan && profile.clan !== "") {
                     playerClan.textContent = profile.clan;
                     playerClan.href = "clans.html?clanName=" + encodeURIComponent(profile.clan);
+                    clanBadge.setAttribute("data-state", "set");
                 } else {
                     playerClan.textContent = "No clan";
                     playerClan.removeAttribute("href");
+                    clanBadge.setAttribute("data-state", "empty");
                 }
 
                 var countryCode = profile.country !== undefined && profile.country !== null
@@ -862,9 +866,9 @@
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
-                document.getElementById("isMapper").textContent = playerData.is_mapper === undefined || playerData.is_mapper === null
-                    ? "Unknown"
-                    : (playerData.is_mapper ? "Yes" : "No");
+                document.getElementById("isMapper").textContent = playerData.is_mapper
+                    ? (profile.name || "N/A")
+                    : "Not a mapper";
 
                 document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 
@@ -1450,7 +1454,7 @@
                     country: countryLabel(info.country),
                     finishes: formatCount(playerData.finishes ? playerData.finishes.length : 0),
                     playtime: playerData.general_activity ? formatTime(playerData.general_activity.total_seconds_played) : "N/A",
-                    mapper: playerData.is_mapper ? "Yes" : "No"
+                    mapper: playerData.is_mapper ? (playerData.profile.name || "N/A") : "Not a mapper"
                 };
             }
 

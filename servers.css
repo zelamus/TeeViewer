@@ -174,12 +174,6 @@
     line-height: var(--leading-snug);
 }
 
-.result-bar .result-hint::before {
-    margin-right: var(--space-2);
-    color: var(--muted);
-    content: "·";
-}
-
 .table-shell {
     border: 1px solid var(--border);
     border-radius: var(--radius-4);
@@ -322,6 +316,12 @@
 .card-link,
 .card-link:visited {
     color: var(--accent);
+    text-decoration: none;
+}
+
+.table-link:hover,
+.card-link:hover {
+    text-decoration: underline;
 }
 
 .game-badge {
@@ -1146,7 +1146,17 @@
 
 @media (max-width: 560px) {
     .filter-panel {
+        margin-bottom: var(--space-3);
+        padding: 0;
+        border: 0;
+        background: none;
+    }
+
+    .filter-panel.is-open {
         padding: var(--space-3);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: var(--surface);
     }
 
     /* Keep results above the fold: filters collapse behind a summary bar. */
@@ -1186,7 +1196,35 @@
     }
 
     .filter-toggle {
-        display: inline-flex;
+        display: flex;
+        width: 100%;
+        min-height: var(--tap-target);
+        justify-content: space-between;
+        padding: 0 var(--space-4);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-4);
+        background: var(--surface);
+        color: var(--text);
+        text-align: left;
+    }
+
+    .filter-toggle::after {
+        width: 8px;
+        height: 8px;
+        margin-left: var(--space-3);
+        border-right: 1.5px solid var(--muted);
+        border-bottom: 1.5px solid var(--muted);
+        content: "";
+        transform: translateY(-2px) rotate(45deg);
+    }
+
+    .filter-toggle[aria-expanded="true"]::after {
+        transform: translateY(2px) rotate(225deg);
+    }
+
+    .filter-panel.is-open .filter-toggle {
+        border-color: transparent;
+        background: none;
     }
 
     .filter-grid {
@@ -1267,7 +1305,7 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 380px) {
-    .filter-panel {
+    .filter-panel.is-open {
         padding: var(--space-2);
     }
 
