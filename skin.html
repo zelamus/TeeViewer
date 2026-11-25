@@ -29,6 +29,7 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
+                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
@@ -208,7 +209,7 @@
                 if (!node) {
                     return;
                 }
-                node.textContent = name ? "Preview ready" : "No skin selected";
+                node.textContent = name ? "Preview ready · " + name : "No skin selected";
                 node.setAttribute("data-tone", name ? "ready" : "idle");
             }
 
@@ -422,7 +423,7 @@
                         hideState();
                         hideDownload();
                         setBusy(false);
-                        setStatus("Preview ready", "ready");
+                        setStatus("Preview ready · " + (state.name || "skin"), "ready");
                         updateMeta(state);
                         updateDownload(instance, state.name);
                     }).catch(function () {

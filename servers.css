@@ -175,6 +175,16 @@
     line-height: var(--leading-snug);
 }
 
+.result-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.result-hint svg {
+    flex: none;
+}
+
 .table-shell {
     border: 1px solid var(--border);
     border-radius: var(--radius-4);
@@ -434,10 +444,9 @@
 }
 
 .capacity-mini-pct {
-    align-self: flex-end;
-    color: var(--muted);
+    color: var(--text-2);
     font-family: var(--font-mono);
-    font-size: var(--text-xs);
+    font-size: 13px;
     font-variant-numeric: tabular-nums;
     text-align: right;
 }

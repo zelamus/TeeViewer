@@ -240,8 +240,8 @@
     --bg: #fbfbfc;
     --surface: #ffffff;
     --surface-2: #f4f5f7;
-    --border: #9aa1ac;
-    --border-strong: #9aa1ac;
+    --border: #7e8692;
+    --border-strong: #6e7684;
     --text: #14161a;
     --text-2: #2e333b;
     --muted: #2f3743;
@@ -277,8 +277,8 @@
         --bg: #fbfbfc;
         --surface: #ffffff;
         --surface-2: #f4f5f7;
-        --border: #9aa1ac;
-        --border-strong: #9aa1ac;
+        --border: #7e8692;
+        --border-strong: #6e7684;
         --text: #14161a;
         --text-2: #3f444c;
         --muted: #3a4350;
@@ -1099,6 +1099,22 @@ a.card:hover {
 
 .footer-note a:hover {
     color: var(--text-2);
+}
+
+[data-theme="light"] .footer-note,
+[data-theme="light"] .footer-note a,
+[data-theme="light"] .page-meta,
+[data-theme="light"] .page-meta a {
+    color: #4a5261;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) .footer-note,
+    :root:not([data-theme]) .footer-note a,
+    :root:not([data-theme]) .page-meta,
+    :root:not([data-theme]) .page-meta a {
+        color: #4a5261;
+    }
 }
 
 .footer-links {

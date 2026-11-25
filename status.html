@@ -29,6 +29,7 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
+                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
@@ -76,7 +77,7 @@
                         </svg>
                         Refresh
                     </button>
-                    <span class="status-updated">Updated <time id="last-updated">—</time></span>
+                    <span class="status-updated" title="Time the live totals were fetched">Totals checked <time id="last-updated">—</time></span>
                 </div>
             </div>
             <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
@@ -87,6 +88,7 @@
                 <p class="section-title" id="overview-title">Overview</p>
                 <p class="section-note">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             </div>
+            <p class="section-note data-provenance">History samples come from the stats history endpoints. Live totals come from /stats, so sample times and counts can differ.</p>
 
             <div class="stat-grid status-overview is-loading" id="overall-stats" aria-busy="true">
                 <article class="stat-tile">
@@ -593,13 +595,13 @@
                 var latest = null;
 
                 rows.forEach(function (item) {
-                    if (!item || !item.timestamp) {
+                    if (!item) {
                         return;
                     }
 
-                    var date = new Date(String(item.timestamp).replace(" ", "T"));
+                    var date = item.date || (item.timestamp ? new Date(String(item.timestamp).replace(" ", "T")) : null);
 
-                    if (!isNaN(date.getTime()) && (!latest || date > latest)) {
+                    if (date && !isNaN(date.getTime()) && (!latest || date > latest)) {
                         latest = date;
                     }
                 });
@@ -663,6 +665,7 @@
                     series.total.push(sample.total);
                 });
 
+                series.samples = samples;
                 return series;
             }
 
@@ -751,12 +754,20 @@
                                 grid: { display: false, drawBorder: false },
                                 ticks: {
                                     color: colors.text2,
-                                    maxTicksLimit: tickLimit,
-                                    autoSkipPadding: 6,
                                     maxRotation: 0,
                                     minRotation: 0,
-                                    autoSkip: true,
-                                    font: { size: 13 }
+                                    autoSkip: false,
+                                    font: { size: 13 },
+                                    callback: function (value, index) {
+                                        var count = config.data.labels.length;
+                                        var step = Math.max(1, Math.ceil((count - 1) / Math.max(1, tickLimit - 1)));
+
+                                        if (index === 0 || index === count - 1 || index % step === 0) {
+                                            return config.data.labels[index];
+                                        }
+
+                                        return "";
+                                    }
                                 }
                             },
                             y: {
@@ -914,7 +925,7 @@
                     }
 
                     config.data = series;
-                    setAsOf(config, rows);
+                    setAsOf(config, series.samples);
                     updateChartNote(config, series);
                     drawChart(kind);
 

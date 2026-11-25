@@ -396,6 +396,12 @@
     color: var(--accent);
 }
 
+.identity-badges .badge,
+.identity-badges .identity-country {
+    height: 30px;
+    padding-block: 0;
+}
+
 .identity-flag {
     width: 22px;
     height: 15px;
@@ -406,7 +412,7 @@
 
 .identity-meta {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(140px, 1fr));
     gap: var(--space-3);
     padding-top: var(--space-4);
     border-top: 1px solid var(--border);
@@ -901,21 +907,15 @@
 }
 
 .clan-result-bar {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
+    display: flex;
+    flex-wrap: wrap;
     align-items: center;
-    gap: var(--space-1) var(--space-3);
+    gap: var(--space-2) var(--space-3);
     padding: 0 0 var(--space-3);
 }
 
-.clan-result-bar .result-count {
-    grid-column: 1;
-    grid-row: 1;
-}
-
 .clan-result-bar .result-source {
-    grid-column: 1;
-    grid-row: 2;
+    margin-right: auto;
 }
 
 .result-source {
@@ -924,10 +924,13 @@
 }
 
 .clan-result-bar .pager-top {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
     margin: 0;
+}
+
+.clan-afk-legend {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
 }
 
 .clan-table {
@@ -1266,16 +1269,17 @@
    -------------------------------------------------------------------------- */
 
 @media (max-width: 768px) {
+    .page-head-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
     .profile-layout {
         grid-template-columns: 1fr;
     }
 
-    .identity-card {
-        order: -1;
-    }
-
     .tee-panel {
-        order: 1;
+        order: -1;
         flex-direction: row;
         justify-content: center;
         gap: var(--space-5);
@@ -1475,7 +1479,7 @@
     }
 
     .identity-meta {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .profile-stats {
@@ -1510,7 +1514,7 @@
     .tee-panel {
         display: flex;
         flex-direction: column;
-        order: 1;
+        order: -1;
     }
 
     .tee-stage {

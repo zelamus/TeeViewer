@@ -398,6 +398,25 @@
                 }
             }
 
+            function serverLabel(server, list) {
+                var name = server && server.name ? server.name : "Unnamed server";
+                var count = 0;
+
+                (list || []).forEach(function (item) {
+                    if (item && (item.name || "Unnamed server") === name) {
+                        count += 1;
+                    }
+                });
+
+                if (count > 1 && server && server.ip) {
+                    var parts = String(server.ip).split(".");
+                    var shortIp = parts.length >= 2 ? parts.slice(-2).join(".") : String(server.ip);
+                    return name + " (" + shortIp + ":" + server.port + ")";
+                }
+
+                return name;
+            }
+
             var liveServersLoaded = false;
             var liveMapsLoaded = false;
             var serversNote = document.getElementById("liveServersNote");
@@ -414,7 +433,7 @@
 
                     if (!liveServersLoaded && Array.isArray(snapshot.servers)) {
                         render("liveServersBody", "liveServersStatus", snapshot.servers, [
-                            function (s) { return s.name || "Unnamed server"; },
+                            function (s) { return serverLabel(s, snapshot.servers); },
                             function (s) { return s.map || "Unknown"; },
                             function (s) {
                                 return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
@@ -451,7 +470,7 @@
                     }).slice(0, 5) : [];
 
                     render("liveServersBody", "liveServersStatus", servers, [
-                        function (s) { return s.name || "Unnamed server"; },
+                        function (s) { return serverLabel(s, servers); },
                         function (s) { return s.map && s.map.name ? s.map.name : "Unknown"; },
                         function (s) {
                             return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
