@@ -620,11 +620,19 @@ html.js .chart-card.is-loading .chart-box canvas {
     image-rendering: pixelated;
 }
 
+.skin-preview-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    margin-top: var(--space-3);
+}
+
 .skin-swatches {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-2) var(--space-4);
-    margin-top: var(--space-3);
     color: var(--text-2);
     font-size: var(--text-xs);
 }
@@ -676,7 +684,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     align-items: center;
     gap: 6px;
     min-height: 24px;
-    margin-top: var(--space-3);
+    margin: 0;
     padding: 0 var(--space-2);
     border: 1px solid var(--border);
     border-radius: var(--radius-pill);

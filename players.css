@@ -242,6 +242,7 @@
 .profile-layout {
     display: grid;
     grid-template-columns: 300px minmax(0, 1fr);
+    align-items: start;
     gap: var(--space-4);
     margin-bottom: var(--space-4);
 }
@@ -250,7 +251,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center;
     gap: var(--space-3);
     padding: var(--space-4);
     border: 1px solid var(--border);
@@ -851,8 +852,10 @@
     flex-wrap: wrap;
 }
 
-.clan-result-head .result-count {
-    margin-left: auto;
+.clan-result-bar {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 0 var(--space-2);
 }
 
 .clan-table {
@@ -860,8 +863,16 @@
 }
 
 .clan-table .rank-col {
-    width: 64px;
+    width: 44px;
     text-align: right;
+}
+
+.clan-table tbody td {
+    padding-block: 0.625rem;
+}
+
+.clan-table tbody tr {
+    height: 48px;
 }
 
 .clan-table th:nth-child(2) {
@@ -1187,10 +1198,6 @@
 
     .profile-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .stat-box {
-        flex-direction: column-reverse;
     }
 
     .chart-grid {

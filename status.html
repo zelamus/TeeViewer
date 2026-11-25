@@ -63,7 +63,7 @@
     <main class="page status-page" id="main">
         <header class="page-head status-page-head">
             <div>
-                <h1 class="page-title">Network status</h1>
+                <h1 class="page-title">Status</h1>
                 <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
             </div>
             <div class="status-actions">
@@ -183,7 +183,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
-                <p class="chart-note">The 24-hour peak is higher than the current count.</p>
+                <p class="chart-note" id="player-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="player-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -365,7 +365,8 @@
                     },
                     totalKey: "totalPlayers",
                     unit: "players",
-                    noun: "player"
+                    noun: "player",
+                    noteId: "player-chart-note"
                 },
                 servers: {
                     period: "week",
@@ -537,18 +538,10 @@
 
             function formatLabel(date, period) {
                 if (period === "day") {
-                    return date.toLocaleDateString([], { month: "short", day: "numeric" }) + " " + date.toLocaleTimeString([], {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: false
-                    });
+                    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
                 }
 
-                if (period === "week") {
-                    return date.toLocaleDateString([], { month: "short", day: "numeric" });
-                }
-
-                return date.toLocaleDateString([], { month: "short", day: "numeric" });
+                return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
             }
 
             function toNumber(value) {
@@ -647,6 +640,9 @@
                                 pointHoverBackgroundColor: colors.accent,
                                 tension: 0.3,
                                 fill: true,
+                                clip: false,
+                                borderCapStyle: "round",
+                                borderJoinStyle: "round",
                                 yAxisID: "y"
                             }
                         ]
@@ -654,6 +650,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
+                        layout: { padding: { top: 4, right: 8, bottom: 4 } },
                         backgroundColor: "transparent",
                         animation: { duration: 300 },
                         interaction: { mode: "index", intersect: false },
@@ -681,18 +678,10 @@
                                     color: colors.muted,
                                     maxTicksLimit: tickLimit,
                                     autoSkipPadding: 12,
-                                    maxRotation: 30,
+                                    maxRotation: 0,
+                                    minRotation: 0,
                                     autoSkip: true,
-                                    font: { size: 13 },
-                                    callback: function (value) {
-                                        var label = this.getLabelForValue(value);
-
-                                        if (config.period === "day" && typeof label === "string" && label.indexOf(":00") !== label.length - 3) {
-                                            return null;
-                                        }
-
-                                        return label;
-                                    }
+                                    font: { size: 12 }
                                 }
                             },
                             y: {
@@ -751,6 +740,31 @@
                 }
             }
 
+            function updateChartNote(config, series) {
+                if (!config.noteId) {
+                    return;
+                }
+
+                var values = series.total.filter(function (value) {
+                    return typeof value === "number" && isFinite(value);
+                });
+
+                if (!values.length) {
+                    setText(config.noteId, "Peak and current count are unavailable.");
+                    return;
+                }
+
+                var peak = Math.max.apply(null, values);
+                var current = values[values.length - 1];
+
+                if (peak === current) {
+                    setText(config.noteId, "Peak " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
+                    return;
+                }
+
+                setText(config.noteId, "Peak " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
+            }
+
             function loadChart(kind, period) {
                 var config = charts[kind];
                 var card = $(config.cardId);
@@ -800,6 +814,7 @@
                     }
 
                     config.data = series;
+                    updateChartNote(config, series);
                     drawChart(kind);
 
                     if (card) {

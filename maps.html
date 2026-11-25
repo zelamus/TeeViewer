@@ -137,6 +137,12 @@
                 <p class="filter-legend"><span class="filter-legend-star" aria-hidden="true">★</span> Stars: 1-5, higher is harder</p>
             </div>
 
+            <nav class="pager pager-top" id="mapPagerTop" aria-label="Map pages (top)">
+                <button class="button ghost button-sm" type="button" data-pager-prev>Previous</button>
+                <span class="pager-status" data-map-page-status role="status"></span>
+                <button class="button ghost button-sm" type="button" data-pager-next>Next</button>
+            </nav>
+
             <div class="map-grid" id="mapsTableBody" aria-label="Map index">
                 <div class="map-card is-skeleton" aria-hidden="true">
                     <span class="skeleton sk sk-name"></span>
@@ -185,9 +191,9 @@
             <div class="list-footer">
                 <p class="result-note" id="mapResultNote"></p>
                 <nav class="pager" id="mapPager" aria-label="Map pages">
-                    <button class="button ghost button-sm" type="button" id="mapPrevBtn">Previous</button>
-                    <span class="pager-status" id="mapPageStatus" role="status"></span>
-                    <button class="button ghost button-sm" type="button" id="mapNextBtn">Next</button>
+                    <button class="button ghost button-sm" type="button" id="mapPrevBtn" data-pager-prev>Previous</button>
+                    <span class="pager-status" id="mapPageStatus" data-map-page-status role="status"></span>
+                    <button class="button ghost button-sm" type="button" id="mapNextBtn" data-pager-next>Next</button>
                 </nav>
             </div>
         </div>
@@ -424,9 +430,10 @@
                 dom.count = document.getElementById("mapCount");
                 dom.resultNote = document.getElementById("mapResultNote");
                 dom.showMore = document.getElementById("mapNextBtn");
-            dom.pager = document.getElementById("mapPager");
-            dom.prevPage = document.getElementById("mapPrevBtn");
-            dom.pageStatus = document.getElementById("mapPageStatus");
+            dom.pagers = document.querySelectorAll(".pager");
+            dom.prevPages = document.querySelectorAll("[data-pager-prev]");
+            dom.nextPages = document.querySelectorAll("[data-pager-next]");
+            dom.pageStatuses = document.querySelectorAll("[data-map-page-status]");
                 dom.search = document.getElementById("mapSearch");
                 dom.mapper = document.getElementById("mapperFilter");
                 dom.type = document.getElementById("typeFilter");
@@ -596,10 +603,16 @@
                 return markup;
             }
 
+            function hidePagers() {
+                for (var i = 0; i < dom.pagers.length; i += 1) {
+                    dom.pagers[i].hidden = true;
+                }
+            }
+
             function setMapsLoading() {
                 dom.state.hidden = true;
                 dom.grid.hidden = false;
-                dom.showMore.hidden = true;
+                hidePagers();
                 dom.count.textContent = "Loading maps…";
                 dom.resultNote.textContent = "";
                 dom.grid.innerHTML = skeletonCards(8);
@@ -621,7 +634,7 @@
                     "</div>";
                 dom.state.hidden = false;
                 dom.grid.hidden = true;
-                dom.showMore.hidden = true;
+                hidePagers();
             }
 
             function showMapsError() {
@@ -767,7 +780,7 @@
                     "</span>" +
                     '<span class="map-card-tags">' +
                         '<span class="badge">' + escapeHtml(server) + "</span>" +
-                        '<span class="map-card-mapper">by ' + escapeHtml(mapper) + "</span>" +
+                        '<span class="map-card-mapper"> by ' + escapeHtml(mapper) + "</span>" +
                     "</span>" +
                     '<span class="map-card-foot">' +
                         '<span class="map-points" title="Points awarded for completing this map"><span class="map-points-value">' + formatNumber(points) + "</span> points</span>" +
@@ -806,11 +819,21 @@
                     ? "Full map index"
                     : "Filtered from " + formatNumber(allMaps.length) + " maps";
 
-                dom.pager.hidden = false;
-                dom.showMore.hidden = false;
-                dom.pageStatus.textContent = "Page " + currentMapPage + " of " + lastPage;
-                dom.prevPage.disabled = currentMapPage <= 1;
-                dom.showMore.disabled = currentMapPage >= lastPage;
+                for (var p = 0; p < dom.pagers.length; p += 1) {
+                    dom.pagers[p].hidden = false;
+                }
+
+                for (var s = 0; s < dom.pageStatuses.length; s += 1) {
+                    dom.pageStatuses[s].textContent = "Page " + currentMapPage + " of " + lastPage;
+                }
+
+                for (var n = 0; n < dom.nextPages.length; n += 1) {
+                    dom.nextPages[n].disabled = currentMapPage >= lastPage;
+                }
+
+                for (var b = 0; b < dom.prevPages.length; b += 1) {
+                    dom.prevPages[b].disabled = currentMapPage <= 1;
+                }
             }
 
             function loadMoreMaps() {
@@ -1529,12 +1552,12 @@
                     return;
                 }
 
-                if (target.closest("#showMoreMapsBtn") || target.closest("#mapNextBtn")) {
+                if (target.closest("#showMoreMapsBtn") || target.closest("[data-pager-next]")) {
                     loadMoreMaps();
                     return;
                 }
 
-                if (target.closest("#mapPrevBtn")) {
+                if (target.closest("[data-pager-prev]")) {
                     goToMapPage(currentMapPage - 1);
                     return;
                 }

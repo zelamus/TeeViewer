@@ -63,7 +63,7 @@
     <main class="page skin-page" id="main">
         <header class="page-head">
             <div>
-                <h1 class="page-title">Skin preview</h1>
+                <h1 class="page-title">Skin</h1>
                 <p class="page-sub">Preview a Teeworlds skin with your colours, then download the recoloured skin image.</p>
             </div>
         </header>
@@ -94,11 +94,13 @@
                     </div>
                 </div>
 
-                <div class="skin-swatches" aria-label="Selected colours">
-                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
-                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
+                <div class="skin-preview-foot">
+                    <div class="skin-swatches" aria-label="Selected colours">
+                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
+                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
+                    </div>
+                    <p class="skin-status" id="status" role="status">Loading skin…</p>
                 </div>
-                <p class="skin-status" id="status" role="status">Loading skin…</p>
             </section>
 
             <section class="card skin-controls" aria-labelledby="controls-title">
@@ -114,20 +116,20 @@
                     </div>
 
                     <div class="field">
-                        <label for="bodyColor">Body colour code</label>
+                        <label for="bodyColor">Body colour, decimal code</label>
                         <div class="color-row">
                             <input class="input" type="text" id="bodyColor" name="color_body" value="65535" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
                             <input class="color-picker" type="color" id="bodyColorPicker" value="#0000ff" aria-label="Pick body colour">
-                            <output class="color-hex" id="bodyHex" for="bodyColor">#0000ff</output>
+                            <output class="color-hex" id="bodyHex" for="bodyColor" aria-label="Body colour hex value">Hex #0000ff</output>
                         </div>
                     </div>
 
                     <div class="field">
-                        <label for="feetColor">Feet colour code</label>
+                        <label for="feetColor">Feet colour, decimal code</label>
                         <div class="color-row">
                             <input class="input" type="text" id="feetColor" name="color_feet" value="16711680" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
                             <input class="color-picker" type="color" id="feetColorPicker" value="#ff0000" aria-label="Pick feet colour">
-                            <output class="color-hex" id="feetHex" for="feetColor">#ff0000</output>
+                            <output class="color-hex" id="feetHex" for="feetColor" aria-label="Feet colour hex value">Hex #ff0000</output>
                         </div>
                     </div>
 
@@ -135,7 +137,7 @@
                     <p class="field-hint is-error" id="color-error" hidden>Enter whole numbers from 0 to 16777215 for both colour codes.</p>
 
                     <div class="skin-actions">
-                        <button class="button ghost" type="submit" id="skin-submit">Update preview</button>
+                        <button class="button ghost" type="submit" id="skin-submit">Apply changes</button>
                         <button class="button ghost" type="button" id="resetSkin">Reset</button>
                         <a class="button primary" id="downloadSkin" download="tee-skin.png" hidden>Download skin</a>
                     </div>
@@ -259,8 +261,8 @@
                 if ($("feetColorPicker")) {
                     $("feetColorPicker").value = skinColor(state.feet);
                 }
-                setText("bodyHex", skinColor(state.body));
-                setText("feetHex", skinColor(state.feet));
+                setText("bodyHex", "Hex " + skinColor(state.body));
+                setText("feetHex", "Hex " + skinColor(state.feet));
             }
 
             function applyUrl(state) {
@@ -595,10 +597,20 @@
                 retry.addEventListener("click", onRetry);
             }
 
+            var previewTimer = null;
+
+            function schedulePreview() {
+                window.clearTimeout(previewTimer);
+                previewTimer = window.setTimeout(onSubmit, 200);
+            }
+
             ["bodyColor", "feetColor"].forEach(function (id) {
                 var input = $(id);
                 if (input) {
-                    input.addEventListener("input", clearInvalid);
+                    input.addEventListener("input", function () {
+                        clearInvalid();
+                        schedulePreview();
+                    });
                 }
             });
 
@@ -608,7 +620,7 @@
                 if (picker) {
                     picker.addEventListener("input", function () {
                         $(ids[0]).value = hexToCode(picker.value);
-                        $(ids[2]).textContent = picker.value.toLowerCase();
+                        $(ids[2]).textContent = "Hex " + picker.value.toLowerCase();
                         clearInvalid();
                         onSubmit();
                     });

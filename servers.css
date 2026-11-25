@@ -272,9 +272,7 @@
 }
 
 .sort-mark::before {
-    color: var(--muted);
-    font-size: var(--text-xs);
-    content: "↕";
+    content: none;
 }
 
 .server-table th[aria-sort="ascending"] .sort-mark::before {
@@ -313,7 +311,10 @@
     white-space: nowrap;
 }
 
-.table-link {
+.table-link,
+.table-link:visited,
+.card-link,
+.card-link:visited {
     color: var(--accent);
 }
 
@@ -379,14 +380,14 @@
     overflow: hidden;
     border: 0;
     border-radius: var(--radius-pill);
-    background: var(--surface-2);
+    background: color-mix(in srgb, var(--text) 18%, transparent);
     appearance: none;
     -webkit-appearance: none;
 }
 
 .capacity-mini::-webkit-progress-bar {
     border-radius: inherit;
-    background: var(--border-strong);
+    background: color-mix(in srgb, var(--text) 18%, transparent);
 }
 
 .capacity-mini::-webkit-progress-value {
@@ -742,14 +743,14 @@
     overflow: hidden;
     border: 1px solid var(--border-strong);
     border-radius: var(--radius-pill);
-    background: var(--border-strong);
+    background: color-mix(in srgb, var(--text) 18%, transparent);
     appearance: none;
     -webkit-appearance: none;
 }
 
 .capacity-bar::-webkit-progress-bar {
     border-radius: inherit;
-    background: var(--border-strong);
+    background: color-mix(in srgb, var(--text) 18%, transparent);
 }
 
 .capacity-bar::-webkit-progress-value {

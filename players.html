@@ -189,7 +189,8 @@
                     <span class="stat-label">Skin</span>
                 </div>
                 <div class="stat-box">
-                    <span class="stat-value" id="isMapper">Mapper: —</span>
+                    <span class="stat-value" id="isMapper"></span>
+                    <span class="stat-label">Mapper</span>
                 </div>
                 <div class="stat-box">
                     <span class="stat-value status-value" id="onlineStatus" data-state="pending">Checking…</span>
@@ -861,7 +862,9 @@
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
-                document.getElementById("isMapper").textContent = "Mapper: " + (playerData.is_mapper ? "Yes" : "—");
+                document.getElementById("isMapper").textContent = playerData.is_mapper === undefined || playerData.is_mapper === null
+                    ? "Unknown"
+                    : (playerData.is_mapper ? "Yes" : "No");
 
                 document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 

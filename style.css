@@ -461,6 +461,16 @@ button:disabled {
     filter: hue-rotate(180deg) saturate(1.15);
 }
 
+[data-theme="light"] .logo {
+    filter: brightness(0.5) saturate(1.2);
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) .logo {
+        filter: brightness(0.5) saturate(1.2);
+    }
+}
+
 .nav {
     margin-left: auto;
 }
@@ -713,9 +723,9 @@ button:disabled {
     z-index: -1;
     top: -30%;
     left: 50%;
-    width: min(680px, 90vw);
-    height: 280px;
-    background: radial-gradient(closest-side, var(--hero-glow), transparent 70%);
+    width: min(760px, 92vw);
+    height: 360px;
+    background: radial-gradient(ellipse closest-side, var(--hero-glow) 0%, transparent 100%);
     content: "";
     pointer-events: none;
     transform: translateX(-50%);
@@ -805,7 +815,7 @@ button:disabled {
 }
 
 .stat-source {
-    margin-top: var(--space-2);
+    margin: 0;
 }
 
 .preview-section .section-head {
