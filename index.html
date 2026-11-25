@@ -78,6 +78,7 @@
         <section class="stat-section network-section" aria-labelledby="live-stats-title">
             <div class="section-head">
                 <h2 id="live-stats-title">Live network</h2>
+                <p class="section-note stat-source">As of <span id="statAsOf" hidden>—</span></p>
             </div>
 
             <div class="stat-grid is-loading" id="statGrid" aria-busy="true">
@@ -117,7 +118,6 @@
                     <span class="stat-label">Active maps</span>
                 </a>
             </div>
-            <p class="section-note stat-source"><span id="statAsOf" hidden></span></p>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
         </section>
 
@@ -157,7 +157,6 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -216,7 +215,7 @@
                     settle("Snapshot values shown. Live data loading.");
 
                     if (asOfLine) {
-                        asOfLine.textContent = "Snapshot";
+                        asOfLine.textContent = "snapshot";
                         asOfLine.hidden = false;
                     }
                     if (asOfSep) {
@@ -257,7 +256,7 @@
                 var hours = String(now.getHours()).padStart(2, "0");
                 var minutes = String(now.getMinutes()).padStart(2, "0");
 
-                asOfLine.textContent = "as of " + hours + ":" + minutes;
+                asOfLine.textContent = hours + ":" + minutes;
                 asOfLine.hidden = false;
 
                 if (asOfSep) {

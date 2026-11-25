@@ -190,7 +190,7 @@
                                 <th scope="col">
                                     <button class="th-sort" type="button" data-sort="created">Created</button>
                                 </th>
-                                <th scope="col" class="num"><span>AFK</span><span class="clan-afk-legend"><span class="badge">AFK</span> away from keyboard</span></th>
+                                <th scope="col" class="num">AFK</th>
                                 <th scope="col">Top members</th>
                             </tr>
                         </thead>
@@ -256,7 +256,6 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -609,30 +608,28 @@
                     cardHead.appendChild(cardName);
                     cardHead.appendChild(cardRank);
 
-                    var cardMeta = document.createElement("p");
+                    var cardMeta = document.createElement("dl");
                     cardMeta.className = "clan-card-meta";
-                    var membersText = document.createElement("span");
-                    membersText.textContent = "Members ";
-                    var membersValue = document.createElement("strong");
-                    membersValue.textContent = clan.memberCount;
-                    membersText.appendChild(membersValue);
-                    var createdText = document.createElement("span");
-                    createdText.textContent = "Created " + created;
-                    var afkText = document.createElement("span");
-                    afkText.title = "Away from keyboard";
-                    afkText.textContent = "AFK ";
-                    var afkValue = document.createElement("strong");
-                    afkValue.textContent = clan.afkPlayers;
-                    afkText.appendChild(afkValue);
-                    var topMembersText = document.createElement("span");
-                    topMembersText.textContent = "Top members ";
-                    var topMembersValue = document.createElement("strong");
-                    topMembersValue.textContent = topMemberNames(clan).join(" · ");
-                    topMembersText.appendChild(topMembersValue);
-                    cardMeta.appendChild(membersText);
-                    cardMeta.appendChild(createdText);
-                    cardMeta.appendChild(afkText);
-                    cardMeta.appendChild(topMembersText);
+                    var metaRows = [
+                        ["Members", clan.memberCount],
+                        ["Created", created],
+                        ["AFK", clan.afkPlayers],
+                        ["Top members", topMemberNames(clan).join(" · ")]
+                    ];
+                    metaRows.forEach(function (row) {
+                        var metaRow = document.createElement("div");
+                        metaRow.className = "clan-card-meta-row";
+                        var label = document.createElement("dt");
+                        label.textContent = row[0] + ":";
+                        var value = document.createElement("dd");
+                        value.textContent = row[1];
+                        if (row[0] === "AFK") {
+                            label.title = "Away from keyboard";
+                        }
+                        metaRow.appendChild(label);
+                        metaRow.appendChild(value);
+                        cardMeta.appendChild(metaRow);
+                    });
 
                     card.tabIndex = 0;
                     card.setAttribute("aria-label", "Open clan " + label);

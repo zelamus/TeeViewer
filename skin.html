@@ -96,12 +96,6 @@
                     </div>
                 </div>
 
-                <div class="skin-preview-foot">
-                    <div class="skin-swatches" aria-label="Selected colours">
-                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
-                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
-                    </div>
-                </div>
             </section>
 
             <section class="card skin-controls" aria-labelledby="controls-title">
@@ -117,7 +111,7 @@
                     </div>
 
                     <div class="field">
-                        <label for="bodyColor">Body colour, decimal code</label>
+                        <label for="bodyColor">Body colour, decimal code <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span></label>
                         <div class="color-row">
                             <input class="input" type="text" id="bodyColor" name="color_body" value="65535" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
                             <input class="color-picker" type="color" id="bodyColorPicker" value="#0000ff" aria-label="Pick body colour">
@@ -126,7 +120,7 @@
                     </div>
 
                     <div class="field">
-                        <label for="feetColor">Feet colour, decimal code</label>
+                        <label for="feetColor">Feet colour, decimal code <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span></label>
                         <div class="color-row">
                             <input class="input" type="text" id="feetColor" name="color_feet" value="16711680" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
                             <input class="color-picker" type="color" id="feetColorPicker" value="#ff0000" aria-label="Pick feet colour">

@@ -129,6 +129,7 @@
                     <div class="field field-inline">
                         <span class="field-label" id="protocolLabel">Protocol</span>
                         <div class="segmented" role="group" aria-labelledby="protocolLabel">
+                            <button class="segment" type="button" data-protocol="" aria-pressed="true">All</button>
                             <button class="segment" type="button" data-protocol="0.6" aria-pressed="false">0.6</button>
                             <button class="segment" type="button" data-protocol="0.7" aria-pressed="false">0.7</button>
                         </div>
@@ -360,7 +361,6 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -1022,7 +1022,7 @@
                 var protocolButtons = document.querySelectorAll("[data-protocol]");
 
                 for (var i = 0; i < protocolButtons.length; i += 1) {
-                    protocolButtons[i].setAttribute("aria-pressed", "false");
+                    protocolButtons[i].setAttribute("aria-pressed", protocolButtons[i].getAttribute("data-protocol") === "" ? "true" : "false");
                 }
 
                 filterAndSortServers();

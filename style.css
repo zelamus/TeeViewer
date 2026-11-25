@@ -270,6 +270,28 @@
     --shadow-3: 0 24px 60px rgba(16, 24, 40, 0.12);
 }
 
+[data-theme="light"] .badge.game-badge,
+[data-theme="light"] .map-type-badge,
+[data-theme="light"] .cell-version,
+[data-theme="light"] .capacity-mini-pct,
+[data-theme="light"] .capacity-percent,
+[data-theme="light"] .status-updated,
+[data-theme="light"] .stat-source {
+    color: #14161a;
+}
+
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) .badge.game-badge,
+    :root:not([data-theme]) .map-type-badge,
+    :root:not([data-theme]) .cell-version,
+    :root:not([data-theme]) .capacity-mini-pct,
+    :root:not([data-theme]) .capacity-percent,
+    :root:not([data-theme]) .status-updated,
+    :root:not([data-theme]) .stat-source {
+        color: #14161a;
+    }
+}
+
 @media (prefers-color-scheme: light) {
     :root:not([data-theme]) {
         color-scheme: light;
@@ -519,6 +541,20 @@ button:disabled {
     background: var(--surface-2);
     color: var(--text);
     text-decoration: none;
+}
+
+.nav-buttons a[href^="https://discord.com/"] {
+    margin-left: var(--space-3);
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.nav-buttons a[href^="https://discord.com/"]::after {
+    margin-left: var(--space-1);
+    font-size: var(--text-xs);
+    content: "↗";
 }
 
 .external-mark {
@@ -838,9 +874,8 @@ button:disabled {
 }
 
 .network-section .stat-source {
-    align-self: flex-end;
-    order: 3;
-    margin: var(--space-2) 0 0;
+    margin: 0;
+    font-weight: 500;
 }
 
 .network-section .stat-grid {
@@ -1678,6 +1713,14 @@ textarea.input {
         content: "";
     }
 
+    html.js .nav-buttons a[href^="https://discord.com/"] {
+        justify-content: flex-start;
+        margin: var(--space-2) 0 0;
+        border-top: 1px solid var(--border);
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
     html.js body.nav-open {
         overflow: hidden;
     }
@@ -1819,8 +1862,7 @@ textarea.input {
     }
 
     .network-section .stat-source {
-        align-self: flex-start;
-        margin: var(--space-2) 0 var(--space-5);
+        margin: 0;
     }
 
 

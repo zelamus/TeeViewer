@@ -66,6 +66,10 @@
             <div class="page-head-row">
                 <h1 class="page-title">Status</h1>
                 <div class="status-actions">
+                    <span class="status-pill" id="network-pill" data-state="loading" role="status">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        <span id="network-pill-text">Checking</span>
+                    </span>
                     <button class="button ghost" id="refresh-status" type="button">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                             <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
@@ -75,24 +79,8 @@
                     </button>
                 </div>
             </div>
-            <div class="status-facts" aria-label="Status facts">
-                <div class="status-fact">
-                    <span class="fact-label">Status</span>
-                    <span class="status-pill" id="network-pill" data-state="loading" role="status">
-                        <span class="status-dot" aria-hidden="true"></span>
-                        <span id="network-pill-text">Checking</span>
-                    </span>
-                </div>
-                <div class="status-fact">
-                    <span class="fact-label">Totals checked</span>
-                    <time class="status-updated" id="last-updated" title="Time the live totals were fetched">—</time>
-                </div>
-                <div class="status-fact">
-                    <span class="fact-label">Latest sample</span>
-                    <time class="status-updated" id="latest-sample">—</time>
-                </div>
-            </div>
             <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
+            <p class="status-times">Live totals checked at <time class="status-updated" id="last-updated" title="Time the live totals were fetched">—</time>. History samples end at <time class="status-updated" id="latest-sample">—</time>.</p>
         </header>
 
         <section aria-labelledby="overview-title">
@@ -351,7 +339,6 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
