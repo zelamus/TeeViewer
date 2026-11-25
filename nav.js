@@ -47,6 +47,14 @@
         systemLight = null;
     }
 
+    if (!storedTheme) {
+        var themeMeta = document.querySelector('meta[name="theme-color"]');
+
+        if (themeMeta) {
+            themeMeta.setAttribute("content", systemLight && systemLight.matches ? "#fbfbfc" : "#0a0a0a");
+        }
+    }
+
     function currentTheme() {
         var explicit = root.getAttribute("data-theme");
 

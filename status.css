@@ -726,7 +726,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .chart-buttons button {
-        min-height: 30px;
+        min-height: var(--tap-target);
         padding: 0 var(--space-2);
     }
 

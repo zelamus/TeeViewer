@@ -231,7 +231,7 @@
     --border-strong: #cfd3da;
     --text: #14161a;
     --text-2: #3f444c;
-    --muted: #6b7280;
+    --muted: #5b6270;
     --accent: #1d4ed8;
     --accent-hover: #1e40af;
     --on-accent: #ffffff;
@@ -264,7 +264,7 @@
         --border-strong: #cfd3da;
         --text: #14161a;
         --text-2: #3f444c;
-        --muted: #6b7280;
+        --muted: #5b6270;
         --accent: #1d4ed8;
         --accent-hover: #1e40af;
         --on-accent: #ffffff;
@@ -336,6 +336,18 @@ h6 {
     font-weight: 600;
     line-height: var(--leading-tight);
     letter-spacing: var(--tracking-tight);
+}
+
+h1 {
+    font-size: var(--text-2xl);
+}
+
+h2 {
+    font-size: var(--text-lg);
+}
+
+h3 {
+    font-size: var(--text-base);
 }
 
 p {
@@ -1579,6 +1591,20 @@ textarea.input {
     :root {
         --topbar-h: 56px;
         --control-h: 36px;
+    }
+
+    .theme-toggle,
+    .menu-toggle {
+        min-width: var(--tap-target);
+        min-height: var(--tap-target);
+    }
+
+    .categories,
+    .chip,
+    .button,
+    .input,
+    .select {
+        min-height: var(--tap-target);
     }
 
     .topbar-inner {

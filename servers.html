@@ -71,7 +71,7 @@
 
             <section class="filter-panel" aria-labelledby="serverFiltersTitle">
                 <div class="section-head filter-panel-head">
-                    <h2 class="section-title" id="serverFiltersTitle">Filter servers</h2>
+                    <p class="section-title" id="serverFiltersTitle">Filter servers</p>
                     <p class="section-note">Filters apply to the loaded list</p>
                 </div>
 
@@ -370,6 +370,7 @@
             var currentRange = "day";
             var activeProtocol = "";
             var playerActivityChart = null;
+            var lastServerTrigger = null;
             var failureCount = 0;
             var numberFormat = new Intl.NumberFormat("en-US");
 
@@ -770,7 +771,9 @@
 
             function passwordIcon(server) {
                 if (!server.hasPassword) {
-                    return '<span class="password-none" aria-label="No password">—</span>';
+                    return '<span class="password-none" role="img" aria-label="No password" title="No password">' +
+                        '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="4" y="10" width="16" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 7.5-2"></path></svg>' +
+                        "</span>";
                 }
 
                 return '<span class="password-flag" role="img" aria-label="Password protected" title="Password protected">' +
@@ -893,6 +896,8 @@
             }
 
             function showServerBrowser(push) {
+                var wasOpen = !dom.detail.hidden;
+
                 dom.browser.hidden = false;
                 dom.detail.hidden = true;
                 dom.share.hidden = true;
@@ -908,6 +913,12 @@
                     url.searchParams.delete("port");
                     window.history.pushState({}, "", url);
                 }
+
+                if (wasOpen && lastServerTrigger && document.contains(lastServerTrigger)) {
+                    lastServerTrigger.focus();
+                }
+
+                lastServerTrigger = null;
             }
 
             function renderOverview(server) {
@@ -1115,6 +1126,11 @@
             function showIndividualServer(ip, port) {
                 currentServerIp = ip;
                 currentServerPort = port;
+
+                if (document.activeElement) {
+                    lastServerTrigger = document.activeElement.closest(".server-row, .server-card");
+                }
+
                 dom.browser.hidden = true;
                 dom.detail.hidden = false;
                 dom.share.hidden = false;

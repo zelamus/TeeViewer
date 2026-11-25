@@ -187,15 +187,15 @@
 }
 
 .server-table th:nth-child(1) {
-    width: 27%;
+    width: 24%;
 }
 
 .server-table th:nth-child(2) {
-    width: 16%;
+    width: 15%;
 }
 
 .server-table th:nth-child(3) {
-    width: 18%;
+    width: 16%;
 }
 
 .server-table th:nth-child(4) {
@@ -203,7 +203,7 @@
 }
 
 .server-table th:nth-child(5) {
-    width: 13%;
+    width: 19%;
 }
 
 .server-table th:nth-child(6) {
@@ -242,7 +242,7 @@
 
 .sort-mark::before {
     color: var(--muted);
-    font-size: 10px;
+    font-size: 12px;
     content: "↕";
 }
 
@@ -571,7 +571,7 @@
 }
 
 .detail-title {
-    font-size: var(--text-2xl);
+    font-size: var(--text-lg);
     overflow-wrap: anywhere;
 }
 
@@ -883,7 +883,7 @@
     display: inline-block;
     width: 18px;
     height: 12px;
-    border-radius: 2px;
+    border-radius: var(--radius-1);
     object-fit: cover;
     vertical-align: middle;
 }
@@ -972,11 +972,15 @@
     }
 
     .server-table th:nth-child(1) {
-        width: 25%;
+        width: 24%;
     }
 
     .server-table th:nth-child(3) {
-        width: 19%;
+        width: 18%;
+    }
+
+    .server-table th:nth-child(5) {
+        width: 17%;
     }
 }
 
@@ -1103,6 +1107,11 @@
     .range-button {
         flex: 1 1 auto;
         text-align: center;
+    }
+
+    .segment,
+    .range-button {
+        min-height: var(--tap-target);
     }
 
     .client-table th,

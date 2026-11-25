@@ -147,7 +147,7 @@
                 <div class="identity-card">
                     <div class="identity-top">
                         <div>
-                            <h2 class="identity-name" id="playerName"></h2>
+                            <h2 class="identity-name" id="playerName">Player</h2>
                             <div class="identity-badges">
                                 <span class="badge" id="playerClan">Clan <a id="playerClanLink" href="#">N/A</a></span>
                                 <span class="identity-country">
@@ -1068,7 +1068,11 @@
                             plugins: {
                                 legend: {
                                     labels: {
-                                        color: axisColor
+                                        color: axisColor,
+                                        padding: 10,
+                                        boxWidth: 8,
+                                        usePointStyle: true,
+                                        pointStyle: "circle"
                                     }
                                 }
                             }
@@ -1161,7 +1165,11 @@
                             plugins: {
                                 legend: {
                                     labels: {
-                                        color: axisColor
+                                        color: axisColor,
+                                        padding: 10,
+                                        boxWidth: 8,
+                                        usePointStyle: true,
+                                        pointStyle: "circle"
                                     }
                                 }
                             }
