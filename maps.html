@@ -666,7 +666,7 @@
                         }
 
                         allMaps = data.slice().sort(function (a, b) {
-                            return String(a.map || "").localeCompare(String(b.map || ""));
+                            return mapSortName(a).localeCompare(mapSortName(b)) || String(a.map || "").localeCompare(String(b.map || ""));
                         });
                         populateTypeFilter(allMaps);
                         filterAndSortMaps();
@@ -704,6 +704,10 @@
                     dom.type.appendChild(option);
                 });
                 dom.type.value = selected;
+            }
+
+            function mapSortName(item) {
+                return String(item.map || "").toLowerCase().replace(/^[^\p{L}\p{N}]+/u, "");
             }
 
             function matchesStars(item, stars) {
@@ -753,12 +757,13 @@
                             valB = new Date(b.timestamp).getTime() || 0;
                             break;
                         default:
-                            valA = String(a.map || "").toLowerCase();
-                            valB = String(b.map || "").toLowerCase();
+                            valA = mapSortName(a);
+                            valB = mapSortName(b);
                     }
 
                     if (typeof valA === "string") {
-                        return currentSort.direction === "asc" ? valA.localeCompare(valB) : valB.localeCompare(valA);
+                        var result = valA.localeCompare(valB) || String(a.map || "").localeCompare(String(b.map || ""));
+                        return currentSort.direction === "asc" ? result : -result;
                     }
 
                     return currentSort.direction === "asc" ? valA - valB : valB - valA;

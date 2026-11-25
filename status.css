@@ -609,10 +609,18 @@ html.js .chart-card.is-loading .chart-box canvas {
     box-shadow: none;
 }
 
+.skin-preview-card .section-head {
+    align-items: center;
+}
+
+.skin-preview-card .skin-status {
+    margin-left: auto;
+}
+
 .skin-stage .teeassembler-tee {
     flex: 0 0 auto;
     margin-left: 0;
-    transform: scale(3.2);
+    transform: scale(4.2);
     transform-origin: center;
 }
 
@@ -624,7 +632,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: var(--space-2) var(--space-4);
     margin-top: var(--space-3);
 }
@@ -928,7 +936,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .skin-stage .teeassembler-tee {
-        transform: scale(3.2);
+        transform: scale(4.2);
     }
 
     .skin-actions .button {
@@ -974,7 +982,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .skin-stage .teeassembler-tee {
-        transform: scale(3.2);
+        transform: scale(4.2);
     }
 }
 

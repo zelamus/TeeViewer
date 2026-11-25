@@ -171,6 +171,11 @@
                 <div class="result-bar clan-result-bar">
                     <p class="result-count" id="clanCount" role="status">Loading clans…</p>
                 </div>
+                <nav class="pager pager-top" id="clanPagerTop" aria-label="Clan pages (top)">
+                    <button class="button ghost button-sm" type="button" data-clan-prev>Previous</button>
+                    <span class="pager-status" data-clan-page-status role="status"></span>
+                    <button class="button ghost button-sm" type="button" data-clan-next>Next</button>
+                </nav>
                 <div class="table-wrap clan-table-wrap">
                     <table class="table clan-table" id="clansTable">
                         <thead>
@@ -195,9 +200,9 @@
 
                 <div class="list-footer" id="clanPager" hidden>
                     <nav class="pager" aria-label="Clan pages">
-                        <button class="button ghost button-sm" type="button" id="clanPrevBtn">Previous</button>
-                        <span class="pager-status" id="clanPageStatus" role="status"></span>
-                        <button class="button ghost button-sm" type="button" id="clanNextBtn">Next</button>
+                        <button class="button ghost button-sm" type="button" id="clanPrevBtn" data-clan-prev>Previous</button>
+                        <span class="pager-status" id="clanPageStatus" data-clan-page-status role="status"></span>
+                        <button class="button ghost button-sm" type="button" id="clanNextBtn" data-clan-next>Next</button>
                     </nav>
                 </div>
             </div>
@@ -277,9 +282,10 @@
             var clanCards = document.getElementById("clanCards");
             var clanDialog = document.getElementById("clanDialog");
             var clanPager = document.getElementById("clanPager");
-            var clanPageStatus = document.getElementById("clanPageStatus");
-            var clanPrevBtn = document.getElementById("clanPrevBtn");
-            var clanNextBtn = document.getElementById("clanNextBtn");
+            var clanPagerTop = document.getElementById("clanPagerTop");
+            var clanPageStatuses = document.querySelectorAll("[data-clan-page-status]");
+            var clanPrevBtns = document.querySelectorAll("[data-clan-prev]");
+            var clanNextBtns = document.querySelectorAll("[data-clan-next]");
 
             function hasVisibleName(name) {
                 var value = typeof name === "string" ? name : "";
@@ -474,6 +480,7 @@
                     clansError.hidden = true;
                     clansEmpty.hidden = false;
                     clanPager.hidden = true;
+                    clanPagerTop.hidden = true;
                     clanCount.textContent = "No clans match this search";
                     return;
                 }
@@ -496,9 +503,19 @@
 
                 clanCount.textContent = "Showing " + (startIndex + 1) + "–" + endIndex + " of " + total + " clans";
                 clanPager.hidden = total <= clanPageSize;
-                clanPageStatus.textContent = "Page " + currentClanPage + " of " + lastPage;
-                clanPrevBtn.disabled = currentClanPage <= 1;
-                clanNextBtn.disabled = currentClanPage >= lastPage;
+                clanPagerTop.hidden = total <= clanPageSize;
+
+                for (var s = 0; s < clanPageStatuses.length; s += 1) {
+                    clanPageStatuses[s].textContent = "Page " + currentClanPage + " of " + lastPage;
+                }
+
+                for (var b = 0; b < clanPrevBtns.length; b += 1) {
+                    clanPrevBtns[b].disabled = currentClanPage <= 1;
+                }
+
+                for (var n = 0; n < clanNextBtns.length; n += 1) {
+                    clanNextBtns[n].disabled = currentClanPage >= lastPage;
+                }
 
                 pageClans.forEach(function (clan, offset) {
                     var index = startIndex + offset;
@@ -690,13 +707,17 @@
                 document.getElementById("clan-list-title").scrollIntoView({ block: "start" });
             }
 
-            clanPrevBtn.addEventListener("click", function () {
-                goToClanPage(-1);
-            });
+            for (var p = 0; p < clanPrevBtns.length; p += 1) {
+                clanPrevBtns[p].addEventListener("click", function () {
+                    goToClanPage(-1);
+                });
+            }
 
-            clanNextBtn.addEventListener("click", function () {
-                goToClanPage(1);
-            });
+            for (var q = 0; q < clanNextBtns.length; q += 1) {
+                clanNextBtns[q].addEventListener("click", function () {
+                    goToClanPage(1);
+                });
+            }
 
             clanSearch.addEventListener("input", applyFiltersAndSort);
 

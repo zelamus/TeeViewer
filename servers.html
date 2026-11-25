@@ -157,6 +157,12 @@
                 <p class="result-hint">Select a server for details</p>
             </div>
 
+            <nav class="pager pager-top" id="serverPagerTop" aria-label="Server pages (top)" hidden>
+                <button class="button ghost button-sm" type="button" data-server-prev>Previous</button>
+                <span class="pager-status" data-server-page-status role="status"></span>
+                <button class="button ghost button-sm" type="button" data-server-next>Next</button>
+            </nav>
+
             <div class="table-shell" id="serversTableWrap">
                 <table class="table server-table" id="serversTable">
                     <caption class="visually-hidden">Live Teeworlds servers</caption>
@@ -258,6 +264,11 @@
 
             <div class="list-footer">
                 <p class="result-note" id="serverResultNote"></p>
+                <nav class="pager" id="serverPager" aria-label="Server pages" hidden>
+                    <button class="button ghost button-sm" type="button" id="serverPrevBtn" data-server-prev>Previous</button>
+                    <span class="pager-status" id="serverPageStatus" data-server-page-status role="status"></span>
+                    <button class="button ghost button-sm" type="button" id="serverNextBtn" data-server-next>Next</button>
+                </nav>
                 <button class="button ghost" type="button" id="showMoreServersBtn" hidden>Show more</button>
             </div>
         </div>
@@ -385,6 +396,10 @@
                 dom.count = document.getElementById("serverCount");
                 dom.resultNote = document.getElementById("serverResultNote");
                 dom.showMore = document.getElementById("showMoreServersBtn");
+                dom.pagers = document.querySelectorAll(".pager");
+                dom.pageStatuses = document.querySelectorAll("[data-server-page-status]");
+                dom.prevPages = document.querySelectorAll("[data-server-prev]");
+                dom.nextPages = document.querySelectorAll("[data-server-next]");
                 dom.search = document.getElementById("serverSearch");
                 dom.gameType = document.getElementById("gameTypeFilter");
                 dom.map = document.getElementById("mapFilter");
@@ -537,7 +552,14 @@
                 return url + "#retry=" + Date.now();
             }
 
+            function hidePagers() {
+                for (var i = 0; i < dom.pagers.length; i += 1) {
+                    dom.pagers[i].hidden = true;
+                }
+            }
+
             function setListLoading() {
+                hidePagers();
                 dom.state.hidden = true;
                 dom.tableWrap.hidden = false;
                 dom.cards.hidden = false;
@@ -586,6 +608,7 @@
                             '<button class="button ' + (kind === "error" ? "primary" : "ghost") + '" type="button" data-state-action="' + actionName + '">' + escapeHtml(actionLabel) + "</button>" +
                         "</div>" +
                     "</div>";
+                hidePagers();
                 dom.state.hidden = false;
                 dom.tableWrap.hidden = true;
                 dom.cards.hidden = true;
@@ -780,10 +803,8 @@
                 dom.tableWrap.hidden = false;
                 dom.cards.hidden = false;
 
-                if (currentPage === 1) {
-                    dom.tableBody.innerHTML = "";
-                    dom.cards.innerHTML = "";
-                }
+                dom.tableBody.innerHTML = "";
+                dom.cards.innerHTML = "";
 
                 var startIndex = (currentPage - 1) * serversPerPage;
                 var endIndex = startIndex + serversPerPage;
@@ -794,19 +815,33 @@
                     dom.cards.insertAdjacentHTML("beforeend", serverCard(server));
                 });
 
-                var shown = Math.min(endIndex, serversToDisplay.length);
-                dom.count.textContent = "Showing " + formatNumber(shown) + " of " + formatNumber(serversToDisplay.length) + " servers";
-                dom.resultNote.textContent = serversToDisplay.length === allServers.length
+                var total = serversToDisplay.length;
+                var lastPage = Math.max(1, Math.ceil(total / serversPerPage));
+                var firstShown = total ? startIndex + 1 : 0;
+                var shown = Math.min(endIndex, total);
+
+                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " servers";
+                dom.resultNote.textContent = total === allServers.length
                     ? "Live network total"
                     : "Filtered from " + formatNumber(allServers.length) + " servers";
 
-                if (endIndex < serversToDisplay.length) {
-                    dom.showMore.hidden = false;
-                    dom.showMore.textContent = "Show more (" + formatNumber(serversToDisplay.length - endIndex) + " remaining)";
-                } else {
-                    dom.showMore.hidden = true;
+                for (var p = 0; p < dom.pagers.length; p += 1) {
+                    dom.pagers[p].hidden = false;
                 }
 
+                for (var s = 0; s < dom.pageStatuses.length; s += 1) {
+                    dom.pageStatuses[s].textContent = "Page " + currentPage + " of " + lastPage;
+                }
+
+                for (var n = 0; n < dom.nextPages.length; n += 1) {
+                    dom.nextPages[n].disabled = currentPage >= lastPage;
+                }
+
+                for (var b = 0; b < dom.prevPages.length; b += 1) {
+                    dom.prevPages[b].disabled = currentPage <= 1;
+                }
+
+                dom.showMore.hidden = true;
                 syncSortIndicators();
             }
 
@@ -833,7 +868,7 @@
                     '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
-                    '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
+                    '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + "</span></span>" +
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</td>" +
                     '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
@@ -899,8 +934,14 @@
                 filterAndSortServers();
             }
 
-            function loadMoreServers() {
-                currentPage += 1;
+            function goToServerPage(page) {
+                var lastPage = Math.max(1, Math.ceil(filteredAndSortedServers.length / serversPerPage));
+
+                if (page < 1 || page > lastPage || page === currentPage) {
+                    return;
+                }
+
+                currentPage = page;
                 displayServers(filteredAndSortedServers);
             }
 
@@ -1572,8 +1613,18 @@
                     return;
                 }
 
+                if (target.closest("[data-server-prev]")) {
+                    goToServerPage(currentPage - 1);
+                    return;
+                }
+
+                if (target.closest("[data-server-next]")) {
+                    goToServerPage(currentPage + 1);
+                    return;
+                }
+
                 if (target.closest("#showMoreServersBtn")) {
-                    loadMoreServers();
+                    goToServerPage(currentPage + 1);
                     return;
                 }
 

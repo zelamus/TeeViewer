@@ -166,7 +166,7 @@
         <section aria-labelledby="player-chart-title">
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="player-chart-title">Player count</p>
+                    <p class="chart-title" id="player-chart-title">24-hour sample peak</p>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
                         <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
                         <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
@@ -201,7 +201,7 @@
         <section aria-labelledby="server-chart-title">
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="server-chart-title">Server count</p>
+                    <p class="chart-title" id="server-chart-title">7-day sample peak</p>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
                         <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
                         <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
@@ -218,6 +218,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
+                <p class="chart-note" id="server-chart-note" role="status">Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="server-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -340,6 +341,7 @@
 
             var STATS_URL = "https://api.status.tw/stats";
             var numberFormat = new Intl.NumberFormat("en-US");
+            var overviewValues = {};
 
             if (typeof window.Chart !== "undefined") {
                 window.Chart.defaults.font.size = 13;
@@ -366,6 +368,8 @@
                     totalKey: "totalPlayers",
                     unit: "players",
                     noun: "player",
+                    overviewId: "stat-players",
+                    titleId: "player-chart-title",
                     noteId: "player-chart-note"
                 },
                 servers: {
@@ -384,7 +388,10 @@
                     },
                     totalKey: "totalServers",
                     unit: "servers",
-                    noun: "server"
+                    noun: "server",
+                    overviewId: "stat-servers",
+                    titleId: "server-chart-title",
+                    noteId: "server-chart-note"
                 }
             };
 
@@ -491,6 +498,10 @@
                         setText(field.id, data ? formatValue(data[field.key]) : "—");
                     });
 
+                    overviewValues.players = data ? toNumber(data.numPlayers) : null;
+                    overviewValues.servers = data ? toNumber(data.numServers) : null;
+                    refreshNotes();
+
                     if (grid) {
                         grid.classList.remove("is-loading");
                         grid.setAttribute("aria-busy", "false");
@@ -509,6 +520,10 @@
                     fields.forEach(function (field) {
                         setText(field.id, "—");
                     });
+
+                    overviewValues.players = null;
+                    overviewValues.servers = null;
+                    refreshNotes();
 
                     if (grid) {
                         grid.classList.remove("is-loading");
@@ -534,6 +549,16 @@
                     return "Last 30 days";
                 }
                 return "Last 24 hours";
+            }
+
+            function peakTitle(period) {
+                if (period === "week") {
+                    return "7-day sample peak";
+                }
+                if (period === "month") {
+                    return "30-day sample peak";
+                }
+                return "24-hour sample peak";
             }
 
             function formatLabel(date, period) {
@@ -693,7 +718,10 @@
                                     color: colors.muted,
                                     precision: 0,
                                     maxTicksLimit: tickLimit,
-                                    font: { size: 13 }
+                                    font: { size: 13 },
+                                    callback: function (value) {
+                                        return numberFormat.format(value);
+                                    }
                                 },
                                 title: {
                                     display: false,
@@ -738,6 +766,16 @@
                     buttons[i].classList.toggle("active", active);
                     buttons[i].setAttribute("aria-pressed", active ? "true" : "false");
                 }
+
+                setText(config.titleId, peakTitle(config.period));
+            }
+
+            function refreshNotes() {
+                Object.keys(charts).forEach(function (kind) {
+                    if (charts[kind].data) {
+                        updateChartNote(charts[kind]);
+                    }
+                });
             }
 
             function updateChartNote(config, series) {
@@ -745,6 +783,7 @@
                     return;
                 }
 
+                series = series || config.data;
                 var values = series.total.filter(function (value) {
                     return typeof value === "number" && isFinite(value);
                 });
@@ -755,14 +794,20 @@
                 }
 
                 var peak = Math.max.apply(null, values);
-                var current = values[values.length - 1];
+                var current = overviewValues[config.overviewId === "stat-players" ? "players" : "servers"];
+                var live = typeof current === "number" && Number.isFinite(current);
+                var label = peakTitle(config.period);
+
+                if (!live) {
+                    current = values[values.length - 1];
+                }
 
                 if (peak === current) {
-                    setText(config.noteId, "Peak " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
+                    setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
                     return;
                 }
 
-                setText(config.noteId, "Peak " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
+                setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
             }
 
             function loadChart(kind, period) {
