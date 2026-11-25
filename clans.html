@@ -495,13 +495,14 @@
                     var index = startIndex + offset;
                     var rank = index + 1;
                     var label = clanLabel(clan);
+                    var hasName = hasVisibleName(clan.name);
                     var created = formatDate(clan.createdAt);
                     var row = document.createElement("tr");
                     row.className = "clan-row";
 
                     var rankCell = document.createElement("td");
                     rankCell.className = "clan-rank";
-                    rankCell.textContent = rank;
+                    rankCell.textContent = hasName ? rank : "–";
 
                     var nameCell = document.createElement("td");
                     var name = document.createElement("span");
@@ -553,7 +554,7 @@
                     cardName.textContent = label;
                     var cardRank = document.createElement("span");
                     cardRank.className = "clan-card-rank";
-                    cardRank.textContent = "#" + rank;
+                    cardRank.textContent = hasName ? "#" + rank : "–";
                     cardHead.appendChild(cardName);
                     cardHead.appendChild(cardRank);
 

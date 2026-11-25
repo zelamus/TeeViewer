@@ -95,8 +95,8 @@
                 </div>
 
                 <div class="skin-swatches" aria-label="Selected colours">
-                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
-                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
+                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body <span class="mono" id="skin-body-value">65535</span></span>
+                    <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet <span class="mono" id="skin-feet-value">16711680</span></span>
                 </div>
                 <p class="skin-status" id="status" role="status">Loading skin…</p>
             </section>
@@ -325,6 +325,9 @@
             }
 
             function updateMeta(state) {
+                setText("skin-body-value", state.body);
+                setText("skin-feet-value", state.feet);
+
                 var bodySwatch = $("skin-body-swatch");
                 var feetSwatch = $("skin-feet-swatch");
 
