@@ -240,18 +240,18 @@
     --bg: #fbfbfc;
     --surface: #ffffff;
     --surface-2: #f4f5f7;
-    --border: #5f6875;
-    --border-strong: #3f4854;
+    --border: #4a5361;
+    --border-strong: #2f3743;
     --text: #14161a;
     --text-2: #2e333b;
     --muted: #2f3743;
-    --accent: #1d4ed8;
-    --accent-hover: #1e40af;
+    --accent: #1739a6;
+    --accent-hover: #122e88;
     --accent-strong: var(--accent);
     --accent-strong-hover: var(--accent-hover);
     --on-accent: #ffffff;
-    --accent-soft: rgba(29, 78, 216, 0.08);
-    --accent-border: rgba(29, 78, 216, 0.32);
+    --accent-soft: rgba(23, 57, 166, 0.08);
+    --accent-border: rgba(23, 57, 166, 0.32);
     --success: #1a7f37;
     --warning: #966400;
     --star-filled: var(--accent);
@@ -622,6 +622,18 @@ button:disabled {
     border-color: var(--border-strong);
     background: var(--surface-2);
     color: var(--text);
+}
+
+.theme-toggle {
+    width: auto;
+    gap: var(--space-2);
+    padding: 0 var(--space-3);
+}
+
+.theme-toggle-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    white-space: nowrap;
 }
 
 .theme-toggle svg {
@@ -1213,7 +1225,7 @@ a.card:hover {
 [data-theme="light"] .footer-note a,
 [data-theme="light"] .page-meta,
 [data-theme="light"] .page-meta a {
-    color: #4a5261;
+    color: #38404d;
 }
 
 @media (prefers-color-scheme: light) {
@@ -1221,7 +1233,7 @@ a.card:hover {
     :root:not([data-theme]) .footer-note a,
     :root:not([data-theme]) .page-meta,
     :root:not([data-theme]) .page-meta a {
-        color: #4a5261;
+        color: #38404d;
     }
 }
 
@@ -1699,6 +1711,15 @@ textarea.input {
 @media (max-width: 768px) {
     :root {
         --topbar-h: 60px;
+    }
+
+    .theme-toggle {
+        width: var(--control-h);
+        padding: 0;
+    }
+
+    .theme-toggle-label {
+        display: none;
     }
 
     /* The sheet needs JavaScript. Without it, the same links stay in the flow. */

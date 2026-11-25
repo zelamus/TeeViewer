@@ -277,8 +277,23 @@
     border-bottom: 0;
 }
 
+.server-table thead th {
+    position: sticky;
+    top: var(--topbar-h);
+    z-index: var(--z-sticky);
+    background: var(--surface);
+}
+
 .server-table tbody tr {
     border-bottom: 1px solid var(--border);
+}
+
+.server-table tbody tr:nth-child(even) {
+    background: var(--surface-2);
+}
+
+.server-table tbody tr:hover {
+    background: var(--accent-soft);
 }
 
 .server-table tbody tr:last-child {
@@ -1367,6 +1382,12 @@
     .filter-panel.is-open .filter-toggle {
         border-color: transparent;
         background: none;
+    }
+
+    .server-card-meta {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 
     .filter-grid {

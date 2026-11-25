@@ -26,6 +26,10 @@
     background: var(--surface);
 }
 
+.compare-shortcut {
+    justify-self: start;
+}
+
 .search-form {
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
@@ -912,6 +916,22 @@
     gap: var(--space-3);
 }
 
+.clan-toolbar .field-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: var(--tap-target);
+    color: var(--text-2);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+}
+
+.clan-toolbar .field-inline input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent);
+}
+
 .clan-result-head {
     flex-wrap: wrap;
 }
@@ -1359,6 +1379,36 @@
         grid-template-columns: 1fr;
     }
 
+    main.page {
+        display: flex;
+        flex-direction: column;
+    }
+
+    #playerStatsContainer,
+    .profile-layout {
+        display: contents;
+    }
+
+    main.page > *,
+    #playerStatsContainer > *,
+    .profile-layout > * {
+        order: 3;
+    }
+
+    .tee-panel {
+        order: 0;
+        margin-bottom: var(--space-4);
+    }
+
+    main.page > .toolbar {
+        order: 1;
+    }
+
+    .profile-layout .identity-card {
+        order: 2;
+        margin-bottom: var(--space-4);
+    }
+
     .identity-card {
         grid-template-columns: 1fr;
     }
@@ -1371,7 +1421,7 @@
     }
 
     .profile-layout .identity-card {
-        order: -1;
+        order: 2;
     }
 
     .tee-panel {

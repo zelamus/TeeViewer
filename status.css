@@ -129,7 +129,7 @@
    -------------------------------------------------------------------------- */
 
 .status-overview {
-    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1px;
     overflow: hidden;
     border: 1px solid var(--border);
@@ -874,18 +874,16 @@ html.js .chart-card.is-loading .chart-box canvas {
     font-weight: 600;
 }
 
-.color-decimal {
+.color-code {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: baseline;
     gap: var(--space-2);
 }
 
-.input-compact {
-    width: 110px;
-    flex: none;
-    padding-block: 6px;
-    font-family: var(--font-mono);
+.color-code .mono {
+    font-size: var(--text-xs);
+    font-variant-numeric: tabular-nums;
 }
 
 .skin-actions {
@@ -933,11 +931,12 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .status-overview {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .status-overview .stat-tile {
         min-height: 136px;
+        padding: var(--space-3);
     }
 
     .chart-box {
@@ -1054,7 +1053,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 
 @media (max-width: 380px) {
     .status-overview {
-        grid-template-columns: minmax(0, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .status-overview .stat-tile {
