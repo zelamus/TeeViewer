@@ -153,6 +153,7 @@
                                     <img class="identity-flag" id="countryFlag" alt="" width="22" height="15" hidden>
                                     <span id="playerCountry"></span>
                                 </span>
+                                <span class="badge status-chip status-value" id="onlineStatus" data-state="pending">Checking…</span>
                             </div>
                         </div>
                         <div class="identity-actions">
@@ -162,14 +163,6 @@
 
                     <dl class="identity-meta">
                         <div class="meta-item">
-                            <dt class="meta-label">Points</dt>
-                            <dd class="meta-value" id="playerPoints"></dd>
-                        </div>
-                        <div class="meta-item">
-                            <dt class="meta-label">Playtime</dt>
-                            <dd class="meta-value" id="totalSecondsPlayed"></dd>
-                        </div>
-                        <div class="meta-item">
                             <dt class="meta-label">Joined</dt>
                             <dd class="meta-value" id="playerStartPlaytime"></dd>
                         </div>
@@ -177,26 +170,30 @@
                             <dt class="meta-label">Last seen</dt>
                             <dd class="meta-value" id="lastSeen"></dd>
                         </div>
+                        <div class="meta-item">
+                            <dt class="meta-label">Skin</dt>
+                            <dd class="meta-value" id="playerSkinName"></dd>
+                        </div>
+                        <div class="meta-item">
+                            <dt class="meta-label">Mapper</dt>
+                            <dd class="meta-value" id="isMapper"></dd>
+                        </div>
                     </dl>
                 </div>
             </section>
 
             <section class="profile-stats" aria-label="Profile statistics">
                 <div class="stat-box">
+                    <span class="stat-value" id="playerPoints"></span>
+                    <span class="stat-label">Points</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-value" id="totalSecondsPlayed"></span>
+                    <span class="stat-label">Playtime</span>
+                </div>
+                <div class="stat-box">
                     <span class="stat-value" id="totalFinishes"></span>
                     <span class="stat-label">Finishes</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value" id="playerSkinName"></span>
-                    <span class="stat-label">Skin</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value" id="isMapper"></span>
-                    <span class="stat-label">Mapper</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value status-value" id="onlineStatus" data-state="pending">Checking…</span>
-                    <span class="stat-label">Status</span>
                 </div>
             </section>
 
@@ -225,7 +222,6 @@
             <section class="panel" id="onlineStatusSection" aria-labelledby="online-title">
                 <div class="panel-head">
                     <h2 class="panel-title" id="online-title">Current server</h2>
-                    <span class="panel-note">Live from status.tw</span>
                 </div>
                 <div class="server-details" id="serverDetails" hidden>
                     <dl class="server-detail">
@@ -462,7 +458,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>

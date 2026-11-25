@@ -90,7 +90,6 @@
         <section aria-labelledby="clan-list-title">
             <div class="section-head clan-result-head">
                 <p class="section-title" id="clan-list-title">All clans</p>
-                <p class="section-note clan-afk-legend"><span class="badge">AFK</span> away from keyboard</p>
             </div>
 
             <div class="loading-panel" id="clansLoading" role="status" aria-live="polite" hidden>
@@ -171,7 +170,6 @@
             <div id="clansResults" hidden>
                 <div class="result-bar clan-result-bar">
                     <p class="result-count" id="clanCount" role="status">Loading clans…</p>
-                    <p class="result-source">Live from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
                     <nav class="pager pager-top" id="clanPagerTop" aria-label="Clan pages (top)">
                         <button class="button ghost button-sm" type="button" data-clan-prev>Previous</button>
                         <span class="pager-status" data-clan-page-status role="status"></span>
@@ -192,7 +190,7 @@
                                 <th scope="col">
                                     <button class="th-sort" type="button" data-sort="created">Created</button>
                                 </th>
-                                <th scope="col" class="num" title="Away from keyboard">AFK</th>
+                                <th scope="col" class="num"><span>AFK</span><span class="clan-afk-legend"><span class="badge">AFK</span> away from keyboard</span></th>
                                 <th scope="col">Top members</th>
                             </tr>
                         </thead>
@@ -258,7 +256,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -303,6 +301,22 @@
 
             function displayName(name) {
                 return String(name || "").replace(/-[0-9a-f]{6,}$/i, "");
+            }
+
+            function topMemberNames(clan) {
+                var seen = Object.create(null);
+                var names = [];
+
+                (clan && clan.players ? clan.players : []).forEach(function (player) {
+                    var name = displayName(player && player.name);
+
+                    if (name && !seen[name]) {
+                        seen[name] = true;
+                        names.push(name);
+                    }
+                });
+
+                return names.slice(0, 3);
             }
 
             function isTestClan(clan) {
@@ -559,9 +573,7 @@
 
                     var membersPreviewCell = document.createElement("td");
                     membersPreviewCell.className = "clan-members-preview";
-                    membersPreviewCell.textContent = clan.players.slice(0, 3).map(function (player) {
-                        return displayName(player.name);
-                    }).join(", ");
+                    membersPreviewCell.textContent = topMemberNames(clan).join(" · ");
 
                     row.appendChild(rankCell);
                     row.appendChild(nameCell);
@@ -615,9 +627,7 @@
                     var topMembersText = document.createElement("span");
                     topMembersText.textContent = "Top members ";
                     var topMembersValue = document.createElement("strong");
-                    topMembersValue.textContent = clan.players.slice(0, 3).map(function (player) {
-                        return displayName(player.name);
-                    }).join(", ");
+                    topMembersValue.textContent = topMemberNames(clan).join(" · ");
                     topMembersText.appendChild(topMembersValue);
                     cardMeta.appendChild(membersText);
                     cardMeta.appendChild(createdText);

@@ -65,7 +65,6 @@
             <header class="page-head">
                 <div class="page-head-row">
                     <h1 class="page-title">Servers</h1>
-                    <p class="page-meta">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
                 </div>
                 <p class="page-sub">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
             </header>
@@ -73,7 +72,7 @@
             <section class="filter-panel" id="serverFilterPanel" aria-labelledby="serverFiltersTitle">
                 <div class="section-head filter-panel-head">
                     <p class="section-title" id="serverFiltersTitle">Filter servers</p>
-                    <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel">Filters</button>
+                    <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel"><span>Filters</span><span class="filter-count" id="filterCount" hidden>0</span></button>
                 </div>
 
                 <div class="filter-grid">
@@ -361,7 +360,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -770,7 +769,12 @@
                     active += 1;
                 }
 
-                toggle.textContent = active ? "Filters · " + active + " active" : "Filters";
+                var count = document.getElementById("filterCount");
+
+                if (count) {
+                    count.textContent = String(active);
+                    count.hidden = !active;
+                }
             }
 
             function filterAndSortServers() {

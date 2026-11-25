@@ -66,10 +66,6 @@
             <div class="page-head-row">
                 <h1 class="page-title">Status</h1>
                 <div class="status-actions">
-                    <span class="status-pill" id="network-pill" data-state="loading" role="status">
-                        <span class="status-dot" aria-hidden="true"></span>
-                        <span id="network-pill-text">Checking</span>
-                    </span>
                     <button class="button ghost" id="refresh-status" type="button">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
                             <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
@@ -77,7 +73,23 @@
                         </svg>
                         Refresh
                     </button>
-                    <span class="status-updated" title="Time the live totals were fetched">Totals checked <time id="last-updated">—</time></span>
+                </div>
+            </div>
+            <div class="status-facts" aria-label="Status facts">
+                <div class="status-fact">
+                    <span class="fact-label">Status</span>
+                    <span class="status-pill" id="network-pill" data-state="loading" role="status">
+                        <span class="status-dot" aria-hidden="true"></span>
+                        <span id="network-pill-text">Checking</span>
+                    </span>
+                </div>
+                <div class="status-fact">
+                    <span class="fact-label">Totals checked</span>
+                    <time class="status-updated" id="last-updated" title="Time the live totals were fetched">—</time>
+                </div>
+                <div class="status-fact">
+                    <span class="fact-label">Latest sample</span>
+                    <time class="status-updated" id="latest-sample">—</time>
                 </div>
             </div>
             <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
@@ -86,7 +98,6 @@
         <section aria-labelledby="overview-title">
             <div class="section-head">
                 <p class="section-title" id="overview-title">Overview</p>
-                <p class="section-note">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             </div>
             <p class="section-note data-provenance">History samples come from the stats history endpoints. Live totals come from /stats, so sample times and counts can differ.</p>
 
@@ -340,7 +351,7 @@
 
     <footer class="site-footer">
         <div class="footer-inner">
-            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            <p class="footer-note">Data: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             <p class="footer-note">© 2026 TeeViewer</p>
         </div>
     </footer>
@@ -606,9 +617,16 @@
                     }
                 });
 
+                var summary = $("latest-sample");
+
                 if (!latest) {
                     node.textContent = "Latest sample —";
                     node.removeAttribute("datetime");
+
+                    if (summary) {
+                        summary.textContent = "—";
+                        summary.removeAttribute("datetime");
+                    }
                     return;
                 }
 
@@ -618,6 +636,11 @@
 
                 node.textContent = "Latest sample " + stamp;
                 node.setAttribute("datetime", latest.toISOString());
+
+                if (summary) {
+                    summary.textContent = stamp;
+                    summary.setAttribute("datetime", latest.toISOString());
+                }
             }
 
             function toNumber(value) {
@@ -700,6 +723,40 @@
                 };
 
                 var tickLimit = canvas.clientWidth < 520 ? 3 : (canvas.clientWidth < 900 ? 4 : 6);
+                var peakIndex = -1;
+                var peakValue = -Infinity;
+
+                config.data.total.forEach(function (value, index) {
+                    if (typeof value === "number" && isFinite(value) && value > peakValue) {
+                        peakValue = value;
+                        peakIndex = index;
+                    }
+                });
+
+                var chartFont = window.getComputedStyle(document.body).fontFamily;
+                var peakLabelPlugin = {
+                    id: "peakLabel",
+                    afterDatasetsDraw: function (chart) {
+                        if (peakIndex < 0) {
+                            return;
+                        }
+
+                        var point = chart.getDatasetMeta(0).data[peakIndex];
+
+                        if (!point) {
+                            return;
+                        }
+
+                        var ctx = chart.ctx;
+                        ctx.save();
+                        ctx.fillStyle = colors.accent;
+                        ctx.font = "600 12px " + chartFont;
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "bottom";
+                        ctx.fillText(numberFormat.format(peakValue), point.x, point.y - 8);
+                        ctx.restore();
+                    }
+                };
 
                 config.chart = new window.Chart(canvas.getContext("2d"), {
                     type: "line",
@@ -724,10 +781,11 @@
                             }
                         ]
                     },
+                    plugins: [peakLabelPlugin],
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        layout: { padding: { top: 4, right: 8, bottom: 4 } },
+                        layout: { padding: { top: 24, right: 8, bottom: 4 } },
                         backgroundColor: "transparent",
                         animation: { duration: 300 },
                         interaction: { mode: "index", intersect: false },
@@ -772,6 +830,7 @@
                             },
                             y: {
                                 min: 0,
+                                grace: "20%",
                                 beginAtZero: true,
                                 border: { display: false },
                                 grid: { color: colors.border, drawBorder: false },

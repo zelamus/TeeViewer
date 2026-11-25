@@ -138,14 +138,14 @@
     --muted: #dfe5ee;
     --accent: #4c8dff;
     --accent-hover: #6ba0ff;
-    --accent-strong: #2563eb;
-    --accent-strong-hover: #1d4ed8;
+    --accent-strong: var(--accent);
+    --accent-strong-hover: var(--accent-hover);
     --on-accent: #ffffff;
     --accent-soft: rgba(76, 141, 255, 0.14);
     --accent-border: rgba(76, 141, 255, 0.42);
     --success: #3fb950;
     --warning: #d29922;
-    --star-filled: #ffb900;
+    --star-filled: var(--accent);
     --danger: #f85149;
     --danger-hover: #ff6b63;
     --on-danger: #1b0705;
@@ -240,21 +240,21 @@
     --bg: #fbfbfc;
     --surface: #ffffff;
     --surface-2: #f4f5f7;
-    --border: #7e8692;
-    --border-strong: #6e7684;
+    --border: #5f6875;
+    --border-strong: #3f4854;
     --text: #14161a;
     --text-2: #2e333b;
     --muted: #2f3743;
     --accent: #1d4ed8;
     --accent-hover: #1e40af;
-    --accent-strong: #1d4ed8;
-    --accent-strong-hover: #1e40af;
+    --accent-strong: var(--accent);
+    --accent-strong-hover: var(--accent-hover);
     --on-accent: #ffffff;
     --accent-soft: rgba(29, 78, 216, 0.08);
     --accent-border: rgba(29, 78, 216, 0.32);
     --success: #1a7f37;
     --warning: #966400;
-    --star-filled: #8a5500;
+    --star-filled: var(--accent);
     --danger: #cf222e;
     --danger-hover: #a40e26;
     --on-danger: #ffffff;
@@ -277,21 +277,21 @@
         --bg: #fbfbfc;
         --surface: #ffffff;
         --surface-2: #f4f5f7;
-        --border: #7e8692;
-        --border-strong: #6e7684;
+        --border: #5f6875;
+        --border-strong: #3f4854;
         --text: #14161a;
         --text-2: #3f444c;
         --muted: #3a4350;
         --accent: #1d4ed8;
         --accent-hover: #1e40af;
-        --accent-strong: #1d4ed8;
-        --accent-strong-hover: #1e40af;
+        --accent-strong: var(--accent);
+        --accent-strong-hover: var(--accent-hover);
         --on-accent: #ffffff;
         --accent-soft: rgba(29, 78, 216, 0.08);
         --accent-border: rgba(29, 78, 216, 0.32);
         --success: #1a7f37;
         --warning: #966400;
-        --star-filled: #8a5500;
+        --star-filled: var(--accent);
         --danger: #cf222e;
         --danger-hover: #a40e26;
         --on-danger: #ffffff;
@@ -957,6 +957,23 @@ html.js .stat-grid.is-loading .stat-skeleton {
     color: var(--muted);
     font-size: var(--text-xs);
     line-height: var(--leading-snug);
+}
+
+.network-section .stat-tile {
+    min-height: 120px;
+}
+
+.network-section .stat-label {
+    margin-top: var(--space-2);
+    padding-top: 0;
+}
+
+.footer-note,
+.page-meta,
+.stat-source,
+.result-source,
+.section-note {
+    font-size: 13px;
 }
 
 .stat-asof {

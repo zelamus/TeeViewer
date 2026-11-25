@@ -164,9 +164,8 @@
 .map-card {
     display: flex;
     flex-direction: column;
-    gap: var(--space-3);
+    gap: var(--space-2);
     width: 100%;
-    height: 168px;
     min-width: 0;
     padding: var(--space-4);
     border: 1px solid var(--border);
@@ -241,7 +240,9 @@
 }
 
 .map-card-mapper {
+    flex: 0 0 100%;
     min-width: 0;
+    min-height: 2.6em;
     color: var(--text-2);
     font-size: 13px;
     line-height: var(--leading-snug);
@@ -263,7 +264,6 @@
     align-items: baseline;
     justify-content: space-between;
     gap: var(--space-2);
-    margin-top: auto;
     padding-top: var(--space-2);
     border-top: 1px solid var(--border);
 }
