@@ -296,7 +296,7 @@
                 });
             }
 
-            function render(bodyId, statusId, rows, columns) {
+            function render(bodyId, statusId, rows, columns, linkFor) {
                 var body = document.getElementById(bodyId);
                 var status = document.getElementById(statusId);
 
@@ -319,12 +319,30 @@
 
                 rows.forEach(function (row) {
                     var tr = document.createElement("tr");
+                    var href = linkFor ? linkFor(row) : null;
 
                     columns.forEach(function (column, index) {
                         var td = document.createElement("td");
                         var value = column(row);
 
-                        if (value && value.nodeType) {
+                        if (index === 0 && href) {
+                            var link = document.createElement("a");
+                            link.className = "table-link preview-row-link";
+                            link.href = href;
+
+                            if (value && value.nodeType) {
+                                link.appendChild(value);
+                            } else {
+                                link.textContent = value;
+                            }
+
+                            var arrow = document.createElement("span");
+                            arrow.className = "preview-row-arrow";
+                            arrow.setAttribute("aria-hidden", "true");
+                            arrow.textContent = "→";
+                            link.appendChild(arrow);
+                            td.appendChild(link);
+                        } else if (value && value.nodeType) {
                             td.appendChild(value);
                         } else {
                             td.textContent = value;
@@ -402,6 +420,18 @@
                 return name;
             }
 
+            function serverOverviewLink(server) {
+                if (server && server.ip) {
+                    return "servers.html?ip=" + encodeURIComponent(server.ip) + "&port=" + encodeURIComponent(server.port || "");
+                }
+
+                return "servers.html";
+            }
+
+            function mapOverviewLink(map) {
+                return "maps.html?map=" + encodeURIComponent(map && map.map ? map.map : "");
+            }
+
             var liveServersLoaded = false;
             var liveMapsLoaded = false;
             var serversNote = document.getElementById("liveServersNote");
@@ -423,7 +453,7 @@
                             function (s) {
                                 return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
                             }
-                        ]);
+                        ], serverOverviewLink);
                         if (serversNote) {
                             serversNote.textContent = "Top five by players · Snapshot";
                         }
@@ -434,7 +464,7 @@
                             function (m) { return m.map || "Unnamed map"; },
                             function (m) { return starsElement(m.stars); },
                             function (m) { return numberFormat.format(Number(m.points) || 0); }
-                        ]);
+                        ], mapOverviewLink);
                         if (mapsNote) {
                             mapsNote.textContent = "Highest points · Snapshot";
                         }
@@ -460,7 +490,7 @@
                         function (s) {
                             return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
                         }
-                    ]);
+                    ], serverOverviewLink);
                 })
                 .catch(function () {
                     showError("liveServersBody", "liveServersStatus", "Live servers are unavailable.", 3);
@@ -490,7 +520,7 @@
                         function (m) { return m.map || "Unnamed map"; },
                         function (m) { return starsElement(m.stars); },
                         function (m) { return numberFormat.format(Number(m.points) || 0); }
-                    ]);
+                    ], mapOverviewLink);
                 })
                 .catch(function () {
                     showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 3);

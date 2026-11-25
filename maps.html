@@ -786,20 +786,33 @@
                 displayMaps(filteredAndSortedMaps);
             }
 
+            function mapTone(name) {
+                var text = String(name || "");
+                var hash = 2166136261;
+
+                for (var i = 0; i < text.length; i += 1) {
+                    hash ^= text.charCodeAt(i);
+                    hash = Math.imul(hash, 16777619);
+                }
+
+                return (hash >>> 0) % 360;
+            }
+
             function mapCard(item) {
                 var mapName = item && item.map ? item.map : "Unnamed map";
                 var server = item && item.server ? item.server : "Unknown";
                 var mapper = item && item.mapper ? item.mapper : "Unknown";
                 var points = item ? item.points : 0;
+                var tone = mapTone(mapName);
 
                 return '<button class="map-card" type="button" data-map="' + escapeHtml(mapName) + '">' +
-                    '<span class="map-card-tile" aria-hidden="true"><span class="map-tile-mark"></span></span>' +
+                    '<span class="map-card-tile" style="--tile-hue:' + tone + '" aria-hidden="true"><span class="map-tile-mark"></span></span>' +
                     '<span class="map-card-head">' +
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
                     "</span>" +
                     '<span class="map-card-tags">' +
-                        '<span class="map-card-chip-row"><span class="badge difficulty-badge"><span class="pill-label">Difficulty</span>' + starsMarkup(item ? item.stars : 0) + "</span></span>" +
-                        '<span class="map-card-chip-row"><span class="badge server-badge"><span class="pill-label">Server</span>' + escapeHtml(server) + "</span></span>" +
+                        '<span class="map-card-chip-row"><span class="badge difficulty-badge" title="Difficulty">' + starsMarkup(item ? item.stars : 0) + "</span></span>" +
+                        '<span class="map-card-chip-row"><span class="badge server-badge" title="Server type">' + escapeHtml(server) + "</span></span>" +
                         '<span class="map-card-mapper"> by ' + escapeHtml(mapper) + "</span>" +
                     "</span>" +
                     '<span class="map-card-foot">' +

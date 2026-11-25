@@ -555,23 +555,36 @@
                 return colors;
             }
 
-            function countryLabel(code) {
+            function countryIso(code) {
                 if (code === undefined || code === null || code === "") {
-                    return "Default";
+                    return null;
                 }
 
-                var stored = window.COUNTRY_CODES ? window.COUNTRY_CODES[String(code)] : null;
-                var value = stored || String(code);
+                var text = String(code);
 
-                if (!value || value === "default") {
+                if (window.COUNTRY_CODES && window.COUNTRY_CODES[text]) {
+                    return window.COUNTRY_CODES[text];
+                }
+
+                if (/^[A-Za-z]{2}$/.test(text)) {
+                    return text.toUpperCase();
+                }
+
+                return null;
+            }
+
+            function countryLabel(code) {
+                var iso = countryIso(code);
+
+                if (!iso || iso === "default") {
                     return "Default";
                 }
 
                 try {
                     var regionNames = new Intl.DisplayNames(["en"], { type: "region" });
-                    return regionNames.of(value) || value;
+                    return regionNames.of(iso) || iso;
                 } catch (error) {
-                    return value;
+                    return iso;
                 }
             }
 
@@ -843,22 +856,30 @@
                     playerClan.textContent = profile.clan;
                     playerClan.href = "clans.html?clanName=" + encodeURIComponent(profile.clan);
                     clanBadge.setAttribute("data-state", "set");
+                    clanBadge.hidden = false;
                 } else {
-                    playerClan.textContent = "No clan";
                     playerClan.removeAttribute("href");
-                    clanBadge.setAttribute("data-state", "empty");
+                    clanBadge.hidden = true;
                 }
 
                 var countryCode = profile.country !== undefined && profile.country !== null
                     ? profile.country.toString()
                     : "-1";
                 var countryName = countryLabel(countryCode);
+                var countryIsoCode = countryIso(countryCode);
                 var countryFlag = document.getElementById("countryFlag");
 
                 document.getElementById("playerCountry").textContent = countryName;
-                countryFlag.src = "countryflags/" + (window.COUNTRY_CODES ? window.COUNTRY_CODES[countryCode] || "default" : "default") + ".png";
-                countryFlag.alt = countryName + " flag";
-                countryFlag.hidden = countryCode === "-1" || countryName === "Default";
+
+                if (countryIsoCode && countryIsoCode !== "default" && countryIsoCode.indexOf("-") === -1) {
+                    countryFlag.src = "countryflags/" + countryIsoCode + ".png";
+                    countryFlag.alt = countryName + " flag";
+                    countryFlag.hidden = false;
+                } else {
+                    countryFlag.removeAttribute("src");
+                    countryFlag.alt = "";
+                    countryFlag.hidden = true;
+                }
 
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;

@@ -83,16 +83,16 @@
             <div class="section-head">
                 <p class="section-title" id="overview-title">Overview</p>
             </div>
-            <p class="section-note data-provenance">Current values from the live network, not history totals.</p>
+            <p class="section-note data-provenance">Live values from the network right now.</p>
 
             <div class="stat-grid status-overview is-loading" id="overall-stats" aria-busy="true">
                 <article class="stat-tile">
-                    <span class="stat-kicker">Current players</span>
+                    <span class="stat-kicker">Players</span>
                     <span class="stat-value">
                         <span class="stat-number" id="stat-players">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Online now</span>
+                    <span class="stat-label">Current online</span>
                     <span class="stat-foot">Across the live network</span>
                 </article>
 
@@ -164,7 +164,7 @@
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
                     <div class="chart-heading">
-                        <p class="chart-title" id="player-chart-title">Unique players · Day (24 hours)</p>
+                        <p class="chart-title" id="player-chart-title">Unique players in 24 hours</p>
                     </div>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
                         <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
@@ -173,17 +173,17 @@
                     </div>
                 </div>
                 <div class="chart-legend" aria-hidden="true">
-                    <span class="legend-item"><span class="legend-swatch is-total"></span>Players</span>
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Unique players</span>
                 </div>
                 <div class="chart-box">
-                    <canvas id="playerStatsChart" role="img" aria-label="Players over time"></canvas>
+                    <canvas id="playerStatsChart" role="img" aria-label="Unique players in 24 hours"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
                         <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
-                <p class="chart-scope">24-hour history, not the live count.</p>
-                <p class="chart-note" id="player-chart-note" role="status">Peak and current count appear after data loads.</p>
+                <p class="chart-scope">Unique players seen over the selected period.</p>
+                <p class="chart-note" id="player-chart-note" role="status">Peak appears after data loads.</p>
 
                 <div class="state-card" id="player-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -202,7 +202,7 @@
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <div class="chart-head">
                     <div class="chart-heading">
-                        <p class="chart-title" id="server-chart-title">Servers · Week (7 days)</p>
+                        <p class="chart-title" id="server-chart-title">Servers in 7 days</p>
                     </div>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
                         <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
@@ -220,8 +220,8 @@
                     </div>
                 </div>
                 <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
-                <p class="chart-scope">7-day history, not the live count.</p>
-                <p class="chart-note" id="server-chart-note" role="status">Peak and current count appear after data loads.</p>
+                <p class="chart-scope">Servers seen over the selected period.</p>
+                <p class="chart-note" id="server-chart-note" role="status">Peak appears after data loads.</p>
 
                 <div class="state-card" id="server-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -562,9 +562,8 @@
             }
 
             function chartTitle(period, unit) {
-                var rangeName = { day: "Day", week: "Week", month: "Month" }[period];
                 var subject = unit === "players" ? "Unique players" : unit.charAt(0).toUpperCase() + unit.slice(1);
-                return subject + " · " + rangeName + " (" + rangeSpan(period) + ")";
+                return subject + " in " + rangeSpan(period);
             }
 
             function formatLabel(date, period) {
@@ -744,14 +743,20 @@
                         var text = "Peak " + numberFormat.format(peakValue);
 
                         ctx.save();
-                        ctx.font = "600 12px " + chartFont;
-                        var width = ctx.measureText(text).width;
+                        ctx.font = "600 13px " + chartFont;
+                        var boxWidth = ctx.measureText(text).width + 16;
+                        var boxHeight = 24;
+                        var left = Math.min(Math.max(point.x - boxWidth / 2, 2), chart.width - boxWidth - 2);
+                        var top = Math.max(point.y - boxHeight - 10, 2);
                         ctx.fillStyle = colors.surface;
-                        ctx.fillRect(point.x - width / 2 - 5, point.y - 24, width + 10, 18);
-                        ctx.fillStyle = colors.accent;
+                        ctx.strokeStyle = colors.border;
+                        ctx.lineWidth = 1;
+                        ctx.fillRect(left, top, boxWidth, boxHeight);
+                        ctx.strokeRect(left, top, boxWidth, boxHeight);
+                        ctx.fillStyle = colors.text;
                         ctx.textAlign = "center";
-                        ctx.textBaseline = "bottom";
-                        ctx.fillText(text, point.x, point.y - 9);
+                        ctx.textBaseline = "middle";
+                        ctx.fillText(text, left + boxWidth / 2, top + boxHeight / 2);
                         ctx.restore();
                     }
                 };
@@ -762,7 +767,7 @@
                         labels: config.data.labels,
                         datasets: [
                             {
-                                label: "Total",
+                                label: config.unit === "players" ? "Unique players" : "Servers",
                                 data: config.data.total,
                                 borderColor: colors.accent,
                                 backgroundColor: colors.accentSoft,
@@ -891,7 +896,9 @@
                 var scope = card ? card.querySelector(".chart-scope") : null;
 
                 if (scope) {
-                    scope.textContent = historyLabel(config.period) + " history, not the live count.";
+                    scope.textContent = config.unit === "players"
+                        ? "Unique players seen over the selected period."
+                        : "Servers seen over the selected period.";
                 }
             }
 
@@ -914,30 +921,13 @@
                 });
 
                 if (!values.length) {
-                    setText(config.noteId, "Peak and current count are unavailable.");
+                    setText(config.noteId, "Peak is unavailable.");
                     return;
                 }
 
                 var peak = Math.max.apply(null, values);
-                var current = overviewValues[config.overviewId === "stat-players" ? "players" : "servers"];
-                var live = typeof current === "number" && Number.isFinite(current);
-                var span = rangeSpan(config.period);
 
-                if (!live) {
-                    current = values[values.length - 1];
-                }
-
-                if (peak === current) {
-                    setText(config.noteId, "The peak across available samples was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ", the same as the live count.");
-                    return;
-                }
-
-                if (current > peak) {
-                    setText(config.noteId, "The peak across available samples was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ". The live count is " + numberFormat.format(current) + " " + config.unit + ", " + numberFormat.format(current - peak) + " above the peak.");
-                    return;
-                }
-
-                setText(config.noteId, "The peak across available samples was " + numberFormat.format(peak) + " " + config.unit + " over " + span + ". The live count is " + numberFormat.format(current) + " " + config.unit + ", " + numberFormat.format(peak - current) + " below the peak.");
+                setText(config.noteId, "Peak in this period: " + numberFormat.format(peak) + " " + config.unit + ".");
             }
 
             function loadChart(kind, period) {

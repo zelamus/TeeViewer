@@ -788,6 +788,10 @@
                     count.textContent = String(active);
                     count.hidden = !active;
                 }
+
+                toggle.setAttribute("aria-label", active
+                    ? "Filters, " + active + " active"
+                    : "Filters");
             }
 
             function filterAndSortServers() {
