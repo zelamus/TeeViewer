@@ -126,9 +126,10 @@
 }
 
 .segment[aria-pressed="true"] {
-    border-color: var(--accent-border);
+    border-color: var(--accent);
     background: var(--accent-soft);
     color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent-border);
 }
 
 .password-chip {
@@ -174,6 +175,19 @@
 
 .server-table {
     table-layout: fixed;
+    border-collapse: collapse;
+}
+
+.server-table tbody td {
+    border-bottom: 0;
+}
+
+.server-table tbody tr {
+    border-bottom: 1px solid var(--border);
+}
+
+.server-table tbody tr:last-child {
+    border-bottom: 0;
 }
 
 .server-table th:first-child {

@@ -35,7 +35,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
                 </div>
             </nav>
 
@@ -163,52 +163,14 @@
                 return document.getElementById(id);
             }
 
-            function skinColor(value) {
+            function skinRGB(value) {
                 var code = Number(value) >>> 0;
-                var hueByte = (code >> 16) & 255;
-                var hue = hueByte === 255 ? 0 : (hueByte * 360) / 255;
-                var saturation = (((code >> 8) & 255) * 100) / 255;
-                var lightness = ((((code & 255) / 255) / 2) + 0.5) * 100;
-                var chroma;
-                var second;
-                var huePrime;
-                var adjustment;
-                var red = 0;
-                var green = 0;
-                var blue = 0;
+                return [(code >> 16) & 255, (code >> 8) & 255, code & 255];
+            }
 
-                if (lightness < 52.5) {
-                    lightness = 52.5;
-                }
-
-                chroma = (1 - Math.abs(((2 * lightness) / 100) - 1)) * (saturation / 100);
-                huePrime = hue / 60;
-                second = chroma * (1 - Math.abs((huePrime % 2) - 1));
-                huePrime = Math.floor(huePrime);
-
-                if (huePrime === 1) {
-                    red = second;
-                    green = chroma;
-                } else if (huePrime === 2) {
-                    green = chroma;
-                    blue = second;
-                } else if (huePrime === 3) {
-                    green = second;
-                    blue = chroma;
-                } else if (huePrime === 4) {
-                    red = second;
-                    blue = chroma;
-                } else if (huePrime === 5) {
-                    red = chroma;
-                    blue = second;
-                } else {
-                    red = chroma;
-                }
-
-                adjustment = (lightness / 100) - (chroma / 2);
-
-                return "#" + [red, green, blue].map(function (part) {
-                    return Math.round((part + adjustment) * 255).toString(16).padStart(2, "0");
+            function skinColor(value) {
+                return "#" + skinRGB(value).map(function (part) {
+                    return part.toString(16).padStart(2, "0");
                 }).join("");
             }
 
@@ -413,9 +375,9 @@
                 try {
                     var instance = new TeeAssembler.Tee({
                         imageLink: imageLink,
-                        bodyColor: state.body,
-                        feetColor: state.feet,
-                        colorFormat: "code"
+                        bodyColor: skinRGB(state.body).join(","),
+                        feetColor: skinRGB(state.feet).join(","),
+                        colorFormat: "rgb"
                     });
 
                     tee = instance;

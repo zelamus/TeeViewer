@@ -35,7 +35,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
                 </div>
             </nav>
 
@@ -135,8 +135,8 @@
                         <span class="stat-number" id="stat-gametypes">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">In rotation</span>
-                    <span class="stat-foot">Distinct modes</span>
+                    <span class="stat-label">Distinct types</span>
+                    <span class="stat-foot">In rotation</span>
                 </article>
 
                 <article class="stat-tile">
@@ -145,8 +145,8 @@
                         <span class="stat-number" id="stat-versions">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Client builds</span>
-                    <span class="stat-foot">Seen live</span>
+                    <span class="stat-label">Distinct versions</span>
+                    <span class="stat-foot">Client builds seen live</span>
                 </article>
             </div>
             <p class="visually-hidden" id="overview-status" role="status">Loading network statistics.</p>
@@ -178,6 +178,7 @@
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
                 </div>
+                <p class="chart-axis-title">Players</p>
                 <div class="chart-box">
                     <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
@@ -185,6 +186,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
+                <p class="chart-note">The 24-hour peak is higher than the current count.</p>
 
                 <div class="state-card" id="player-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -214,6 +216,7 @@
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
                 </div>
+                <p class="chart-axis-title">Servers</p>
                 <div class="chart-box">
                     <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
@@ -710,7 +713,7 @@
                                     font: { size: 13 }
                                 },
                                 title: {
-                                    display: true,
+                                    display: false,
                                     text: config.unit,
                                     color: colors.muted,
                                     font: { size: 13 }

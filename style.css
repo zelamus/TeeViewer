@@ -134,8 +134,8 @@
     --border: #26282c;
     --border-strong: #34373d;
     --text: #f2f3f5;
-    --text-2: #b9bcc2;
-    --muted: #c6c9cf;
+    --text-2: #d6d9de;
+    --muted: #dfe2e7;
     --accent: #4c8dff;
     --accent-hover: #6ba0ff;
     --on-accent: #08111f;
@@ -236,8 +236,8 @@
     --border: #9aa1ac;
     --border-strong: #9aa1ac;
     --text: #14161a;
-    --text-2: #3f444c;
-    --muted: #4b5563;
+    --text-2: #2e333b;
+    --muted: #39414d;
     --accent: #1d4ed8;
     --accent-hover: #1e40af;
     --on-accent: #ffffff;
@@ -492,6 +492,11 @@ button:disabled {
     background: var(--surface-2);
     color: var(--text);
     text-decoration: none;
+}
+
+.external-mark {
+    color: var(--accent);
+    font-size: var(--text-xs);
 }
 
 .categories.is-active,
@@ -767,6 +772,28 @@ button:disabled {
 
 .stat-section {
     margin-top: var(--space-4);
+}
+
+.home .hero-inner,
+.home .section-head {
+    padding-left: var(--space-4);
+}
+
+.stat-source {
+    margin-top: var(--space-2);
+}
+
+.preview-section .section-head {
+    margin-bottom: var(--space-2);
+}
+
+.preview-table th:first-child,
+.preview-table td:first-child {
+    padding-left: var(--space-4);
+}
+
+.preview-section .table-wrap {
+    --table-sticky-top: 0;
 }
 
 .stat-grid {
@@ -1652,6 +1679,16 @@ textarea.input {
         flex-direction: column;
         align-items: flex-start;
         gap: var(--space-2);
+    }
+
+    .home .hero-inner,
+    .home .section-head {
+        padding-left: var(--space-3);
+    }
+
+    .preview-table th:first-child,
+    .preview-table td:first-child {
+        padding-left: var(--space-3);
     }
 
     .hero-actions {

@@ -33,7 +33,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
                 </div>
             </nav>
 
@@ -77,7 +77,6 @@
         <section class="stat-section" aria-labelledby="live-stats-title">
             <div class="section-head">
                 <h2 id="live-stats-title">Live network</h2>
-                <p class="section-note">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a> · <span id="statAsOf" hidden></span></p>
             </div>
 
             <div class="stat-grid is-loading" id="statGrid" aria-busy="true">
@@ -122,6 +121,39 @@
                 </a>
             </div>
             <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
+            <p class="section-note stat-source">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a> · <span id="statAsOf" hidden></span></p>
+        </section>
+
+        <section class="stat-section preview-section" aria-labelledby="live-servers-title">
+            <div class="section-head">
+                <h2 id="live-servers-title">Live servers</h2>
+                <p class="section-note">Top five by players</p>
+            </div>
+            <div class="table-wrap">
+                <table class="table preview-table">
+                    <thead>
+                        <tr><th scope="col">Server</th><th scope="col">Map</th><th scope="col" data-align="right">Players</th></tr>
+                    </thead>
+                    <tbody id="liveServersBody"><tr><td colspan="3">Loading live servers.</td></tr></tbody>
+                </table>
+            </div>
+            <p class="visually-hidden" id="liveServersStatus" role="status">Loading live servers.</p>
+        </section>
+
+        <section class="stat-section preview-section" aria-labelledby="top-maps-title">
+            <div class="section-head">
+                <h2 id="top-maps-title">Top maps</h2>
+                <p class="section-note">Highest points</p>
+            </div>
+            <div class="table-wrap">
+                <table class="table preview-table">
+                    <thead>
+                        <tr><th scope="col">Map</th><th scope="col">Stars</th><th scope="col" data-align="right">Points</th></tr>
+                    </thead>
+                    <tbody id="topMapsBody"><tr><td colspan="3">Loading top maps.</td></tr></tbody>
+                </table>
+            </div>
+            <p class="visually-hidden" id="topMapsStatus" role="status">Loading top maps.</p>
         </section>
 
     </main>
@@ -223,6 +255,107 @@
                 })
                 .finally(function () {
                     window.clearTimeout(timeout);
+                });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            "use strict";
+
+            var numberFormat = new Intl.NumberFormat("en-US");
+
+            function fetchWithRetry(url) {
+                return window.fetchJSON(url).catch(function () {
+                    var retryUrl = url + (url.indexOf("?") === -1 ? "?" : "&") + "retry=" + Date.now();
+                    return window.fetchJSON(retryUrl);
+                });
+            }
+
+            function render(bodyId, statusId, rows, columns) {
+                var body = document.getElementById(bodyId);
+                var status = document.getElementById(statusId);
+
+                if (!body) {
+                    return;
+                }
+
+                body.textContent = "";
+
+                rows.forEach(function (row) {
+                    var tr = document.createElement("tr");
+
+                    columns.forEach(function (column, index) {
+                        var td = document.createElement("td");
+                        td.textContent = column(row);
+
+                        if (index === columns.length - 1) {
+                            td.className = "num";
+                        }
+
+                        tr.appendChild(td);
+                    });
+
+                    body.appendChild(tr);
+                });
+
+                if (status) {
+                    status.textContent = "Loaded " + rows.length + " entries.";
+                }
+            }
+
+            function showError(bodyId, statusId, message, columns) {
+                var body = document.getElementById(bodyId);
+                var status = document.getElementById(statusId);
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+
+                td.colSpan = columns;
+                td.textContent = message;
+                tr.appendChild(td);
+
+                if (body) {
+                    body.textContent = "";
+                    body.appendChild(tr);
+                }
+
+                if (status) {
+                    status.textContent = message;
+                }
+            }
+
+            fetchWithRetry("https://api.status.tw/server/list")
+                .then(function (data) {
+                    var servers = Array.isArray(data) ? data.slice().sort(function (a, b) {
+                        return (Number(b.numPlayers) || 0) - (Number(a.numPlayers) || 0);
+                    }).slice(0, 5) : [];
+
+                    render("liveServersBody", "liveServersStatus", servers, [
+                        function (s) { return s.name || "Unnamed server"; },
+                        function (s) { return s.map && s.map.name ? s.map.name : "Unknown"; },
+                        function (s) {
+                            return (Number(s.numPlayers) || 0) + "/" + (Number(s.maxPlayers) || 0);
+                        }
+                    ]);
+                })
+                .catch(function () {
+                    showError("liveServersBody", "liveServersStatus", "Live servers are unavailable.", 3);
+                });
+
+            fetchWithRetry("https://ddstats.tw/maps/json")
+                .then(function (data) {
+                    var maps = Array.isArray(data) ? data.slice().sort(function (a, b) {
+                        return (Number(b.points) || 0) - (Number(a.points) || 0);
+                    }).slice(0, 5) : [];
+
+                    render("topMapsBody", "topMapsStatus", maps, [
+                        function (m) { return m.map || "Unnamed map"; },
+                        function (m) { return String(Number(m.stars) || 0); },
+                        function (m) { return numberFormat.format(Number(m.points) || 0); }
+                    ]);
+                })
+                .catch(function () {
+                    showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 3);
                 });
         })();
     </script>

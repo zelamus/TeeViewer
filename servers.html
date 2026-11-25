@@ -34,7 +34,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot <span class="external-mark" aria-hidden="true">↗</span></a>
                 </div>
             </nav>
 
@@ -64,7 +64,7 @@
             <header class="page-head">
                 <div>
                     <h1 class="page-title">Servers</h1>
-                    <p class="page-sub">Browse live Teeworlds servers. Filter by game type, map, protocol, and capacity, then open a server for its client list and activity chart.</p>
+                    <p class="page-sub">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
                 </div>
                 <p class="page-meta">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
             </header>
@@ -355,6 +355,7 @@
             "use strict";
 
             var allServers = [];
+            var duplicateNameCount = {};
             var currentSort = { column: "relevanceScore", direction: "desc" };
             var filteredAndSortedServers = [];
             var serversPerPage = 50;
@@ -455,7 +456,15 @@
             }
 
             function serverName(server) {
-                return server && server.name ? server.name : "Unnamed server";
+                var name = server && server.name ? server.name : "Unnamed server";
+
+                if (duplicateNameCount[name] > 1 && server && server.ip) {
+                    var parts = String(server.ip).split(".");
+                    var shortIp = parts.length >= 2 ? parts.slice(-2).join(".") : String(server.ip);
+                    return name + " (" + shortIp + ":" + server.port + ")";
+                }
+
+                return name;
             }
 
             function serverMap(server) {
@@ -594,6 +603,11 @@
                         }
 
                         allServers = data;
+                        duplicateNameCount = {};
+                        data.forEach(function (server) {
+                            var name = server.name || "Unnamed server";
+                            duplicateNameCount[name] = (duplicateNameCount[name] || 0) + 1;
+                        });
                         populateGameTypeFilter(data);
                         populateMapFilter(data);
                         filterAndSortServers();

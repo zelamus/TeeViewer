@@ -94,6 +94,7 @@
 .reset-button {
     justify-self: end;
     align-self: end;
+    min-height: var(--control-h);
 }
 
 /* --------------------------------------------------------------------------
@@ -947,6 +948,7 @@ body.map-modal-open {
 
     .reset-button {
         margin-left: 0;
+        min-height: var(--tap-target);
     }
 
     .result-hint {

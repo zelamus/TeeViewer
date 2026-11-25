@@ -267,10 +267,20 @@
     overflow: hidden;
 }
 
+.tee-stage,
+.tee-stage .teeassembler-tee {
+    box-shadow: none;
+    filter: none;
+}
+
 .tee-stage .teeassembler-tee {
     flex: none;
     margin-left: 0;
     cursor: pointer;
+}
+
+.tee-stage .teeassembler-tee [data-teeassembler-body_part] {
+    image-rendering: pixelated;
 }
 
 .tee-caption {
@@ -373,6 +383,7 @@
 }
 
 .meta-value {
+    margin-inline-start: 0;
     color: var(--text);
     font-size: var(--text-base);
     font-variant-numeric: tabular-nums;
@@ -1155,6 +1166,7 @@
     }
 
     .tee-panel {
+        order: 1;
         flex-direction: row;
         justify-content: center;
         gap: var(--space-5);
@@ -1166,12 +1178,17 @@
     }
 
     .tee-caption {
+        align-self: stretch;
         align-items: flex-start;
         text-align: left;
     }
 
     .profile-stats {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .stat-box {
+        flex-direction: column-reverse;
     }
 
     .chart-grid {
@@ -1390,8 +1407,9 @@
     }
 
     .tee-caption {
-        align-items: center;
-        text-align: center;
+        align-self: stretch;
+        align-items: flex-start;
+        text-align: left;
     }
 
     .chart-frame {
