@@ -737,7 +737,7 @@
     min-width: 0;
     overflow: hidden;
     border-radius: var(--radius-pill);
-    background: var(--accent);
+    background: var(--accent-strong);
     color: var(--on-accent);
     font-family: var(--font-mono);
     font-size: var(--text-xs);
@@ -847,13 +847,12 @@
     gap: var(--space-3);
 }
 
-.clan-toolbar-foot {
-    display: flex;
+.clan-result-head {
     flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-3);
-    margin-top: var(--space-3);
+}
+
+.clan-result-head .result-count {
+    margin-left: auto;
 }
 
 .clan-table {
@@ -1367,7 +1366,7 @@
     }
 
     .profile-stats {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
     .skeleton-profile {

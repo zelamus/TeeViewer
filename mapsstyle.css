@@ -62,7 +62,6 @@
 }
 
 .filter-legend {
-    margin-top: var(--space-3);
     color: var(--muted);
     font-size: var(--text-xs);
     line-height: var(--leading-snug);

@@ -163,18 +163,16 @@
             </div>
         </section>
 
-        <section aria-labelledby="player-trend-title">
-            <div class="section-head">
-                <p class="section-title" id="player-trend-title">Players over time</p>
-                <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
-                    <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
-                    <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
-                    <button type="button" id="player-month-btn" data-period="month" aria-pressed="false">Month</button>
-                </div>
-            </div>
-
+        <section aria-labelledby="player-chart-title">
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
-                <p class="chart-title">Player count</p>
+                <div class="chart-head">
+                    <p class="chart-title" id="player-chart-title">Player count</p>
+                    <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
+                        <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
+                        <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
+                        <button type="button" id="player-month-btn" data-period="month" aria-pressed="false">Month</button>
+                    </div>
+                </div>
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
                 </div>
@@ -200,18 +198,16 @@
             </div>
         </section>
 
-        <section aria-labelledby="server-trend-title">
-            <div class="section-head">
-                <p class="section-title" id="server-trend-title">Servers over time</p>
-                <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
-                    <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
-                    <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
-                    <button type="button" id="server-month-btn" data-period="month" aria-pressed="false">Month</button>
-                </div>
-            </div>
-
+        <section aria-labelledby="server-chart-title">
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
-                <p class="chart-title">Server count</p>
+                <div class="chart-head">
+                    <p class="chart-title" id="server-chart-title">Server count</p>
+                    <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
+                        <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
+                        <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
+                        <button type="button" id="server-month-btn" data-period="month" aria-pressed="false">Month</button>
+                    </div>
+                </div>
                 <div class="chart-legend" aria-hidden="true">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
                 </div>

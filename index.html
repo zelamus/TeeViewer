@@ -349,7 +349,7 @@
                         function (s) { return s.name || "Unnamed server"; },
                         function (s) { return s.map && s.map.name ? s.map.name : "Unknown"; },
                         function (s) {
-                            return (Number(s.numPlayers) || 0) + "/" + (Number(s.maxPlayers) || 0);
+                            return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
                         }
                     ]);
                 })

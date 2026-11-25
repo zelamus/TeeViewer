@@ -136,8 +136,17 @@
     padding: var(--space-5);
 }
 
-.chart-title {
+.chart-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
     margin-bottom: var(--space-3);
+}
+
+.chart-title {
+    margin-bottom: 0;
     color: var(--text);
     font-size: var(--text-h3);
     font-weight: 600;
@@ -291,7 +300,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 .chart-status {
     min-height: 1.4em;
     margin-top: var(--space-3);
-    color: var(--muted);
+    color: var(--text);
     font-size: var(--text-xs);
 }
 
@@ -561,7 +570,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
     gap: var(--space-4);
-    align-items: stretch;
+    align-items: start;
 }
 
 .skin-preview-card,
@@ -771,7 +780,8 @@ html.js .chart-card.is-loading .chart-box canvas {
 }
 
 .skin-actions .button {
-    flex: 1 1 auto;
+    flex: 1 1 0;
+    min-width: 0;
 }
 
 .skin-note {

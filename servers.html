@@ -833,7 +833,7 @@
                     '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</span>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
-                    '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
+                    '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + ' <span class="muted">players</span></span>' +
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</td>" +
                     '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
@@ -857,7 +857,7 @@
                     "</div>" +
                     '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
                     '<div class="server-card-capacity">' +
-                        '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
+                        '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + ' <span class="muted"> players</span></span>' +
                         '<progress class="capacity-mini" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="' + capacityPercent(server) + ' percent full"></progress>' +
                     "</div>" +
                     '<div class="server-card-foot">' +
@@ -993,7 +993,7 @@
 
                 dom.info.innerHTML =
                     '<div class="capacity-block">' +
-                        '<div class="capacity-head"><span>' + formatNumber(server.numPlayers) + " of " + formatNumber(maxPlayers) + ' players</span><span class="capacity-percent">' + capacityPercent(server) + "%</span></div>" +
+                        '<div class="capacity-head"><span>' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + ' players</span><span class="capacity-percent">' + capacityPercent(server) + "%</span></div>" +
                         '<progress class="capacity-bar" value="' + number(server.numPlayers) + '" max="' + (maxPlayers || 1) + '" aria-label="Server capacity">' + capacityPercent(server) + "%</progress>" +
                     "</div>" +
                     '<dl class="info-list">' + infoRows + "</dl>";

@@ -79,20 +79,18 @@
                     <label class="field-label" for="sortBy">Sort by</label>
                     <select class="select" id="sortBy">
                         <option value="name">Clan name</option>
-                        <option value="members">Member count</option>
+                        <option value="members" selected>Members (most first)</option>
                         <option value="created">Creation date</option>
                     </select>
                 </div>
             </div>
-            <div class="clan-toolbar-foot">
-                <p class="result-count" id="clanCount" role="status">Loading clans…</p>
-            </div>
         </section>
 
         <section aria-labelledby="clan-list-title">
-            <div class="section-head">
+            <div class="section-head clan-result-head">
                 <p class="section-title" id="clan-list-title">All clans</p>
                 <p class="section-note">Live from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+                <p class="result-count" id="clanCount" role="status">Loading clans…</p>
             </div>
 
             <div class="loading-panel" id="clansLoading" role="status" aria-live="polite" hidden>
@@ -260,7 +258,7 @@
 
             var allClans = [];
             var filteredAndSortedClans = [];
-            var currentSort = { column: "name", direction: "asc" };
+            var currentSort = { column: "members", direction: "desc" };
             var clanToExpand = null;
             var loadAttempt = 0;
             var clanPageSize = 50;
@@ -661,12 +659,16 @@
                 openClanDialog(index);
             }
 
+            function defaultSortDirection(column) {
+                return column === "name" ? "asc" : "desc";
+            }
+
             function sortTable(column) {
                 if (currentSort.column === column) {
                     currentSort.direction = currentSort.direction === "asc" ? "desc" : "asc";
                 } else {
                     currentSort.column = column;
-                    currentSort.direction = "asc";
+                    currentSort.direction = defaultSortDirection(column);
                 }
 
                 sortBy.value = column;
@@ -698,7 +700,7 @@
 
             sortBy.addEventListener("change", function () {
                 currentSort.column = sortBy.value;
-                currentSort.direction = "asc";
+                currentSort.direction = defaultSortDirection(sortBy.value);
                 applyFiltersAndSort();
             });
 
