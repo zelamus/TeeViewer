@@ -76,7 +76,7 @@
                 </div>
             </div>
             <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
-            <p class="status-times"><time class="status-updated" id="last-updated" title="Time the live totals were fetched">Updated —</time>. <span id="latest-sample-line" hidden>History <time class="status-updated" id="latest-sample" title="Time of the latest history sample"></time>.</span></p>
+            <p class="status-times"><time class="status-updated" id="last-updated" title="Time the live totals were fetched">Updated —</time><span class="status-time-sep" aria-hidden="true"> · </span><span id="latest-sample-line" hidden><time class="status-updated" id="latest-sample" title="Time of the latest history sample">History samples —</time></span></p>
         </header>
 
         <section aria-labelledby="overview-title">
@@ -102,7 +102,7 @@
                         <span class="stat-number" id="stat-servers">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Reporting in</span>
+                    <span class="stat-label">Reporting live now</span>
                     <span class="stat-foot">Public game servers</span>
                 </article>
 
@@ -112,7 +112,7 @@
                         <span class="stat-number" id="stat-clans">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Tracked</span>
+                    <span class="stat-label">Clans tracked</span>
                     <span class="stat-foot">Community teams</span>
                 </article>
 
@@ -132,7 +132,7 @@
                         <span class="stat-number" id="stat-gametypes">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Distinct types</span>
+                    <span class="stat-label">Game types in use</span>
                     <span class="stat-foot">In rotation</span>
                 </article>
 
@@ -142,7 +142,7 @@
                         <span class="stat-number" id="stat-versions">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Distinct versions</span>
+                    <span class="stat-label">Client versions seen</span>
                     <span class="stat-foot">Client builds seen live</span>
                 </article>
             </div>
@@ -576,7 +576,7 @@
 
                 if (period === "day") {
                     rounded.setMinutes(0, 0, 0);
-                    return timeFormat.format(rounded);
+                    return rounded.toLocaleDateString("en-US", { month: "numeric", day: "numeric" }) + " " + timeFormat.format(rounded);
                 }
 
                 rounded.setHours(0, 0, 0, 0);
@@ -636,7 +636,7 @@
                 }
 
                 if (summary) {
-                    summary.textContent = "Updated " + stamp;
+                    summary.textContent = "History samples " + stamp;
                     summary.setAttribute("datetime", latest.toISOString());
                 }
 
@@ -768,10 +768,15 @@
                         var boxWidth = ctx.measureText(text).width + 16;
                         var boxHeight = 24;
                         var left = Math.min(Math.max(point.x - boxWidth / 2, 2), chart.width - boxWidth - 2);
-                        var top = Math.max(point.y - boxHeight - 10, 2);
+                        var top = Math.max(chart.chartArea.top - boxHeight - 4, 2);
+                        ctx.strokeStyle = colors.accent;
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(left + boxWidth / 2, top + boxHeight);
+                        ctx.lineTo(point.x, point.y);
+                        ctx.stroke();
                         ctx.fillStyle = colors.surface;
                         ctx.strokeStyle = colors.border;
-                        ctx.lineWidth = 1;
                         ctx.fillRect(left, top, boxWidth, boxHeight);
                         ctx.strokeRect(left, top, boxWidth, boxHeight);
                         ctx.fillStyle = colors.text;
@@ -809,7 +814,7 @@
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
-                        layout: { padding: { top: 32, right: 8, bottom: 4 } },
+                        layout: { padding: { top: 40, right: 8, bottom: 4 } },
                         backgroundColor: "transparent",
                         animation: { duration: 300 },
                         interaction: { mode: "index", intersect: false },

@@ -66,7 +66,7 @@
                 <div class="page-head-row">
                     <h1 class="page-title">Servers</h1>
                 </div>
-                <p class="page-sub">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
+                <p class="page-sub servers-intro">Browse live Teeworlds servers. Filter by game type, map, and protocol or set a minimum player count, then open a server for its client list and activity chart.</p>
             </header>
 
             <section class="filter-panel" id="serverFilterPanel" aria-labelledby="serverFiltersTitle">
@@ -128,10 +128,15 @@
                 <div class="filter-foot">
                     <div class="field field-inline">
                         <span class="field-label" id="protocolLabel">Protocol</span>
-                        <div class="segmented" role="group" aria-labelledby="protocolLabel">
-                            <button class="segment" type="button" data-protocol="" aria-pressed="true">All</button>
-                            <button class="segment" type="button" data-protocol="0.6" aria-pressed="false">0.6</button>
-                            <button class="segment" type="button" data-protocol="0.7" aria-pressed="false">0.7</button>
+                        <div class="protocol-controls">
+                            <div class="segmented">
+                                <button class="segment" type="button" data-protocol="" aria-pressed="true">All</button>
+                            </div>
+                            <div class="segmented" role="group" aria-labelledby="protocolLabel">
+                                <button class="segment" type="button" data-protocol="0.6" aria-pressed="false">0.6</button>
+                                <span class="segment-divider" aria-hidden="true"></span>
+                                <button class="segment" type="button" data-protocol="0.7" aria-pressed="false">0.7</button>
+                            </div>
                         </div>
                     </div>
 
@@ -961,6 +966,7 @@
                     "</div>" +
                     '<p class="server-card-meta"><span class="card-meta-label">Map</span> ' + mapMarkup + '<span class="card-meta-sep"> · </span><span class="card-meta-label">Type</span> ' + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
                     '<div class="server-card-capacity">' +
+                        '<span class="card-meta-label">Players</span>' +
                         '<span class="num-main">' + formatNumber(server.numPlayers) + " / " + formatNumber(maxPlayers) + "</span>" +
                     "</div>" +
                     '<div class="server-card-foot">' +

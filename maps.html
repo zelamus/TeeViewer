@@ -572,7 +572,7 @@
                 var empty = new Array(6 - stars).join("☆");
                 var label = stars > 0 ? stars + " of 5 stars" : "0 stars";
 
-                return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + '</span><span class="map-stars-num">' + stars + '/5</span></span></span>';
+                return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + '</span></span></span>';
             }
 
             function skeletonCards(count) {
@@ -795,7 +795,8 @@
                     hash = Math.imul(hash, 16777619);
                 }
 
-                return (hash >>> 0) % 360;
+                var value = hash >>> 0;
+                return { hue: value % 360, pattern: value % 3, shift: value % 4 };
             }
 
             function mapCard(item) {
@@ -807,7 +808,7 @@
                 var initial = (mapName.match(/[A-Za-z]/) || mapName.match(/[0-9]/) || ["?"])[0].toUpperCase();
 
                 return '<button class="map-card" type="button" data-map="' + escapeHtml(mapName) + '">' +
-                    '<span class="map-card-tile" style="--tile-hue:' + tone + ';--tile-shift:' + (tone % 4) + '" aria-hidden="true"><span class="map-tile-mark">' + escapeHtml(initial) + '</span></span>' +
+                    '<span class="map-card-tile tile-pattern-' + tone.pattern + '" style="--tile-hue:' + tone.hue + ';--tile-shift:' + tone.shift + '" aria-hidden="true"><span class="map-tile-mark">' + escapeHtml(initial) + '</span></span>' +
                     '<span class="map-card-head">' +
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
                     "</span>" +

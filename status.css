@@ -412,8 +412,8 @@ html.js .chart-card.is-loading .chart-box canvas {
 
 .chart-buttons button.active,
 .chart-buttons button[aria-pressed="true"] {
-    background: var(--accent-soft);
-    color: var(--accent);
+    background: var(--accent);
+    color: var(--on-accent);
 }
 
 /* --------------------------------------------------------------------------

@@ -113,8 +113,8 @@
                     <div class="field">
                         <label for="bodyColorPicker">Body color <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span></label>
                         <div class="color-row">
-                            <input class="color-picker" type="color" id="bodyColorPicker" value="#0000ff" aria-label="Pick body color">
-                            <output class="color-hex" id="bodyHex" for="bodyColorPicker" aria-label="Body color hex value">#0000ff</output>
+                            <input class="color-picker" type="color" id="bodyColorPicker" value="#ffffff" aria-label="Pick body color">
+                            <output class="color-hex" id="bodyHex" for="bodyColorPicker" aria-label="Body color hex value">#ffffff</output>
                         </div>
                         <p class="field-hint color-decimal">Decimal code <input class="input input-compact" type="text" id="bodyColor" name="color_body" value="65535" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help"></p>
                     </div>
@@ -122,8 +122,8 @@
                     <div class="field">
                         <label for="feetColorPicker">Feet color <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span></label>
                         <div class="color-row">
-                            <input class="color-picker" type="color" id="feetColorPicker" value="#ff0000" aria-label="Pick feet color">
-                            <output class="color-hex" id="feetHex" for="feetColorPicker" aria-label="Feet color hex value">#ff0000</output>
+                            <input class="color-picker" type="color" id="feetColorPicker" value="#868686" aria-label="Pick feet color">
+                            <output class="color-hex" id="feetHex" for="feetColorPicker" aria-label="Feet color hex value">#868686</output>
                         </div>
                         <p class="field-hint color-decimal">Decimal code <input class="input input-compact" type="text" id="feetColor" name="color_feet" value="16711680" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help"></p>
                     </div>
@@ -172,14 +172,100 @@
                 return [(code >> 16) & 255, (code >> 8) & 255, code & 255];
             }
 
+            function teeChannels(hue, saturation, lightness) {
+                var chroma = (1 - Math.abs(((2 * lightness) / 100) - 1)) * (saturation / 100);
+                var sector = hue / 60;
+                var second = chroma * (1 - Math.abs((sector % 2) - 1));
+                var red = 0;
+                var green = 0;
+                var blue = 0;
+
+                sector = Math.floor(sector);
+
+                if (sector === 0) {
+                    red = chroma;
+                    green = second;
+                } else if (sector === 1) {
+                    red = second;
+                    green = chroma;
+                } else if (sector === 2) {
+                    green = chroma;
+                    blue = second;
+                } else if (sector === 3) {
+                    green = second;
+                    blue = chroma;
+                } else if (sector === 4) {
+                    red = second;
+                    blue = chroma;
+                } else if (sector === 5) {
+                    red = chroma;
+                    blue = second;
+                }
+
+                var shift = (lightness / 100) - (chroma / 2);
+                return [red, green, blue].map(function (part) {
+                    return Math.round((part + shift) * 255);
+                });
+            }
+
             function skinColor(value) {
-                return "#" + skinRGB(value).map(function (part) {
+                var bytes = skinRGB(value);
+                var hue = bytes[0] === 255 ? 0 : (bytes[0] * 360) / 255;
+                var saturation = (bytes[1] * 100) / 255;
+                var lightness = (((bytes[2] / 255) / 2) + 0.5) * 100;
+
+                if (lightness < 52.5) {
+                    lightness = 52.5;
+                }
+
+                return "#" + teeChannels(hue, saturation, lightness).map(function (part) {
                     return part.toString(16).padStart(2, "0");
                 }).join("");
             }
 
             function hexToCode(hex) {
-                return parseInt(String(hex).replace("#", ""), 16);
+                var match = /^#?([0-9a-f]{6})$/i.exec(String(hex).trim());
+
+                if (!match) {
+                    return 0;
+                }
+
+                var value = parseInt(match[1], 16);
+                var red = ((value >> 16) & 255) / 255;
+                var green = ((value >> 8) & 255) / 255;
+                var blue = (value & 255) / 255;
+                var max = Math.max(red, green, blue);
+                var min = Math.min(red, green, blue);
+                var delta = max - min;
+                var lightness = ((max + min) / 2) * 100;
+                var saturation = delta === 0 ? 0 : (delta / (1 - Math.abs((2 * lightness / 100) - 1))) * 100;
+                var hue = 0;
+
+                if (delta !== 0) {
+                    if (max === red) {
+                        hue = ((green - blue) / delta) % 6;
+                    } else if (max === green) {
+                        hue = ((blue - red) / delta) + 2;
+                    } else {
+                        hue = ((red - green) / delta) + 4;
+                    }
+
+                    hue *= 60;
+
+                    if (hue < 0) {
+                        hue += 360;
+                    }
+                }
+
+                if (lightness < 52.5) {
+                    lightness = 52.5;
+                }
+
+                var hueByte = Math.min(254, Math.round((hue * 255) / 360));
+                var satByte = Math.max(0, Math.min(255, Math.round((saturation * 255) / 100)));
+                var lightByte = Math.max(0, Math.min(255, Math.round(((lightness / 100 - 0.5) * 2) * 255)));
+
+                return ((hueByte << 16) | (satByte << 8) | lightByte) >>> 0;
             }
 
             function setText(id, text) {
@@ -391,9 +477,9 @@
                 try {
                     var instance = new TeeAssembler.Tee({
                         imageLink: imageLink,
-                        bodyColor: skinRGB(state.body).join(","),
-                        feetColor: skinRGB(state.feet).join(","),
-                        colorFormat: "rgb"
+                        bodyColor: String(state.body),
+                        feetColor: String(state.feet),
+                        colorFormat: "code"
                     });
 
                     tee = instance;
