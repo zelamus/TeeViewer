@@ -68,7 +68,7 @@
             </div>
         </header>
 
-        <section class="toolbar" aria-labelledby="clan-search-title">
+        <section class="toolbar clan-toolbar-panel" aria-labelledby="clan-search-title">
             <h2 class="visually-hidden" id="clan-search-title">Clan search</h2>
             <div class="clan-toolbar">
                 <div class="field">
@@ -89,7 +89,7 @@
         <section aria-labelledby="clan-list-title">
             <div class="section-head clan-result-head">
                 <p class="section-title" id="clan-list-title">All clans</p>
-                <p class="section-note">Live from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+                <p class="result-count" id="clanCount" role="status">Loading clans…</p>
             </div>
 
             <div class="loading-panel" id="clansLoading" role="status" aria-live="polite" hidden>
@@ -168,9 +168,6 @@
             </div>
 
             <div id="clansResults" hidden>
-                <div class="result-bar clan-result-bar">
-                    <p class="result-count" id="clanCount" role="status">Loading clans…</p>
-                </div>
                 <nav class="pager pager-top" id="clanPagerTop" aria-label="Clan pages (top)">
                     <button class="button ghost button-sm" type="button" data-clan-prev>Previous</button>
                     <span class="pager-status" data-clan-page-status role="status"></span>
@@ -287,14 +284,25 @@
             var clanPrevBtns = document.querySelectorAll("[data-clan-prev]");
             var clanNextBtns = document.querySelectorAll("[data-clan-next]");
 
-            function hasVisibleName(name) {
+            function safeClanName(name) {
                 var value = typeof name === "string" ? name : "";
-                var visible = value.replace(/[\p{Cc}\p{Cf}\u{E0000}-\u{E007F}]/gu, "").trim();
-                return visible.length > 0;
+
+                if (typeof value.normalize === "function") {
+                    value = value.normalize("NFC");
+                }
+
+                value = value.replace(/[\p{Cc}\p{Cf}\p{Co}\p{Cs}\u{E0000}-\u{E007F}\uFFFD]/gu, "");
+                value = value.replace(/\s+/g, " ").trim();
+
+                return value || "Unnamed clan";
+            }
+
+            function hasVisibleName(name) {
+                return safeClanName(name) !== "Unnamed clan";
             }
 
             function clanLabel(clan) {
-                return hasVisibleName(clan.name) ? clan.name : "Unnamed clan";
+                return safeClanName(clan.name);
             }
 
             function isTestClan(clan) {
@@ -532,6 +540,7 @@
                     var nameCell = document.createElement("td");
                     var name = document.createElement("span");
                     name.className = "clan-name";
+                    name.dir = "auto";
                     name.textContent = label;
                     nameCell.appendChild(name);
 
@@ -568,6 +577,7 @@
                     cardHead.className = "clan-card-head";
                     var cardName = document.createElement("h3");
                     cardName.className = "clan-card-name";
+                    cardName.dir = "auto";
                     cardName.textContent = label;
                     var cardRank = document.createElement("span");
                     cardRank.className = "clan-card-rank";
@@ -577,15 +587,26 @@
 
                     var cardMeta = document.createElement("p");
                     cardMeta.className = "clan-card-meta";
-                    var membersText = document.createElement("span");
-                    membersText.textContent = "Members ";
+                    var membersPill = document.createElement("span");
+                    membersPill.className = "clan-pill";
+                    var membersLabel = document.createElement("span");
+                    membersLabel.className = "clan-pill-label";
+                    membersLabel.textContent = "Members";
                     var membersValue = document.createElement("strong");
                     membersValue.textContent = clan.memberCount;
-                    membersText.appendChild(membersValue);
-                    var createdText = document.createElement("span");
-                    createdText.textContent = "Created " + created;
-                    cardMeta.appendChild(membersText);
-                    cardMeta.appendChild(createdText);
+                    membersPill.appendChild(membersLabel);
+                    membersPill.appendChild(membersValue);
+                    var createdPill = document.createElement("span");
+                    createdPill.className = "clan-pill";
+                    var createdLabel = document.createElement("span");
+                    createdLabel.className = "clan-pill-label";
+                    createdLabel.textContent = "Created";
+                    var createdValue = document.createElement("strong");
+                    createdValue.textContent = created;
+                    createdPill.appendChild(createdLabel);
+                    createdPill.appendChild(createdValue);
+                    cardMeta.appendChild(membersPill);
+                    cardMeta.appendChild(createdPill);
 
                     card.tabIndex = 0;
                     card.setAttribute("aria-label", "Open clan " + label);
@@ -612,7 +633,9 @@
                     return;
                 }
 
-                document.getElementById("clanDialogTitle").textContent = clanLabel(clan);
+                var dialogTitle = document.getElementById("clanDialogTitle");
+                dialogTitle.textContent = clanLabel(clan);
+                dialogTitle.dir = "auto";
                 document.getElementById("clanDialogSub").textContent = "Created " + formatDate(clan.createdAt);
                 document.getElementById("clanDialogMembers").textContent = clan.memberCount;
                 document.getElementById("clanDialogOnline").textContent = clan.onlinePlayers;

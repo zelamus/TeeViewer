@@ -39,6 +39,27 @@
     margin-bottom: var(--space-3);
 }
 
+.filter-head-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.filter-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--muted);
+    font-size: var(--text-xs);
+    line-height: var(--leading-snug);
+}
+
+.filter-hint svg {
+    flex: none;
+    color: var(--text-2);
+}
+
 .filter-grid {
     display: grid;
     grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -139,6 +160,35 @@
     line-height: 1;
 }
 
+.details-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 28px;
+    padding: 0 var(--space-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    background: var(--surface-2);
+    color: var(--accent);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    transition:
+        background-color var(--dur-1) var(--ease-standard),
+        border-color var(--dur-1) var(--ease-standard),
+        color var(--dur-1) var(--ease-standard);
+}
+
+.server-row:hover .details-pill,
+.server-row:focus-visible .details-pill,
+.server-card:hover .details-pill,
+.server-card:focus-visible .details-pill,
+.is-selected .details-pill {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+}
+
 .password-chip {
     min-height: var(--control-h);
 }
@@ -207,7 +257,7 @@
 }
 
 .server-table th:nth-child(1) {
-    width: 34%;
+    width: 32%;
 }
 
 .server-table th:nth-child(2) {
@@ -227,7 +277,7 @@
 }
 
 .server-table th:nth-child(6) {
-    width: 8%;
+    width: 10%;
 }
 
 .server-table th,
@@ -287,6 +337,17 @@
 
 .server-row {
     cursor: pointer;
+    transition: background-color var(--dur-1) var(--ease-standard);
+}
+
+.server-row:hover {
+    background: var(--surface-2);
+}
+
+.server-row.is-selected,
+.server-row.is-selected:hover {
+    background: var(--accent-soft);
+    box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .server-row:focus-visible {
@@ -435,6 +496,12 @@
 .server-card:focus-within {
     border-color: var(--border-strong);
     background: var(--surface-2);
+}
+
+.server-card.is-selected {
+    border-color: var(--accent-border);
+    background: var(--accent-soft);
+    box-shadow: inset 3px 0 0 var(--accent);
 }
 
 .server-card-head {
@@ -1040,7 +1107,7 @@
     }
 
     .server-table th:nth-child(1) {
-        width: 34%;
+        width: 32%;
     }
 
     .server-table th:nth-child(3) {
@@ -1134,6 +1201,10 @@
 
     .filter-panel-head .section-title {
         white-space: nowrap;
+    }
+
+    .filter-panel .filter-hint {
+        display: none;
     }
 
     .filter-panel .section-note {

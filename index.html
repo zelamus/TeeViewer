@@ -87,7 +87,7 @@
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
                     <span class="stat-label">Online now</span>
-                    <span class="stat-foot">Across the live network</span>
+                    <span class="stat-foot">Across all servers</span>
                 </a>
 
                 <a class="stat-tile" href="servers.html">
@@ -96,7 +96,7 @@
                         <span class="stat-number" data-stat="servers">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Reporting in</span>
+                    <span class="stat-label">Connected</span>
                     <span class="stat-foot">Public game servers</span>
                 </a>
 
@@ -116,8 +116,8 @@
                         <span class="stat-number" data-stat="maps">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Active maps</span>
-                    <span class="stat-foot">Across all game types</span>
+                    <span class="stat-label">Available</span>
+                    <span class="stat-foot">Across game types</span>
                 </a>
             </div>
             <p class="section-note stat-source">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a> · <span id="statAsOf" hidden></span></p>
@@ -188,6 +188,7 @@
                 return;
             }
 
+            var STATS_URL = "https://api.status.tw/stats";
             var fields = [
                 { key: "players", source: "numPlayers" },
                 { key: "servers", source: "numServers" },
@@ -197,10 +198,12 @@
             var numberFormat = new Intl.NumberFormat("en-US");
             var statusLine = document.getElementById("statStatus");
             var asOfLine = document.getElementById("statAsOf");
-            var controller = new AbortController();
-            var timeout = window.setTimeout(function () {
-                controller.abort();
-            }, 8000);
+            var settled = false;
+            var watchdog = window.setTimeout(function () {
+                if (!settled) {
+                    settle("Live network statistics did not load in time.");
+                }
+            }, 15000);
 
             function writeValue(key, value) {
                 var target = grid.querySelector('[data-stat="' + key + '"]');
@@ -209,12 +212,16 @@
                     return;
                 }
 
-                target.textContent = Number.isFinite(value)
-                    ? numberFormat.format(value)
+                var number = Number(value);
+
+                target.textContent = Number.isFinite(number)
+                    ? numberFormat.format(number)
                     : "—";
             }
 
             function settle(message) {
+                settled = true;
+                window.clearTimeout(watchdog);
                 grid.classList.remove("is-loading");
                 grid.setAttribute("aria-busy", "false");
 
@@ -223,38 +230,58 @@
                 }
             }
 
-            function markAsOf() {
+            function markAsOf(ts) {
                 if (!asOfLine) {
                     return;
                 }
 
-                var now = new Date();
-                var hours = String(now.getHours()).padStart(2, "0");
-                var minutes = String(now.getMinutes()).padStart(2, "0");
+                var label = typeof window.formatDataTime === "function"
+                    ? window.formatDataTime(ts)
+                    : "";
 
-                asOfLine.textContent = "as of " + hours + ":" + minutes;
+                if (!label) {
+                    asOfLine.hidden = true;
+                    return;
+                }
+
+                asOfLine.textContent = "Updated " + label;
                 asOfLine.hidden = false;
             }
 
-            window.fetchJSON("https://api.status.tw/stats")
+            function paint(data, ts) {
+                fields.forEach(function (field) {
+                    writeValue(field.key, data ? data[field.source] : null);
+                });
+                markAsOf(ts);
+            }
+
+            var cached = typeof window.getCachedJSON === "function"
+                ? window.getCachedJSON(STATS_URL)
+                : null;
+
+            if (cached) {
+                paint(cached.data, cached.ts);
+                settle("Showing cached network statistics.");
+            }
+
+            if (typeof window.fetchJSON !== "function") {
+                paint(null);
+                settle("Live network statistics are unavailable.");
+                return;
+            }
+
+            window.fetchJSON(STATS_URL)
                 .then(function (data) {
-                    fields.forEach(function (field) {
-                        writeValue(field.key, data[field.source]);
-                    });
+                    paint(data, window.getJSONUpdatedAt(STATS_URL));
                     settle("Live network statistics loaded.");
-                    markAsOf();
                 })
                 .catch(function () {
-                    fields.forEach(function (field) {
-                        writeValue(field.key, null);
-                    });
-                    settle("Live network statistics are unavailable.");
-                    if (asOfLine) {
-                        asOfLine.hidden = true;
+                    if (cached) {
+                        settle("Live update unavailable. Showing cached network statistics.");
+                    } else {
+                        paint(null);
+                        settle("Live network statistics are unavailable.");
                     }
-                })
-                .finally(function () {
-                    window.clearTimeout(timeout);
                 });
         })();
     </script>
@@ -264,23 +291,36 @@
             "use strict";
 
             var numberFormat = new Intl.NumberFormat("en-US");
+            var hasFetch = typeof window.fetchJSON === "function";
 
-            function fetchWithRetry(url) {
-                return window.fetchJSON(url).catch(function () {
-                    var retryUrl = url + (url.indexOf("?") === -1 ? "?" : "&") + "retry=" + Date.now();
-                    return window.fetchJSON(retryUrl);
-                });
+            function setStatus(statusId, message) {
+                var status = document.getElementById(statusId);
+
+                if (status) {
+                    status.textContent = message;
+                }
             }
 
             function render(bodyId, statusId, rows, columns) {
                 var body = document.getElementById(bodyId);
-                var status = document.getElementById(statusId);
 
                 if (!body) {
                     return;
                 }
 
                 body.textContent = "";
+
+                if (!rows.length) {
+                    var emptyRow = document.createElement("tr");
+                    var emptyCell = document.createElement("td");
+                    emptyCell.colSpan = columns.length;
+                    emptyCell.className = "table-state-cell";
+                    emptyCell.textContent = "No entries are available.";
+                    emptyRow.appendChild(emptyCell);
+                    body.appendChild(emptyRow);
+                    setStatus(statusId, "No entries are available.");
+                    return;
+                }
 
                 var headers = [];
                 var table = body.closest("table");
@@ -314,64 +354,161 @@
                     body.appendChild(tr);
                 });
 
-                if (status) {
-                    status.textContent = "Loaded " + rows.length + " entries.";
-                }
+                setStatus(statusId, "Loaded " + rows.length + " entries.");
             }
 
-            function showError(bodyId, statusId, message, columns) {
+            function showMessage(bodyId, statusId, message, columns, config) {
                 var body = document.getElementById(bodyId);
-                var status = document.getElementById(statusId);
+
+                if (!body) {
+                    return;
+                }
+
+                body.textContent = "";
+
                 var tr = document.createElement("tr");
                 var td = document.createElement("td");
+                var wrap = document.createElement("div");
+                var text = document.createElement("span");
 
-                td.colSpan = columns;
-                td.textContent = message;
+                td.colSpan = columns.length;
+                td.className = "table-state-cell";
+                wrap.className = "table-state";
+                text.textContent = message;
+                wrap.appendChild(text);
+
+                if (config) {
+                    var retry = document.createElement("button");
+                    retry.className = "button ghost button-sm";
+                    retry.type = "button";
+                    retry.textContent = "Retry";
+                    retry.addEventListener("click", function () {
+                        load(config);
+                    });
+                    wrap.appendChild(retry);
+                }
+
+                td.appendChild(wrap);
                 tr.appendChild(td);
-
-                if (body) {
-                    body.textContent = "";
-                    body.appendChild(tr);
-                }
-
-                if (status) {
-                    status.textContent = message;
-                }
+                body.appendChild(tr);
+                setStatus(statusId, message);
             }
 
-            fetchWithRetry("https://api.status.tw/server/list")
-                .then(function (data) {
-                    var servers = Array.isArray(data) ? data.slice().sort(function (a, b) {
-                        return (Number(b.numPlayers) || 0) - (Number(a.numPlayers) || 0);
-                    }).slice(0, 5) : [];
+            function fetchWithRetry(url) {
+                return window.fetchJSON(url).catch(function () {
+                    var retryUrl = url + (url.indexOf("?") === -1 ? "?" : "&") + "retry=" + Date.now();
+                    return window.fetchJSON(retryUrl);
+                });
+            }
 
-                    render("liveServersBody", "liveServersStatus", servers, [
-                        function (s) { return s.name || "Unnamed server"; },
-                        function (s) { return s.map && s.map.name ? s.map.name : "Unknown"; },
-                        function (s) {
-                            return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
+            function prepareRows(config, data) {
+                if (!Array.isArray(data)) {
+                    return [];
+                }
+
+                return config.prepare(data);
+            }
+
+            function load(config) {
+                var body = document.getElementById(config.bodyId);
+
+                if (!body) {
+                    return;
+                }
+
+                var cached = typeof window.getCachedJSON === "function"
+                    ? window.getCachedJSON(config.url)
+                    : null;
+                var cacheRows = cached ? prepareRows(config, cached.data) : [];
+                var renderedCache = false;
+                var finished = false;
+                var watchdog = window.setTimeout(function () {
+                    if (finished) {
+                        return;
+                    }
+
+                    finished = true;
+
+                    if (renderedCache) {
+                        setStatus(config.statusId, "Live update is slow. Showing cached data.");
+                    } else {
+                        showMessage(config.bodyId, config.statusId, "The data source is slow. Retry to try again.", config.columns, config);
+                    }
+                }, 15000);
+
+                if (cacheRows.length) {
+                    render(config.bodyId, config.statusId, cacheRows, config.columns);
+                    renderedCache = true;
+
+                    if (cached && typeof window.formatDataTime === "function") {
+                        setStatus(config.statusId, "Showing cached data from " + window.formatDataTime(cached.ts) + ".");
+                    }
+                }
+
+                if (!hasFetch) {
+                    finished = true;
+                    window.clearTimeout(watchdog);
+
+                    if (!renderedCache) {
+                        showMessage(config.bodyId, config.statusId, "The live data helper did not load.", config.columns, null);
+                    }
+                    return;
+                }
+
+                fetchWithRetry(config.url)
+                    .then(function (data) {
+                        finished = true;
+                        window.clearTimeout(watchdog);
+                        var rows = prepareRows(config, data);
+                        render(config.bodyId, config.statusId, rows, config.columns);
+                    })
+                    .catch(function () {
+                        finished = true;
+                        window.clearTimeout(watchdog);
+
+                        if (renderedCache) {
+                            setStatus(config.statusId, "Live update unavailable. Showing cached data.");
+                        } else {
+                            showMessage(config.bodyId, config.statusId, config.errorMessage, config.columns, config);
                         }
-                    ]);
-                })
-                .catch(function () {
-                    showError("liveServersBody", "liveServersStatus", "Live servers are unavailable.", 3);
-                });
+                    });
+            }
 
-            fetchWithRetry("https://ddstats.tw/maps/json")
-                .then(function (data) {
-                    var maps = Array.isArray(data) ? data.slice().sort(function (a, b) {
+            load({
+                url: "https://api.status.tw/server/list",
+                bodyId: "liveServersBody",
+                statusId: "liveServersStatus",
+                columns: [
+                    function (s) { return s.name || "Unnamed server"; },
+                    function (s) { return s.map && s.map.name ? s.map.name : "Unknown"; },
+                    function (s) {
+                        return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
+                    }
+                ],
+                prepare: function (data) {
+                    return data.slice().sort(function (a, b) {
+                        return (Number(b.numPlayers) || 0) - (Number(a.numPlayers) || 0);
+                    }).slice(0, 5);
+                },
+                errorMessage: "Live servers are unavailable."
+            });
+
+            load({
+                url: "https://ddstats.tw/maps/json",
+                bodyId: "topMapsBody",
+                statusId: "topMapsStatus",
+                columns: [
+                    function (m) { return m.map || "Unnamed map"; },
+                    function (m) { return String(Number(m.stars) || 0); },
+                    function (m) { return numberFormat.format(Number(m.points) || 0); }
+                ],
+                prepare: function (data) {
+                    return data.slice().sort(function (a, b) {
                         return (Number(b.points) || 0) - (Number(a.points) || 0);
-                    }).slice(0, 5) : [];
-
-                    render("topMapsBody", "topMapsStatus", maps, [
-                        function (m) { return m.map || "Unnamed map"; },
-                        function (m) { return String(Number(m.stars) || 0); },
-                        function (m) { return numberFormat.format(Number(m.points) || 0); }
-                    ]);
-                })
-                .catch(function () {
-                    showError("topMapsBody", "topMapsStatus", "Top maps are unavailable.", 3);
-                });
+                    }).slice(0, 5);
+                },
+                errorMessage: "Top maps are unavailable."
+            });
         })();
     </script>
 </body>

@@ -101,11 +101,11 @@
                         <span class="field-label">Difficulty</span>
                         <select class="select" id="starsFilter">
                             <option value="">Any difficulty</option>
-                            <option value="1">1 star</option>
-                            <option value="2">2 stars</option>
-                            <option value="3">3 stars</option>
-                            <option value="4">4 stars</option>
-                            <option value="5">5 stars</option>
+                            <option value="1">1 star · Novice</option>
+                            <option value="2">2 stars · Moderate</option>
+                            <option value="3">3 stars · Brutal</option>
+                            <option value="4">4 stars · Insane</option>
+                            <option value="5">5 stars · Extreme</option>
                         </select>
                     </label>
 
@@ -130,11 +130,20 @@
                     </div>
                 </div>
 
+                <div class="rating-legend" aria-label="Difficulty scale">
+                    <p class="rating-legend-title">Difficulty scale</p>
+                    <ul class="rating-legend-list">
+                        <li class="rating-legend-item"><span class="rating-legend-stars" aria-hidden="true">★</span> 1 <span class="difficulty-chip is-novice">Novice</span></li>
+                        <li class="rating-legend-item"><span class="rating-legend-stars" aria-hidden="true">★</span> 2 <span class="difficulty-chip is-moderate">Moderate</span></li>
+                        <li class="rating-legend-item"><span class="rating-legend-stars" aria-hidden="true">★</span> 3 <span class="difficulty-chip is-brutal">Brutal</span></li>
+                        <li class="rating-legend-item"><span class="rating-legend-stars" aria-hidden="true">★</span> 4 <span class="difficulty-chip is-insane">Insane</span></li>
+                        <li class="rating-legend-item"><span class="rating-legend-stars" aria-hidden="true">★</span> 5 <span class="difficulty-chip is-extreme">Extreme</span></li>
+                    </ul>
+                </div>
             </section>
 
             <div class="result-bar">
                 <p class="result-count" id="mapCount" role="status" aria-live="polite">Loading maps…</p>
-                <p class="filter-legend"><span class="filter-legend-star" aria-hidden="true">★</span> Stars: 1-5, higher is harder</p>
             </div>
 
             <nav class="pager pager-top" id="mapPagerTop" aria-label="Map pages (top)">
@@ -573,6 +582,29 @@
                 return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + "</span></span></span>";
             }
 
+            var DIFFICULTY_LEVELS = [
+                { label: "Novice", className: "is-novice" },
+                { label: "Moderate", className: "is-moderate" },
+                { label: "Brutal", className: "is-brutal" },
+                { label: "Insane", className: "is-insane" },
+                { label: "Extreme", className: "is-extreme" }
+            ];
+
+            function difficultyFor(value) {
+                var stars = clampStars(value);
+
+                if (!stars) {
+                    return { label: "Unrated", className: "is-unrated" };
+                }
+
+                return DIFFICULTY_LEVELS[stars - 1];
+            }
+
+            function difficultyChip(value) {
+                var level = difficultyFor(value);
+                return '<span class="difficulty-chip ' + level.className + '">' + level.label + "</span>";
+            }
+
             function skeletonCards(count) {
                 var markup = "";
 
@@ -777,11 +809,15 @@
                 var server = item && item.server ? item.server : "Unknown";
                 var mapper = item && item.mapper ? item.mapper : "Unknown";
                 var points = item ? item.points : 0;
+                var stars = item ? item.stars : 0;
 
                 return '<button class="map-card" type="button" data-map="' + escapeHtml(mapName) + '">' +
                     '<span class="map-card-head">' +
                         '<span class="map-card-name">' + escapeHtml(mapName) + "</span>" +
-                        starsMarkup(points === undefined ? 0 : (item ? item.stars : 0)) +
+                        '<span class="map-card-rating">' +
+                            difficultyChip(stars) +
+                            starsMarkup(stars) +
+                        "</span>" +
                     "</span>" +
                     '<span class="map-card-tags">' +
                         '<span class="badge">' + escapeHtml(server) + "</span>" +
@@ -1038,6 +1074,7 @@
                 dom.title.textContent = mapInfo.map;
                 dom.subtitle.textContent = type + " · " + formatNumber(points) + " points · by " + mapper;
                 dom.badges.innerHTML =
+                    difficultyChip(stars) +
                     '<span class="badge">' + escapeHtml(type) + "</span>" +
                     '<span class="badge">' + formatNumber(points) + " points</span>";
                 dom.ddnetLink.href = mapUrl(mapInfo.map);
@@ -1045,7 +1082,7 @@
                 var rows = [
                     infoRow("Map", escapeHtml(mapInfo.map)),
                     infoRow("Server type", escapeHtml(type)),
-                    infoRow("Difficulty", starsMarkup(stars)),
+                    infoRow("Difficulty", '<span class="info-difficulty">' + starsMarkup(stars) + difficultyChip(stars) + "</span>"),
                     infoRow("Points", formatNumber(points)),
                     infoRow("Mapper", escapeHtml(mapper)),
                     infoRow("Release date", escapeHtml(formatDate(mapInfo.timestamp))),

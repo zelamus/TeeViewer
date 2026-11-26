@@ -132,13 +132,42 @@
         <div id="playerStatsContainer" hidden>
             <section class="profile-layout" aria-labelledby="playerName">
                 <div class="tee-panel">
+                    <div class="profile-card-head">
+                        <p class="section-title">Skin preview</p>
+                    </div>
                     <div class="tee-stage">
                         <div class="teeassembler-tee" role="button" tabindex="0" aria-label="Copy tee skin settings"></div>
                     </div>
                     <div class="tee-caption">
-                        <span class="tee-hint">Click the tee to copy skin settings</span>
+                        <button class="button ghost copy-skin-button" type="button" id="copySkinButton">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <rect x="9" y="9" width="11" height="11" rx="2"></rect>
+                                <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+                            </svg>
+                            <span>Copy Skin</span>
+                        </button>
+                        <span class="tee-hint">Copies the tee's skin settings to your clipboard.</span>
                     </div>
                     <div class="player-avatar" id="playerAvatar" hidden></div>
+
+                    <section class="profile-stats" aria-label="Profile statistics">
+                        <div class="stat-box">
+                            <span class="stat-label">Finishes</span>
+                            <span class="stat-value" id="totalFinishes"></span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Skin</span>
+                            <span class="stat-value" id="playerSkinName"></span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Mapper</span>
+                            <span class="stat-value" id="isMapper"></span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Status</span>
+                            <span class="status-value" id="onlineStatus" data-state="pending">Checking…</span>
+                        </div>
+                    </section>
                 </div>
 
                 <div class="identity-card">
@@ -146,9 +175,13 @@
                         <div>
                             <h2 class="identity-name" id="playerName">Player</h2>
                             <div class="identity-badges">
-                                <span class="badge" id="playerClan"><a id="playerClanLink" href="#">No clan</a></span>
-                                <span class="identity-country">
-                                    <img class="identity-flag" id="countryFlag" alt="" width="22" height="15" hidden>
+                                <span class="identity-pill" id="playerClan">
+                                    <span class="pill-label">Clan</span>
+                                    <a id="playerClanLink" href="#">No clan</a>
+                                </span>
+                                <span class="identity-pill identity-country">
+                                    <img class="identity-flag" id="countryFlag" alt="" width="18" height="12" hidden>
+                                    <span class="pill-label">Country</span>
                                     <span id="playerCountry"></span>
                                 </span>
                             </div>
@@ -176,25 +209,6 @@
                             <dd class="meta-value" id="lastSeen"></dd>
                         </div>
                     </dl>
-                </div>
-            </section>
-
-            <section class="profile-stats" aria-label="Profile statistics">
-                <div class="stat-box">
-                    <span class="stat-value" id="totalFinishes"></span>
-                    <span class="stat-label">Finishes</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value" id="playerSkinName"></span>
-                    <span class="stat-label">Skin</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value" id="isMapper"></span>
-                    <span class="stat-label">Mapper</span>
-                </div>
-                <div class="stat-box">
-                    <span class="stat-value status-value" id="onlineStatus" data-state="pending">Checking…</span>
-                    <span class="stat-label">Status</span>
                 </div>
             </section>
 
@@ -857,7 +871,7 @@
                 document.getElementById("playerCountry").textContent = countryName;
                 countryFlag.src = "countryflags/" + (window.COUNTRY_CODES ? window.COUNTRY_CODES[countryCode] || "default" : "default") + ".png";
                 countryFlag.alt = countryName + " flag";
-                countryFlag.hidden = !profile.clan || countryCode === "-1" || countryName === "Default";
+                countryFlag.hidden = countryCode === "-1" || countryName === "Default";
 
                 document.getElementById("playerSkinName").textContent = profile.skin_name || "N/A";
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
@@ -1609,6 +1623,12 @@
                     copyTeeSettings();
                 }
             });
+
+            var copySkinButton = document.getElementById("copySkinButton");
+
+            if (copySkinButton) {
+                copySkinButton.addEventListener("click", copyTeeSettings);
+            }
 
             function refreshChartColors() {
                 if (!lastPlayerData) {

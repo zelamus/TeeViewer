@@ -135,8 +135,8 @@
                         <span class="stat-number" id="stat-gametypes">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Distinct types</span>
-                    <span class="stat-foot">In rotation</span>
+                    <span class="stat-label">Server modes</span>
+                    <span class="stat-foot">Distinct modes in rotation</span>
                 </article>
 
                 <article class="stat-tile">
@@ -145,8 +145,8 @@
                         <span class="stat-number" id="stat-versions">—</span>
                         <span class="skeleton stat-skeleton" aria-hidden="true"></span>
                     </span>
-                    <span class="stat-label">Distinct versions</span>
-                    <span class="stat-foot">Client builds seen live</span>
+                    <span class="stat-label">Client builds</span>
+                    <span class="stat-foot">Distinct versions seen live</span>
                 </article>
             </div>
             <p class="visually-hidden" id="overview-status" role="status">Loading network statistics.</p>
@@ -173,9 +173,11 @@
                         <button type="button" id="player-month-btn" data-period="month" aria-pressed="false">Month</button>
                     </div>
                 </div>
-                <div class="chart-legend" aria-hidden="true">
+                <div class="chart-legend">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
+                    <span class="legend-item"><span class="legend-swatch is-peak"></span><span id="player-peak-label">Peak sample</span></span>
                 </div>
+                <p class="chart-axis-title">Players online</p>
                 <div class="chart-box">
                     <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
@@ -208,9 +210,11 @@
                         <button type="button" id="server-month-btn" data-period="month" aria-pressed="false">Month</button>
                     </div>
                 </div>
-                <div class="chart-legend" aria-hidden="true">
+                <div class="chart-legend">
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
+                    <span class="legend-item"><span class="legend-swatch is-peak"></span><span id="server-peak-label">Peak sample</span></span>
                 </div>
+                <p class="chart-axis-title">Servers online</p>
                 <div class="chart-box">
                     <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
@@ -370,7 +374,8 @@
                     noun: "player",
                     overviewId: "stat-players",
                     titleId: "player-chart-title",
-                    noteId: "player-chart-note"
+                    noteId: "player-chart-note",
+                    peakId: "player-peak-label"
                 },
                 servers: {
                     period: "week",
@@ -391,7 +396,8 @@
                     noun: "server",
                     overviewId: "stat-servers",
                     titleId: "server-chart-title",
-                    noteId: "server-chart-note"
+                    noteId: "server-chart-note",
+                    peakId: "server-peak-label"
                 }
             };
 
@@ -422,20 +428,22 @@
                 setText("network-pill-text", text);
             }
 
-            function setUpdated() {
+            function setUpdated(url) {
                 var time = $("last-updated");
                 if (!time) {
                     return;
                 }
 
-                var now = new Date();
-                time.setAttribute("datetime", now.toISOString());
-                time.textContent = now.toLocaleTimeString([], {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    second: "2-digit",
-                    hour12: false
-                });
+                var ts = url && typeof window.getJSONUpdatedAt === "function"
+                    ? window.getJSONUpdatedAt(url)
+                    : null;
+                var date = ts ? new Date(ts) : new Date();
+                var label = typeof window.formatDataTime === "function"
+                    ? window.formatDataTime(date.getTime())
+                    : date.toLocaleString();
+
+                time.setAttribute("datetime", date.toISOString());
+                time.textContent = label || date.toLocaleString();
             }
 
             function showState(id, title, message, visible) {
@@ -489,7 +497,9 @@
                     return;
                 }
 
-                window.fetchJSON(bust(STATS_URL)).then(function (data) {
+                var statsUrl = bust(STATS_URL);
+
+                window.fetchJSON(statsUrl).then(function (data) {
                     if (requestId !== overviewRequest) {
                         return;
                     }
@@ -508,7 +518,7 @@
                     }
 
                     setPill("live", "Live");
-                    setUpdated();
+                    setUpdated(statsUrl);
                     setText("overview-status", "Network statistics loaded.");
                 }).catch(fail);
 
@@ -607,11 +617,26 @@
                     }
                 }
 
-                var series = { labels: [], total: [] };
+                var series = { labels: [], total: [], peak: [], peakIndex: -1, peakValue: null };
 
                 samples.forEach(function (sample) {
                     series.labels.push(formatLabel(sample.date, period));
                     series.total.push(sample.total);
+                });
+
+                series.total.forEach(function (value, index) {
+                    if (typeof value !== "number" || !isFinite(value)) {
+                        return;
+                    }
+
+                    if (series.peakValue === null || value > series.peakValue) {
+                        series.peakValue = value;
+                        series.peakIndex = index;
+                    }
+                });
+
+                series.peak = series.total.map(function (value, index) {
+                    return index === series.peakIndex ? value : null;
                 });
 
                 return series;
@@ -668,6 +693,19 @@
                                 clip: false,
                                 borderCapStyle: "round",
                                 borderJoinStyle: "round",
+                                yAxisID: "y"
+                            },
+                            {
+                                label: "Peak",
+                                data: config.data.peak,
+                                borderWidth: 0,
+                                backgroundColor: colors.warning,
+                                borderColor: colors.warning,
+                                pointRadius: 5,
+                                pointHoverRadius: 6,
+                                pointBorderColor: colors.surface,
+                                pointBorderWidth: 2,
+                                showLine: false,
                                 yAxisID: "y"
                             }
                         ]
@@ -790,6 +828,9 @@
 
                 if (!values.length) {
                     setText(config.noteId, "Peak and current count are unavailable.");
+                    if (config.peakId) {
+                        setText(config.peakId, "Peak unavailable");
+                    }
                     return;
                 }
 
@@ -797,6 +838,10 @@
                 var current = overviewValues[config.overviewId === "stat-players" ? "players" : "servers"];
                 var live = typeof current === "number" && Number.isFinite(current);
                 var label = peakTitle(config.period);
+
+                if (config.peakId) {
+                    setText(config.peakId, "Peak " + numberFormat.format(peak) + " " + config.unit);
+                }
 
                 if (!live) {
                     current = values[values.length - 1];
@@ -904,6 +949,10 @@
 
                     if (status) {
                         status.textContent = title + ".";
+                    }
+
+                    if (config.peakId) {
+                        setText(config.peakId, "Peak unavailable");
                     }
                 }
             }

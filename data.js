@@ -12,6 +12,7 @@
   ];
 
   var cache = new Map();
+  var timestamps = new Map();
   var CACHE_PREFIX = 'teeviewer-cache:';
   var CACHE_TTL = 10 * 60 * 1000;
 
@@ -27,10 +28,34 @@
   }
 
   function writeStored(url, data) {
+    var ts = Date.now();
+
     try {
-      window.localStorage.setItem(CACHE_PREFIX + url, JSON.stringify({ ts: Date.now(), data: data }));
+      window.localStorage.setItem(CACHE_PREFIX + url, JSON.stringify({ ts: ts, data: data }));
     } catch (error) {
       /* storage may be unavailable */
+    }
+
+    timestamps.set(url, ts);
+    return ts;
+  }
+
+  function formatDataTime(ts) {
+    if (ts === null || ts === undefined || ts === '') return '';
+    var date = new Date(Number(ts));
+
+    if (!Number.isFinite(date.getTime())) return '';
+
+    try {
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        timeZoneName: 'short'
+      }).format(date);
+    } catch (error) {
+      return date.toLocaleString();
     }
   }
 
@@ -64,7 +89,7 @@
   }
 
   async function getJSON(requestUrl, asText) {
-    var response = await fetch(requestUrl, { signal: timeout(25000) });
+    var response = await fetch(requestUrl, { signal: timeout(12000) });
     if (!response.ok) throw new Error('HTTP ' + response.status);
     return asText ? parseRelayText(await response.text()) : response.json();
   }
@@ -73,6 +98,7 @@
     var stored = readStored(url);
 
     if (stored && Date.now() - stored.ts < CACHE_TTL) {
+      timestamps.set(url, stored.ts);
       return Promise.resolve(stored.data);
     }
 
@@ -87,10 +113,29 @@
           /* try the next relay */
         }
       }
-      if (stored) return stored.data;
+      if (stored) {
+        timestamps.set(url, stored.ts);
+        return stored.data;
+      }
       throw new Error('Live data unavailable');
     })();
     cache.set(url, task);
+    task.catch(function () {
+      cache.delete(url);
+    });
     return task;
   };
+
+  window.getCachedJSON = function (url) {
+    var stored = readStored(url);
+    return stored ? { data: stored.data, ts: stored.ts } : null;
+  };
+
+  window.getJSONUpdatedAt = function (url) {
+    if (timestamps.has(url)) return timestamps.get(url);
+    var stored = readStored(url);
+    return stored ? stored.ts : null;
+  };
+
+  window.formatDataTime = formatDataTime;
 })();

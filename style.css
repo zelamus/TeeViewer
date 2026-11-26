@@ -237,8 +237,8 @@
     --bg: #fbfbfc;
     --surface: #ffffff;
     --surface-2: #f4f5f7;
-    --border: #9aa1ac;
-    --border-strong: #9aa1ac;
+    --border: #767e89;
+    --border-strong: #5f6670;
     --text: #14161a;
     --text-2: #2e333b;
     --muted: #39414d;
@@ -273,8 +273,8 @@
         --bg: #fbfbfc;
         --surface: #ffffff;
         --surface-2: #f4f5f7;
-        --border: #9aa1ac;
-        --border-strong: #9aa1ac;
+        --border: #767e89;
+        --border-strong: #5f6670;
         --text: #14161a;
         --text-2: #3f444c;
         --muted: #4b5563;
@@ -1361,6 +1361,25 @@ textarea.input {
 
 .table tbody tr:hover {
     background: var(--surface-2);
+}
+
+.table td.table-state-cell {
+    padding: var(--space-4);
+    background: var(--surface);
+}
+
+.table-state {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-3);
+    color: var(--text-2);
+    font-size: var(--text-sm);
+    line-height: var(--leading-snug);
+}
+
+.table-state .button {
+    flex: none;
 }
 
 .table tbody tr:last-child td {
