@@ -831,12 +831,13 @@ button:disabled {
 
 .network-section .section-head {
     order: 0;
+    margin-bottom: var(--space-2);
 }
 
 .network-section .stat-source {
     align-self: flex-end;
     order: 1;
-    margin: 0;
+    margin: 0 0 var(--space-3);
 }
 
 .stat-source #statAsOf {
@@ -1704,7 +1705,7 @@ textarea.input {
     }
 
     .stat-tile {
-        min-height: 160px;
+        min-height: 104px;
         padding: var(--space-4);
         border: 0;
         border-radius: 0;

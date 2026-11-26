@@ -168,7 +168,7 @@
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
                     <div class="chart-head-text">
-                        <p class="chart-title" id="player-chart-title">24-hour sample peak</p>
+                        <p class="chart-title" id="player-chart-title">Total players in the last 24 hours</p>
                         <p class="chart-axis-title">Players online</p>
                     </div>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
@@ -207,7 +207,7 @@
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <div class="chart-head">
                     <div class="chart-head-text">
-                        <p class="chart-title" id="server-chart-title">7-day sample peak</p>
+                        <p class="chart-title" id="server-chart-title">Total servers in the last 7 days</p>
                         <p class="chart-axis-title">Servers online</p>
                     </div>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
@@ -443,12 +443,9 @@
                     ? window.getJSONUpdatedAt(url)
                     : null;
                 var date = ts ? new Date(ts) : new Date();
-                var label = typeof window.formatDataTime === "function"
-                    ? window.formatDataTime(date.getTime())
-                    : date.toLocaleString();
 
                 time.setAttribute("datetime", date.toISOString());
-                time.textContent = label || date.toLocaleString();
+                time.textContent = formatStamp(date);
             }
 
             function showState(id, title, message, visible) {
@@ -566,14 +563,21 @@
                 return "Last 24 hours";
             }
 
-            function peakTitle(period) {
+            function peakTitle(period, unit) {
+                var label = unit || "players";
+
                 if (period === "week") {
-                    return "Highest concurrent in the last 7 days";
+                    return "Total " + label + " in the last 7 days";
                 }
                 if (period === "month") {
-                    return "Highest concurrent in the last 30 days";
+                    return "Total " + label + " in the last 30 days";
                 }
-                return "Highest concurrent in the last 24 hours";
+                return "Total " + label + " in the last 24 hours";
+            }
+
+            function formatStamp(date) {
+                return date.toLocaleDateString([], { month: "numeric", day: "numeric" }) + " " +
+                    date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
             }
 
             function formatLabel(date, period) {
@@ -584,12 +588,8 @@
                 return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
             }
 
-            function formatWindowLabel(date, period) {
-                if (period === "day") {
-                    return date.toLocaleDateString([], { month: "numeric", day: "numeric" }) + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
-                }
-
-                return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
+            function formatWindowLabel(date) {
+                return formatStamp(date);
             }
 
             function toNumber(value) {
@@ -652,11 +652,31 @@
                     return index === series.peakIndex ? value : null;
                 });
 
-                series.startLabel = samples.length ? formatWindowLabel(samples[0].date, period) : "";
-                series.endLabel = samples.length ? formatWindowLabel(samples[samples.length - 1].date, period) : "";
-                series.lastSampleLabel = samples.length ? formatLabel(samples[samples.length - 1].date, period) : "";
+                series.startLabel = samples.length ? formatWindowLabel(samples[0].date) : "";
+                series.endLabel = samples.length ? formatWindowLabel(samples[samples.length - 1].date) : "";
+                series.lastSampleLabel = samples.length ? formatStamp(samples[samples.length - 1].date) : "";
+                series.stepLabel = stepLabel(samples);
 
                 return series;
+            }
+
+            function stepLabel(samples) {
+                if (samples.length < 2) {
+                    return "";
+                }
+
+                var minutes = Math.round((samples[samples.length - 1].date - samples[0].date) / 60000 / (samples.length - 1));
+
+                if (minutes < 1) {
+                    return "";
+                }
+                if (minutes < 60) {
+                    return minutes + " min";
+                }
+                if (minutes < 1440) {
+                    return Math.round(minutes / 60) + " h";
+                }
+                return Math.round(minutes / 1440) + " d";
             }
 
             function token(name) {
@@ -796,6 +816,10 @@
                                         return;
                                     }
                                     var limit = Math.max(2, tickLimit);
+
+                                    if (count > 1 && count <= 8) {
+                                        limit = count;
+                                    }
                                     var ticks = [];
                                     for (var i = 0; i < limit; i += 1) {
                                         var index = Math.round((count - 1) * (i / (limit - 1)));
@@ -872,7 +896,7 @@
                     buttons[i].setAttribute("aria-pressed", active ? "true" : "false");
                 }
 
-                setText(config.titleId, peakTitle(config.period));
+                setText(config.titleId, peakTitle(config.period, config.unit));
             }
 
             function refreshNotes() {
@@ -915,11 +939,11 @@
                 }
 
                 if (peak === current) {
-                    setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
+                    setText(config.noteId, label + ": " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
                     return;
                 }
 
-                setText(config.noteId, label + " " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
+                setText(config.noteId, label + ": " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
             }
 
             function loadChart(kind, period) {
@@ -982,7 +1006,7 @@
                     if (status) {
                         status.textContent = result.fallback
                             ? "Longer range unavailable. Showing the last day."
-                            : rangeLabel(period) + " · " + series.labels.length + " samples · " + series.startLabel + " to " + series.endLabel + " · last sample " + series.lastSampleLabel;
+                            : rangeLabel(period) + " · " + series.labels.length + " samples · " + series.startLabel + " to " + series.endLabel + " · last sample " + series.lastSampleLabel + (series.stepLabel ? " · every " + series.stepLabel : "");
                     }
                 }).catch(function (error) {
                     if (requestId !== config.requestId) {

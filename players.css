@@ -1317,7 +1317,7 @@
     }
 
     .tee-panel {
-        order: -2;
+        order: 0;
         flex-direction: column;
         justify-content: flex-start;
         gap: var(--space-3);
@@ -1376,7 +1376,7 @@
     .clan-card-rank {
         flex: none;
         order: -1;
-        margin-right: var(--space-2);
+        margin-right: var(--space-3);
     }
 
     .clan-pill {
@@ -1470,6 +1470,10 @@
         flex: 1 0 100%;
         justify-content: flex-end;
         margin-left: 0;
+    }
+
+    .pager-top {
+        display: none;
     }
 
     .pager-status {

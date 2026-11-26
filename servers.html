@@ -181,7 +181,6 @@
                             <th scope="col" class="num" data-sort="players" aria-sort="none">
                                 <button class="sort-button" type="button" data-sort="players">Players <span class="sort-mark" aria-hidden="true"></span></button>
                             </th>
-                            <th scope="col">Version</th>
                         </tr>
                     </thead>
                     <tbody id="serversTableBody">
@@ -190,42 +189,36 @@
                             <td><span class="skeleton sk sk-map"></span></td>
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
-                            <td><span class="skeleton sk sk-ver"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
                             <td><span class="skeleton sk sk-map"></span></td>
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
-                            <td><span class="skeleton sk sk-ver"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
                             <td><span class="skeleton sk sk-map"></span></td>
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
-                            <td><span class="skeleton sk sk-ver"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
                             <td><span class="skeleton sk sk-map"></span></td>
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
-                            <td><span class="skeleton sk sk-ver"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
                             <td><span class="skeleton sk sk-map"></span></td>
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
-                            <td><span class="skeleton sk sk-ver"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
                             <td><span class="skeleton sk sk-map"></span></td>
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
-                            <td><span class="skeleton sk sk-ver"></span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -590,8 +583,7 @@
                         '<td><span class="skeleton sk sk-name"></span></td>' +
                         '<td><span class="skeleton sk sk-map"></span></td>' +
                         '<td><span class="skeleton sk sk-type"></span></td>' +
-                        '<td><span class="skeleton sk sk-num"></span></td>' +
-                        '<td><span class="skeleton sk sk-ver"></span></td>';
+                        '<td><span class="skeleton sk sk-num"></span></td>';
                     dom.tableBody.appendChild(row);
                 }
 
@@ -872,7 +864,6 @@
             function serverRow(server) {
                 var map = serverMap(server);
                 var gameType = serverGameType(server);
-                var version = serverVersion(server);
                 var maxPlayers = serverCapacity(server);
                 var mapCell = map
                     ? '<a class="table-link" href="maps.html?map=' + encodeURIComponent(map) + '">' + escapeHtml(map) + "</a>"
@@ -881,9 +872,8 @@
                 return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0" role="button" aria-label="Open server ' + escapeHtml(serverName(server)) + '">' +
                     '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(server.name || "Unnamed server") + '<span class="server-name-suffix">' + escapeHtml(serverNameSuffix(server)) + "</span></span>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
-                    '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
+                    "<td>" + (gameType ? escapeHtml(gameType) : "Unknown") + "</td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + "</span></span></td>" +
-                    '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
                     "</tr>";
             }
 

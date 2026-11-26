@@ -356,66 +356,6 @@
                 }
             }
 
-            function sampleRegion(img, sx, sy, sw, sh) {
-                if (sw <= 0 || sh <= 0) {
-                    return null;
-                }
-
-                var canvas = document.createElement("canvas");
-                canvas.width = sw;
-                canvas.height = sh;
-
-                var context = canvas.getContext("2d");
-                context.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
-
-                var data = context.getImageData(0, 0, sw, sh).data;
-                var red = 0;
-                var green = 0;
-                var blue = 0;
-                var count = 0;
-
-                for (var i = 0; i < data.length; i += 4) {
-                    if (data[i + 3] > 10) {
-                        red += data[i];
-                        green += data[i + 1];
-                        blue += data[i + 2];
-                        count += 1;
-                    }
-                }
-
-                if (!count) {
-                    return null;
-                }
-
-                return [Math.round(red / count), Math.round(green / count), Math.round(blue / count)];
-            }
-
-            function paintSwatches(instance) {
-                var url = instance && instance.api && instance.api.image ? instance.api.image.url : "";
-
-                if (!url) {
-                    return;
-                }
-
-                var img = new Image();
-                img.onload = function () {
-                    var scaleX = img.naturalWidth / 256;
-                    var scaleY = img.naturalHeight / 128;
-                    var body = sampleRegion(img, 0, 0, Math.round(96 * scaleX), Math.round(96 * scaleY));
-                    var feet = sampleRegion(img, Math.round(192 * scaleX), Math.round(32 * scaleY), Math.round(64 * scaleX), Math.round(32 * scaleY));
-                    var bodySwatch = $("skin-body-swatch");
-                    var feetSwatch = $("skin-feet-swatch");
-
-                    if (bodySwatch && body) {
-                        bodySwatch.style.backgroundColor = "rgb(" + body.join(",") + ")";
-                    }
-                    if (feetSwatch && feet) {
-                        feetSwatch.style.backgroundColor = "rgb(" + feet.join(",") + ")";
-                    }
-                };
-                img.src = url;
-            }
-
             function updateDownload(instance, name) {
                 var link = $("downloadSkin");
                 var url = instance && instance.api && instance.api.image ? instance.api.image.url : "";
@@ -485,7 +425,6 @@
                         setBusy(false);
                         setStatus("Preview ready", "ready");
                         updateMeta(state);
-                        paintSwatches(instance);
                         updateDownload(instance, state.name);
                     }).catch(function () {
                         if (token !== renderToken) {

@@ -317,15 +317,7 @@
 }
 
 .server-table th:nth-child(4) {
-    width: 12%;
-}
-
-.server-table th:nth-child(5) {
     width: auto;
-}
-
-.server-table th:nth-child(6) {
-    width: 10%;
 }
 
 .server-table th,
@@ -346,6 +338,11 @@
 .server-table th.num,
 .server-table td.num {
     text-align: right;
+}
+
+.server-table th.num .sort-button {
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .sort-button {
@@ -669,10 +666,6 @@
 .sk-num {
     width: 42px;
     margin-left: auto;
-}
-
-.sk-ver {
-    width: 52px;
 }
 
 .sk-icon {
@@ -1203,10 +1196,6 @@
     .server-table th:nth-child(3) {
         width: 14%;
     }
-
-    .server-table th:nth-child(5) {
-        width: 18%;
-    }
 }
 
 /* --------------------------------------------------------------------------
@@ -1255,6 +1244,10 @@
 
     .info-value {
         text-align: left;
+    }
+
+    .pager-top {
+        display: none;
     }
 }
 

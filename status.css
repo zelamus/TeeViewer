@@ -666,7 +666,8 @@ html.js .chart-card.is-loading .chart-box canvas {
 .skin-stage .teeassembler-tee {
     flex: 0 0 auto;
     margin-left: 0;
-    transform: scale(4.9);
+    font-size: 2px;
+    transform: scale(2.45);
     transform-origin: center;
     image-rendering: pixelated;
 }
@@ -999,7 +1000,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .skin-stage .teeassembler-tee {
-        transform: scale(4.2);
+        transform: scale(2.1);
     }
 
     .skin-actions .button {
@@ -1045,7 +1046,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     }
 
     .skin-stage .teeassembler-tee {
-        transform: scale(4.2);
+        transform: scale(2.1);
     }
 }
 
