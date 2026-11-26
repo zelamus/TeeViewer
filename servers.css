@@ -193,6 +193,12 @@
     min-height: var(--control-h);
 }
 
+.password-chip[aria-pressed="true"] {
+    border-color: var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent);
+}
+
 .reset-button {
     margin-left: 0;
 }
@@ -204,7 +210,7 @@
 .result-bar {
     display: flex;
     flex-wrap: wrap;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
     gap: var(--space-2) var(--space-3);
     padding: var(--space-2) 0;
@@ -222,6 +228,17 @@
     color: var(--muted);
     font-size: var(--text-xs);
     line-height: var(--leading-snug);
+}
+
+.result-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.result-hint svg {
+    flex: none;
+    color: var(--text-2);
 }
 
 .table-shell {
@@ -370,6 +387,11 @@
     font-weight: 600;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.server-name-suffix {
+    color: var(--muted);
+    font-weight: 400;
 }
 
 .table-link,
@@ -657,7 +679,7 @@
 
 .pager-top {
     justify-content: flex-end;
-    margin: 0 0 var(--space-3);
+    margin: 0;
 }
 
 .pager-status {

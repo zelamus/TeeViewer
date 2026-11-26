@@ -242,7 +242,7 @@
 .profile-layout {
     display: grid;
     grid-template-columns: 320px minmax(0, 1fr);
-    align-items: stretch;
+    align-items: start;
     gap: var(--space-4);
     margin-bottom: var(--space-4);
 }
@@ -483,6 +483,13 @@
     letter-spacing: var(--tracking-wide);
     line-height: var(--leading-snug);
     text-transform: uppercase;
+}
+
+.stat-box .stat-value#playerSkinName {
+    overflow: hidden;
+    font-size: var(--text-base);
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------
@@ -909,6 +916,11 @@
     margin-bottom: var(--space-2);
 }
 
+.clan-result-head .pager-top {
+    align-self: center;
+    margin: 0 0 0 auto;
+}
+
 .clan-result-head .result-count {
     color: var(--text-2);
     font-size: var(--text-xs);
@@ -961,6 +973,12 @@
     letter-spacing: inherit;
     text-transform: inherit;
     cursor: pointer;
+}
+
+.clan-table th.num .th-sort {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 }
 
 .clan-table th .th-sort:hover {
@@ -1447,6 +1465,22 @@
         padding: var(--space-4);
     }
 
+    .identity-badges {
+        flex-wrap: nowrap;
+    }
+
+    .identity-pill {
+        min-width: 0;
+        overflow: hidden;
+    }
+
+    .identity-pill a,
+    .identity-pill #playerCountry {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .identity-meta {
         grid-template-columns: 1fr;
     }
@@ -1491,7 +1525,7 @@
 
     .tee-stage .teeassembler-tee {
         margin-left: 0;
-        transform: scale(1.6);
+        transform: scale(1.15);
     }
 
     .tee-caption {

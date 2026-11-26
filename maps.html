@@ -144,13 +144,12 @@
 
             <div class="result-bar">
                 <p class="result-count" id="mapCount" role="status" aria-live="polite">Loading maps…</p>
+                <nav class="pager pager-top" id="mapPagerTop" aria-label="Map pages (top)">
+                    <button class="button ghost button-sm" type="button" data-pager-prev>Previous</button>
+                    <span class="pager-status" data-map-page-status role="status"></span>
+                    <button class="button ghost button-sm" type="button" data-pager-next>Next</button>
+                </nav>
             </div>
-
-            <nav class="pager pager-top" id="mapPagerTop" aria-label="Map pages (top)">
-                <button class="button ghost button-sm" type="button" data-pager-prev>Previous</button>
-                <span class="pager-status" data-map-page-status role="status"></span>
-                <button class="button ghost button-sm" type="button" data-pager-next>Next</button>
-            </nav>
 
             <div class="map-grid" id="mapsTableBody" aria-label="Map index">
                 <div class="map-card is-skeleton" aria-hidden="true">

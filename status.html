@@ -737,13 +737,28 @@
                             x: {
                                 border: { color: colors.border },
                                 grid: { display: false, drawBorder: false },
+                                afterBuildTicks: function (axis) {
+                                    var labels = axis.chart.data.labels;
+                                    var count = labels.length;
+                                    if (count === 0) {
+                                        return;
+                                    }
+                                    var limit = Math.max(2, tickLimit);
+                                    var step = Math.max(1, Math.ceil((count - 1) / (limit - 1)));
+                                    var ticks = [];
+                                    for (var i = 0; i < count; i += step) {
+                                        ticks.push({ value: i });
+                                    }
+                                    if (ticks[ticks.length - 1].value !== count - 1) {
+                                        ticks.push({ value: count - 1 });
+                                    }
+                                    axis.ticks = ticks;
+                                },
                                 ticks: {
                                     color: colors.muted,
-                                    maxTicksLimit: tickLimit,
-                                    autoSkipPadding: 12,
                                     maxRotation: 0,
                                     minRotation: 0,
-                                    autoSkip: true,
+                                    autoSkip: false,
                                     font: { size: 12 }
                                 }
                             },

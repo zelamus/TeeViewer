@@ -933,7 +933,8 @@ html.js .stat-grid.is-loading .stat-skeleton {
 }
 
 .stat-foot {
-    margin-top: 2px;
+    margin-top: auto;
+    padding-top: var(--space-2);
     color: var(--muted);
     font-size: var(--text-xs);
     line-height: var(--leading-snug);

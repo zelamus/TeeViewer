@@ -90,6 +90,11 @@
             <div class="section-head clan-result-head">
                 <p class="section-title" id="clan-list-title">All clans</p>
                 <p class="result-count" id="clanCount" role="status">Loading clans…</p>
+                <nav class="pager pager-top" id="clanPagerTop" aria-label="Clan pages (top)">
+                    <button class="button ghost button-sm" type="button" data-clan-prev>Previous</button>
+                    <span class="pager-status" data-clan-page-status role="status"></span>
+                    <button class="button ghost button-sm" type="button" data-clan-next>Next</button>
+                </nav>
             </div>
 
             <div class="loading-panel" id="clansLoading" role="status" aria-live="polite" hidden>
@@ -168,11 +173,6 @@
             </div>
 
             <div id="clansResults" hidden>
-                <nav class="pager pager-top" id="clanPagerTop" aria-label="Clan pages (top)">
-                    <button class="button ghost button-sm" type="button" data-clan-prev>Previous</button>
-                    <span class="pager-status" data-clan-page-status role="status"></span>
-                    <button class="button ghost button-sm" type="button" data-clan-next>Next</button>
-                </nav>
                 <div class="table-wrap clan-table-wrap">
                     <table class="table clan-table" id="clansTable">
                         <thead>
