@@ -166,7 +166,10 @@
         <section aria-labelledby="player-chart-title">
             <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="player-chart-title">24-hour sample peak</p>
+                    <div class="chart-head-text">
+                        <p class="chart-title" id="player-chart-title">24-hour sample peak</p>
+                        <p class="chart-axis-title">Players online</p>
+                    </div>
                     <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
                         <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
                         <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
@@ -177,7 +180,6 @@
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
                     <span class="legend-item"><span class="legend-swatch is-peak"></span><span id="player-peak-label">Peak sample</span></span>
                 </div>
-                <p class="chart-axis-title">Players online</p>
                 <div class="chart-box">
                     <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">
@@ -203,7 +205,10 @@
         <section aria-labelledby="server-chart-title">
             <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
                 <div class="chart-head">
-                    <p class="chart-title" id="server-chart-title">7-day sample peak</p>
+                    <div class="chart-head-text">
+                        <p class="chart-title" id="server-chart-title">7-day sample peak</p>
+                        <p class="chart-axis-title">Servers online</p>
+                    </div>
                     <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
                         <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
                         <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
@@ -214,7 +219,6 @@
                     <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
                     <span class="legend-item"><span class="legend-swatch is-peak"></span><span id="server-peak-label">Peak sample</span></span>
                 </div>
-                <p class="chart-axis-title">Servers online</p>
                 <div class="chart-box">
                     <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
                     <div class="chart-skeleton" aria-hidden="true">

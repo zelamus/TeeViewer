@@ -9,6 +9,10 @@
     display: block;
 }
 
+.maps-page .page-sub {
+    max-width: none;
+}
+
 .page-meta {
     color: var(--muted);
     font-size: var(--text-xs);
@@ -37,6 +41,7 @@
 
 .filter-panel-head {
     margin-bottom: var(--space-3);
+    margin-left: calc(-1 * var(--space-4));
 }
 
 .filter-grid {
@@ -182,6 +187,7 @@
     justify-self: end;
     align-self: end;
     min-height: var(--control-h);
+    white-space: nowrap;
 }
 
 /* --------------------------------------------------------------------------

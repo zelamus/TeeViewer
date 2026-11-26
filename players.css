@@ -242,7 +242,7 @@
 .profile-layout {
     display: grid;
     grid-template-columns: 320px minmax(0, 1fr);
-    align-items: start;
+    align-items: stretch;
     gap: var(--space-4);
     margin-bottom: var(--space-4);
 }
@@ -271,7 +271,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 180px;
+    min-height: 280px;
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: var(--radius-3);
@@ -287,6 +287,7 @@
 .tee-stage .teeassembler-tee {
     flex: none;
     margin-left: 0;
+    transform: scale(2.9);
     cursor: pointer;
 }
 
@@ -358,6 +359,7 @@
     color: var(--text);
     font-size: var(--text-xs);
     line-height: var(--leading-snug);
+    text-transform: uppercase;
 }
 
 .pill-label {
@@ -490,6 +492,22 @@
     font-size: var(--text-base);
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+.stat-box .stat-value[data-state="yes"],
+.stat-box .status-value[data-state="online"] {
+    color: var(--success);
+}
+
+.stat-box .stat-value[data-state="no"],
+.stat-box .status-value[data-state="offline"] {
+    color: var(--muted);
+}
+
+.stat-box .stat-value[data-state="unknown"],
+.stat-box .status-value[data-state="pending"],
+.stat-box .status-value[data-state="unknown"] {
+    color: var(--text-2);
 }
 
 /* --------------------------------------------------------------------------
@@ -908,12 +926,13 @@
 }
 
 .clan-toolbar-panel {
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--space-1);
+    padding-bottom: var(--space-2);
 }
 
 .clan-result-head {
     align-items: baseline;
-    margin-bottom: var(--space-2);
+    margin-bottom: var(--space-1);
 }
 
 .clan-result-head .pager-top {
@@ -945,15 +964,15 @@
 }
 
 .clan-table th:nth-child(2) {
-    width: 180px;
+    width: auto;
 }
 
 .clan-table th:nth-child(3) {
-    width: 96px;
+    width: 140px;
 }
 
 .clan-table th:nth-child(4) {
-    width: auto;
+    width: 200px;
 }
 
 .clan-table-wrap {
@@ -1360,6 +1379,25 @@
 
     .list-footer {
         margin-top: var(--space-3);
+    }
+
+    .clan-result-head {
+        flex-wrap: wrap;
+    }
+
+    .clan-result-head .section-title,
+    .clan-result-head .result-count {
+        white-space: nowrap;
+    }
+
+    .clan-result-head .pager-top {
+        flex: 1 0 100%;
+        justify-content: flex-end;
+        margin-left: 0;
+    }
+
+    .pager-status {
+        white-space: nowrap;
     }
 
     .completion-table {
