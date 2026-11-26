@@ -29,13 +29,14 @@
 
             <nav class="nav" id="site-nav" aria-label="Primary">
                 <div class="nav-buttons">
+                    <a class="categories" href="index.html">Home</a>
                     <a class="categories" href="players.html">Players</a>
                     <a class="categories" href="clans.html">Clans</a>
                     <a class="categories" href="maps.html">Maps</a>
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true">↗</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M14 3h7v7"></path><path d="M10 14 21 3"></path><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path></svg></span></a>
                 </div>
             </nav>
 
@@ -678,6 +679,40 @@
 
                 var tickLimit = canvas.clientWidth < 520 ? 3 : (canvas.clientWidth < 900 ? 4 : 6);
 
+                var peakLabelPlugin = {
+                    id: "peakLabel",
+                    afterDatasetsDraw: function (chart) {
+                        var meta = chart.getDatasetMeta(1);
+                        if (!meta || !meta.data || !meta.data.length) {
+                            return;
+                        }
+                        var raw = chart.data.datasets[1].data;
+                        var idx = -1;
+                        for (var i = 0; i < raw.length; i += 1) {
+                            if (raw[i] !== null && raw[i] !== undefined) {
+                                idx = i;
+                                break;
+                            }
+                        }
+                        if (idx === -1) {
+                            return;
+                        }
+                        var point = meta.data[idx];
+                        if (!point) {
+                            return;
+                        }
+                        var ctx = chart.ctx;
+                        var text = numberFormat.format(raw[idx]);
+                        ctx.save();
+                        ctx.font = "600 12px Inter, sans-serif";
+                        ctx.fillStyle = colors.text;
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "bottom";
+                        ctx.fillText(text, point.x, point.y - 8);
+                        ctx.restore();
+                    }
+                };
+
                 config.chart = new window.Chart(canvas.getContext("2d"), {
                     type: "line",
                     data: {
@@ -721,6 +756,7 @@
                         backgroundColor: "transparent",
                         animation: { duration: 300 },
                         interaction: { mode: "index", intersect: false },
+                        plugins: [peakLabelPlugin],
                         plugins: {
                             legend: { display: false },
                             tooltip: {
@@ -748,13 +784,13 @@
                                         return;
                                     }
                                     var limit = Math.max(2, tickLimit);
-                                    var step = Math.max(1, Math.ceil((count - 1) / (limit - 1)));
                                     var ticks = [];
-                                    for (var i = 0; i < count; i += step) {
-                                        ticks.push({ value: i });
-                                    }
-                                    if (ticks[ticks.length - 1].value !== count - 1) {
-                                        ticks.push({ value: count - 1 });
+                                    for (var i = 0; i < limit; i += 1) {
+                                        var index = Math.round((count - 1) * (i / (limit - 1)));
+                                        if (ticks.length && ticks[ticks.length - 1].value === index) {
+                                            continue;
+                                        }
+                                        ticks.push({ value: index });
                                     }
                                     axis.ticks = ticks;
                                 },

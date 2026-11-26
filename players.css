@@ -299,6 +299,12 @@
     image-rendering: pixelated;
 }
 
+.tee-stage .teeassembler-body_shadow,
+.tee-stage .teeassembler-back_foot_shadow,
+.tee-stage .teeassembler-front_foot_shadow {
+    display: none;
+}
+
 .tee-caption {
     display: flex;
     flex-direction: column;
@@ -447,7 +453,7 @@
 
 .profile-stats {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 1px;
     margin: 0;
     overflow: hidden;
@@ -1317,7 +1323,7 @@
     }
 
     .profile-stats {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .chart-grid {
@@ -1334,6 +1340,23 @@
 
     .clan-cards {
         display: grid;
+    }
+
+    .clan-card-head {
+        align-items: baseline;
+    }
+
+    .clan-card-rank {
+        flex: none;
+        order: -1;
+        margin-right: var(--space-2);
+    }
+
+    .clan-pill {
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        background: none;
     }
 
     .clan-toolbar {
