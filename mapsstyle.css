@@ -125,23 +125,23 @@
 }
 
 .difficulty-chip.is-novice {
-    color: var(--success);
+    color: var(--tier-novice);
 }
 
 .difficulty-chip.is-moderate {
-    color: var(--accent);
+    color: var(--tier-moderate);
 }
 
 .difficulty-chip.is-brutal {
-    color: var(--warning);
+    color: var(--tier-brutal);
 }
 
 .difficulty-chip.is-insane {
-    color: var(--danger);
+    color: var(--tier-insane);
 }
 
 .difficulty-chip.is-extreme {
-    color: var(--star-filled);
+    color: var(--tier-extreme);
 }
 
 .difficulty-chip.is-unrated {
@@ -297,6 +297,13 @@
 .stars-empty {
     color: var(--muted);
     opacity: 0.5;
+}
+
+.map-stars.is-unrated {
+    color: var(--muted);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0;
 }
 
 .map-card-tags {

@@ -612,15 +612,14 @@ html.js .chart-card.is-loading .chart-box canvas {
 
 .skin-preview-card .skin-stage {
     flex: 1 1 auto;
-}
-
-.skin-controls .skin-note {
-    margin-top: auto;
+    width: min(100%, 502px);
+    margin-inline: auto;
 }
 
 .skin-controls {
     display: flex;
     flex-direction: column;
+    align-self: flex-start;
 }
 
 .skin-preview-card .section-head,

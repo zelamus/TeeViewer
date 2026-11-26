@@ -149,10 +149,24 @@
 
 .segment[aria-pressed="true"],
 .segment[aria-pressed="true"]:hover {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
     border-color: var(--accent-strong);
     background: var(--accent-strong);
     color: var(--on-accent);
-    box-shadow: inset 0 0 0 1px var(--accent-strong);
+    box-shadow: inset 0 0 0 1px var(--on-accent);
+}
+
+.segment[aria-pressed="true"]::before,
+.password-chip[aria-pressed="true"]::before {
+    width: 6px;
+    height: 6px;
+    flex: none;
+    border-radius: var(--radius-pill);
+    background: currentColor;
+    content: "";
 }
 
 .row-chevron {
@@ -200,7 +214,7 @@
     border-color: var(--accent-strong);
     background: var(--accent-strong);
     color: var(--on-accent);
-    box-shadow: inset 0 0 0 1px var(--accent-strong);
+    box-shadow: inset 0 0 0 1px var(--on-accent);
 }
 
 .password-chip[aria-pressed="true"] svg {
@@ -291,7 +305,7 @@
 }
 
 .server-table th:nth-child(1) {
-    width: 32%;
+    width: 30%;
 }
 
 .server-table th:nth-child(2) {
@@ -299,7 +313,7 @@
 }
 
 .server-table th:nth-child(3) {
-    width: 14%;
+    width: 15%;
 }
 
 .server-table th:nth-child(4) {
@@ -307,7 +321,7 @@
 }
 
 .server-table th:nth-child(5) {
-    width: 18%;
+    width: auto;
 }
 
 .server-table th:nth-child(6) {

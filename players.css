@@ -279,7 +279,7 @@
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: var(--radius-3);
-    background: var(--surface-2);
+    background: color-mix(in srgb, var(--bg) 55%, var(--surface-2));
 }
 
 .tee-stage,
@@ -946,12 +946,13 @@
 }
 
 .clan-result-head {
-    align-items: baseline;
-    margin-bottom: var(--space-1);
+    margin-top: var(--space-3);
+    margin-bottom: var(--space-2);
 }
 
 .clan-result-head .pager-top {
     align-self: center;
+    gap: var(--space-3);
     margin: 0 0 0 auto;
 }
 
@@ -985,15 +986,15 @@
 }
 
 .clan-table th:nth-child(2) {
-    width: auto;
+    width: 52%;
 }
 
 .clan-table th:nth-child(3) {
-    width: 140px;
+    width: 130px;
 }
 
 .clan-table th:nth-child(4) {
-    width: 200px;
+    width: auto;
 }
 
 .clan-table-wrap {
@@ -1419,11 +1420,20 @@
 
     .compare-mobile {
         display: block;
-        margin-top: var(--space-3);
+        margin: 0 0 var(--space-4);
     }
 
     .compare-mobile .button {
-        width: 100%;
+        width: auto;
+        min-height: 0;
+        padding: 0;
+        border: 0;
+        background: none;
+        color: var(--accent);
+        font-size: var(--text-sm);
+        font-weight: 600;
+        text-decoration: underline;
+        text-underline-offset: 3px;
     }
 
     .toolbar {

@@ -149,6 +149,11 @@
     --danger: #f85149;
     --danger-hover: #ff6b63;
     --on-danger: #1b0705;
+    --tier-novice: #56d364;
+    --tier-moderate: #6cb6ff;
+    --tier-brutal: #e3b341;
+    --tier-insane: #ff7b72;
+    --tier-extreme: #ffd43b;
     --topbar-bg: rgba(10, 10, 10, 0.82);
     --overlay: rgba(0, 0, 0, 0.6);
     --selection: rgba(76, 141, 255, 0.3);
@@ -254,6 +259,11 @@
     --danger: #cf222e;
     --danger-hover: #a40e26;
     --on-danger: #ffffff;
+    --tier-novice: #1a7f37;
+    --tier-moderate: #1d4ed8;
+    --tier-brutal: #966400;
+    --tier-insane: #cf222e;
+    --tier-extreme: #9a6700;
     --topbar-bg: #f4f5f7;
     --overlay: rgba(20, 22, 26, 0.4);
     --selection: rgba(29, 78, 216, 0.18);
@@ -826,7 +836,7 @@ button:disabled {
 .network-section .stat-source {
     align-self: flex-end;
     order: 1;
-    margin: calc(-1 * var(--space-2)) 0 var(--space-2);
+    margin: 0;
 }
 
 .stat-source #statAsOf {
@@ -845,6 +855,28 @@ button:disabled {
 .preview-table th:first-child,
 .preview-table td:first-child {
     padding-left: var(--space-4);
+}
+
+@media (min-width: 769px) {
+    .preview-table {
+        table-layout: fixed;
+    }
+
+    .live-servers-table th:nth-child(1) {
+        width: 38%;
+    }
+
+    .live-servers-table th:nth-child(2) {
+        width: 200px;
+    }
+
+    .preview-table:not(.live-servers-table) th:nth-child(1) {
+        width: 40%;
+    }
+
+    .preview-table:not(.live-servers-table) th:nth-child(2) {
+        width: 120px;
+    }
 }
 
 .preview-section .table-wrap {
@@ -1809,7 +1841,7 @@ textarea.input {
 
     .live-servers-table tbody tr {
         margin-bottom: var(--space-2);
-        padding: var(--space-2) var(--space-3);
+        padding: var(--space-3);
         border: 1px solid var(--border);
         border-radius: var(--radius-3);
         background: var(--surface-2);
@@ -1820,15 +1852,44 @@ textarea.input {
     }
 
     .live-servers-table td {
-        padding: 1px 0;
+        padding: 0;
         border: 0;
     }
 
     .live-servers-table td::before {
-        display: inline-block;
-        min-width: 72px;
+        content: none;
+    }
+
+    .live-servers-table td:nth-child(1) {
+        color: var(--text);
+        font-weight: 600;
+        overflow-wrap: anywhere;
+    }
+
+    .live-servers-table td:nth-child(2) {
+        margin-top: 2px;
+        color: var(--accent);
+        font-size: var(--text-xs);
+        overflow-wrap: anywhere;
+    }
+
+    .live-servers-table td:nth-child(3) {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: var(--space-3);
+        margin-top: var(--space-2);
+        padding-top: var(--space-2);
+        border-top: 1px solid var(--border);
+        text-align: left;
+    }
+
+    .live-servers-table td:nth-child(3)::before {
+        display: inline;
+        min-width: 0;
         color: var(--muted);
         font-size: var(--text-xs);
+        font-weight: 600;
         letter-spacing: var(--tracking-wide);
         text-transform: uppercase;
         content: attr(data-label);

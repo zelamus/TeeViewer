@@ -577,9 +577,14 @@
 
             function starsMarkup(value) {
                 var stars = clampStars(value);
+
+                if (!stars) {
+                    return '<span class="map-stars is-unrated" aria-label="Not rated"><span aria-hidden="true">Not rated</span></span>';
+                }
+
                 var filled = new Array(stars + 1).join("★");
                 var empty = new Array(6 - stars).join("☆");
-                var label = stars > 0 ? stars + " of 5 stars" : "Not rated";
+                var label = stars + " of 5 stars";
 
                 return '<span class="map-stars" aria-label="' + label + '"><span aria-hidden="true"><span class="stars-filled">' + filled + '</span><span class="stars-empty">' + empty + "</span></span></span>";
             }
