@@ -517,9 +517,9 @@ button:disabled {
 
 .categories.is-active,
 .categories[aria-current="page"] {
-    border-color: var(--accent-border);
-    background: var(--accent-soft);
-    color: var(--accent);
+    border-color: transparent;
+    background: var(--accent);
+    color: var(--on-accent);
     font-weight: 600;
 }
 
@@ -838,6 +838,7 @@ button:disabled {
 }
 
 .preview-section .section-head {
+    justify-content: flex-start;
     margin-bottom: var(--space-2);
 }
 
@@ -1766,7 +1767,7 @@ textarea.input {
     .network-section .stat-source {
         align-self: flex-start;
         order: 1;
-        margin: 0 0 var(--space-2);
+        margin: 0 0 var(--space-4);
         font-size: var(--text-xs);
         white-space: nowrap;
     }

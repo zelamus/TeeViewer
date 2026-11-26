@@ -129,7 +129,7 @@
 }
 
 .difficulty-chip.is-moderate {
-    color: var(--text-2);
+    color: var(--accent);
 }
 
 .difficulty-chip.is-brutal {
@@ -141,11 +141,10 @@
 }
 
 .difficulty-chip.is-extreme {
-    color: var(--text);
+    color: var(--star-filled);
 }
 
 .difficulty-chip.is-unrated {
-    border-color: var(--border);
     color: var(--muted);
 }
 

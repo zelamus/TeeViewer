@@ -275,7 +275,7 @@
     align-items: center;
     justify-content: center;
     width: 100%;
-    min-height: 300px;
+    min-height: 240px;
     overflow: hidden;
     border: 1px solid var(--border);
     border-radius: var(--radius-3);
@@ -291,7 +291,7 @@
 .tee-stage .teeassembler-tee {
     flex: none;
     margin-left: 0;
-    transform: scale(3.1);
+    transform: scale(2.5);
     cursor: pointer;
 }
 
@@ -326,7 +326,7 @@
 .identity-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: var(--space-4);
     padding: var(--space-5);
     border: 1px solid var(--border);
@@ -512,7 +512,7 @@
 
 .stat-box .stat-value[data-state="no"],
 .stat-box .status-value[data-state="offline"] {
-    color: var(--muted);
+    color: var(--danger);
 }
 
 .stat-box .stat-value[data-state="unknown"],
@@ -653,7 +653,11 @@
 }
 
 .status-value[data-state="offline"] {
-    color: var(--muted);
+    color: var(--danger);
+}
+
+.status-value[data-state="offline"]::before {
+    background: var(--danger);
 }
 
 .status-value[data-state="pending"]::before {
@@ -963,8 +967,8 @@
 
 .clan-table {
     table-layout: fixed;
-    width: auto;
-    min-width: 640px;
+    width: 100%;
+    min-width: 0;
 }
 
 .clan-table .rank-col {
@@ -1312,7 +1316,7 @@
     }
 
     .tee-panel {
-        order: 1;
+        order: -2;
         flex-direction: column;
         justify-content: flex-start;
         gap: var(--space-3);
@@ -1320,17 +1324,21 @@
 
     .tee-stage {
         width: 100%;
-        min-height: 190px;
+        min-height: 120px;
     }
 
     .tee-stage .teeassembler-tee {
-        transform: scale(1.9);
+        transform: scale(1.2);
     }
 
     .tee-caption {
         align-self: stretch;
         align-items: center;
         text-align: center;
+    }
+
+    .tee-hint {
+        display: none;
     }
 
     .profile-stats {
@@ -1615,13 +1623,13 @@
     }
 
     .tee-stage {
-        min-height: 200px;
+        min-height: 120px;
         padding: var(--space-3);
     }
 
     .tee-stage .teeassembler-tee {
         margin-left: 0;
-        transform: scale(1.15);
+        transform: scale(1.2);
     }
 
     .tee-caption {

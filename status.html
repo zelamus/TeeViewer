@@ -896,7 +896,7 @@
                 if (!values.length) {
                     setText(config.noteId, "Peak and current count are unavailable.");
                     if (config.peakId) {
-                        setText(config.peakId, "Peak unavailable");
+                        setText(config.peakId, "Peak n/a");
                     }
                     return;
                 }
@@ -907,7 +907,7 @@
                 var label = peakTitle(config.period);
 
                 if (config.peakId) {
-                    setText(config.peakId, "Highest concurrent: " + numberFormat.format(peak) + " " + config.unit);
+                    setText(config.peakId, "Peak " + numberFormat.format(peak) + " " + config.unit);
                 }
 
                 if (!live) {
@@ -1019,7 +1019,7 @@
                     }
 
                     if (config.peakId) {
-                        setText(config.peakId, "Peak unavailable");
+                        setText(config.peakId, "Peak n/a");
                     }
                 }
             }

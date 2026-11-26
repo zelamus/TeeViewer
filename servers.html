@@ -182,7 +182,6 @@
                                 <button class="sort-button" type="button" data-sort="players">Players <span class="sort-mark" aria-hidden="true"></span></button>
                             </th>
                             <th scope="col">Version</th>
-                            <th scope="col" class="action-col">Details</th>
                         </tr>
                     </thead>
                     <tbody id="serversTableBody">
@@ -192,7 +191,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
@@ -200,7 +198,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
@@ -208,7 +205,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
@@ -216,7 +212,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
@@ -224,7 +219,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                         <tr class="skeleton-row">
                             <td><span class="skeleton sk sk-name"></span></td>
@@ -232,7 +226,6 @@
                             <td><span class="skeleton sk sk-type"></span></td>
                             <td><span class="skeleton sk sk-num"></span></td>
                             <td><span class="skeleton sk sk-ver"></span></td>
-                            <td><span class="skeleton sk sk-action"></span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -598,8 +591,7 @@
                         '<td><span class="skeleton sk sk-map"></span></td>' +
                         '<td><span class="skeleton sk sk-type"></span></td>' +
                         '<td><span class="skeleton sk sk-num"></span></td>' +
-                        '<td><span class="skeleton sk sk-ver"></span></td>' +
-                        '<td><span class="skeleton sk sk-action"></span></td>';
+                        '<td><span class="skeleton sk sk-ver"></span></td>';
                     dom.tableBody.appendChild(row);
                 }
 
@@ -892,7 +884,6 @@
                     '<td><span class="badge game-badge">' + (gameType ? escapeHtml(gameType) : "Unknown") + "</span></td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + "</span></span></td>" +
                     '<td class="mono cell-version" title="' + (version ? escapeHtml(version) : "Unknown") + '">' + (version ? escapeHtml(formatVersionLabel(version)) : "—") + "</td>" +
-                    '<td class="action-col"><span class="details-pill"><span>Details</span><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="m9 6 6 6-6 6"></path></svg></span></td>' +
                     "</tr>";
             }
 
