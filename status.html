@@ -36,7 +36,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M14 3h7v7"></path><path d="M10 14 21 3"></path><path d="M21 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5"></path></svg></span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true">&#8599;</span></a>
                 </div>
             </nav>
 
@@ -568,12 +568,12 @@
 
             function peakTitle(period) {
                 if (period === "week") {
-                    return "7-day sample peak";
+                    return "Highest concurrent in the last 7 days";
                 }
                 if (period === "month") {
-                    return "30-day sample peak";
+                    return "Highest concurrent in the last 30 days";
                 }
-                return "24-hour sample peak";
+                return "Highest concurrent in the last 24 hours";
             }
 
             function formatLabel(date, period) {
@@ -895,7 +895,7 @@
                 var label = peakTitle(config.period);
 
                 if (config.peakId) {
-                    setText(config.peakId, "Peak " + numberFormat.format(peak) + " " + config.unit);
+                    setText(config.peakId, "Highest concurrent: " + numberFormat.format(peak) + " " + config.unit);
                 }
 
                 if (!live) {

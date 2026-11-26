@@ -197,9 +197,14 @@
 }
 
 .password-chip[aria-pressed="true"] {
-    border-color: var(--accent);
-    background: var(--accent-soft);
-    color: var(--accent);
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
+    color: var(--on-accent);
+    box-shadow: inset 0 0 0 1px var(--accent-strong);
+}
+
+.password-chip[aria-pressed="true"] svg {
+    color: var(--on-accent);
 }
 
 .reset-button {

@@ -308,7 +308,8 @@
     min-width: 0;
 }
 
-.map-card-mapper {
+.map-card-mapper,
+.map-card-type {
     min-width: 0;
     color: var(--text-2);
     font-size: 13px;
