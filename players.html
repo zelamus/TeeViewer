@@ -39,7 +39,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true">↗</span></a>
                 </div>
             </nav>
 
@@ -91,6 +91,9 @@
                 <button class="chip" type="button" data-player-example="Nameless Tee">Nameless Tee</button>
                 <button class="chip" type="button" data-player-example="Cireme">Cireme</button>
                 <button class="chip" type="button" data-player-example="Silex">Silex</button>
+            </div>
+            <div class="compare-mobile">
+                <a class="button ghost" href="#playerComparisonSection">Compare two players</a>
             </div>
         </section>
 
@@ -199,10 +202,6 @@
                         <div class="stat-box">
                             <span class="stat-label">Skin</span>
                             <span class="stat-value" id="playerSkinName"></span>
-                        </div>
-                        <div class="stat-box">
-                            <span class="stat-label">Mapper</span>
-                            <span class="stat-value" id="isMapper"></span>
                         </div>
                         <div class="stat-box">
                             <span class="stat-label">Status</span>
@@ -877,12 +876,15 @@
                 document.getElementById("playerBodyColor").textContent = skinBodyColor === null || skinBodyColor === undefined ? "Default" : skinBodyColor;
                 document.getElementById("playerFeetColor").textContent = skinFeetColor === null || skinFeetColor === undefined ? "Default" : skinFeetColor;
                 var mapperElement = document.getElementById("isMapper");
-                mapperElement.textContent = playerData.is_mapper === undefined || playerData.is_mapper === null
-                    ? "Unknown"
-                    : (playerData.is_mapper ? "Yes" : "No");
-                mapperElement.dataset.state = playerData.is_mapper === undefined || playerData.is_mapper === null
-                    ? "unknown"
-                    : (playerData.is_mapper ? "yes" : "no");
+
+                if (mapperElement) {
+                    mapperElement.textContent = playerData.is_mapper === undefined || playerData.is_mapper === null
+                        ? "Unknown"
+                        : (playerData.is_mapper ? "Yes" : "No");
+                    mapperElement.dataset.state = playerData.is_mapper === undefined || playerData.is_mapper === null
+                        ? "unknown"
+                        : (playerData.is_mapper ? "yes" : "no");
+                }
 
                 document.getElementById("totalFinishes").textContent = formatCount(playerData.finishes ? playerData.finishes.length : 0);
 

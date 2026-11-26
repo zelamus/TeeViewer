@@ -34,7 +34,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true">↗</span></a>
                 </div>
             </nav>
 
@@ -417,6 +417,7 @@
 
             var allMaps = [];
             var filteredAndSortedMaps = [];
+            var networkMapTotal = null;
             var mapPageSize = 60;
             var currentMapPage = 1;
             var currentSort = { column: "map", direction: "asc" };
@@ -854,10 +855,14 @@
                 var lastPage = Math.max(1, Math.ceil(total / mapPageSize));
                 var firstShown = total ? startIndex + 1 : 0;
                 var shown = Math.min(endIndex, total);
-                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " maps";
-                dom.resultNote.textContent = total === allMaps.length
-                    ? "Full map index"
-                    : "Filtered from " + formatNumber(allMaps.length) + " maps";
+                dom.count.textContent = "Showing " + formatNumber(firstShown) + "–" + formatNumber(shown) + " of " + formatNumber(total) + " loaded maps";
+                if (networkMapTotal !== null) {
+                    dom.resultNote.textContent = formatNumber(networkMapTotal) + " maps in the network";
+                } else {
+                    dom.resultNote.textContent = total === allMaps.length
+                        ? "Full map index"
+                        : "Filtered from " + formatNumber(allMaps.length) + " maps";
+                }
 
                 for (var p = 0; p < dom.pagers.length; p += 1) {
                     dom.pagers[p].hidden = false;
@@ -1727,6 +1732,23 @@
                 }
             }
 
+            function loadNetworkTotal() {
+                if (typeof window.fetchJSON !== "function") {
+                    return;
+                }
+
+                window.fetchJSON("https://api.status.tw/stats")
+                    .then(function (data) {
+                        if (data && typeof data.numMaps === "number") {
+                            networkMapTotal = data.numMaps;
+                            if (dom.resultNote && filteredAndSortedMaps.length && currentMapPage === 1) {
+                                dom.resultNote.textContent = formatNumber(networkMapTotal) + " maps in the network";
+                            }
+                        }
+                    })
+                    .catch(function () {});
+            }
+
             function init() {
                 getDom();
 
@@ -1740,6 +1762,7 @@
                 dom.sort.addEventListener("change", filterAndSortMaps);
 
                 loadMaps(false);
+                loadNetworkTotal();
             }
 
             if (document.readyState === "loading") {

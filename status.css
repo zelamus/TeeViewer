@@ -590,7 +590,7 @@ html.js .chart-card.is-loading .chart-box canvas {
     display: grid;
     grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
     gap: var(--space-4);
-    align-items: start;
+    align-items: stretch;
 }
 
 .skin-preview-card,
@@ -599,6 +599,11 @@ html.js .chart-card.is-loading .chart-box canvas {
 }
 
 .skin-preview-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.skin-controls {
     display: flex;
     flex-direction: column;
 }
@@ -839,7 +844,7 @@ html.js .chart-card.is-loading .chart-box canvas {
 }
 
 .skin-note {
-    margin-top: var(--space-4);
+    margin-top: auto;
     padding-top: var(--space-4);
     border-top: 1px solid var(--border);
     color: var(--muted);
