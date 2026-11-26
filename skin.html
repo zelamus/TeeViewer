@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Skin preview — TeeViewer</title>
-    <meta name="description" content="Preview a Teeworlds skin with custom body and feet colours, then download the recoloured image.">
+    <meta name="description" content="Preview a Teeworlds skin with custom body and feet colors, then download the recolored image.">
     <meta name="color-scheme" content="dark light">
     <meta name="theme-color" content="#0a0a0a">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -36,7 +36,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true">&#8599;</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -65,7 +65,7 @@
         <header class="page-head">
             <div>
                 <h1 class="page-title">Skin</h1>
-                <p class="page-sub">Preview a Teeworlds skin with your colours, then download the recoloured skin image.</p>
+                <p class="page-sub">Preview a Teeworlds skin with your colors, then download the recolored skin image.</p>
             </div>
         </header>
 
@@ -97,7 +97,7 @@
                 </div>
 
                 <div class="skin-preview-foot">
-                    <div class="skin-swatches" aria-label="Selected colours">
+                    <div class="skin-swatches" aria-label="Selected colors">
                         <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
                         <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
                     </div>
@@ -117,25 +117,25 @@
                     </div>
 
                     <div class="field">
-                        <label for="bodyColor">Body colour, decimal code</label>
+                        <label for="bodyColor">Body color, decimal code</label>
                         <div class="color-row">
                             <input class="input" type="text" id="bodyColor" name="color_body" value="65535" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
-                            <input class="color-picker" type="color" id="bodyColorPicker" value="#0000ff" aria-label="Pick body colour">
-                            <output class="color-hex" id="bodyHex" for="bodyColor" aria-label="Body colour hex value">Hex #0000ff</output>
+                            <input class="color-picker" type="color" id="bodyColorPicker" value="#0000ff" aria-label="Pick body color">
+                            <output class="color-hex" id="bodyHex" for="bodyColor" aria-label="Body color hex value">Hex #0000ff</output>
                         </div>
                     </div>
 
                     <div class="field">
-                        <label for="feetColor">Feet colour, decimal code</label>
+                        <label for="feetColor">Feet color, decimal code</label>
                         <div class="color-row">
                             <input class="input" type="text" id="feetColor" name="color_feet" value="16711680" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
-                            <input class="color-picker" type="color" id="feetColorPicker" value="#ff0000" aria-label="Pick feet colour">
-                            <output class="color-hex" id="feetHex" for="feetColor" aria-label="Feet colour hex value">Hex #ff0000</output>
+                            <input class="color-picker" type="color" id="feetColorPicker" value="#ff0000" aria-label="Pick feet color">
+                            <output class="color-hex" id="feetHex" for="feetColor" aria-label="Feet color hex value">Hex #ff0000</output>
                         </div>
                     </div>
 
-                    <p class="field-hint" id="color-help">Use Teeworlds colour codes from 0 to 16777215. Each code stores hue, saturation, and lightness.</p>
-                    <p class="field-hint is-error" id="color-error" hidden>Enter whole numbers from 0 to 16777215 for both colour codes.</p>
+                    <p class="field-hint" id="color-help">Use Teeworlds color codes from 0 to 16777215. Each code stores hue, saturation, and lightness.</p>
+                    <p class="field-hint is-error" id="color-error" hidden>Enter whole numbers from 0 to 16777215 for both color codes.</p>
 
                     <div class="skin-actions">
                         <button class="button primary" type="submit" id="skin-submit">Apply changes</button>
@@ -144,7 +144,7 @@
                     </div>
                 </form>
 
-                <p class="skin-note">Colours follow the Teeworlds skin format.</p>
+                <p class="skin-note">Colors follow the Teeworlds skin format.</p>
             </section>
         </div>
     </main>
@@ -582,7 +582,7 @@
                     if (error) {
                         error.hidden = false;
                     }
-                    setStatus("Fix the colour codes and try again.", "error");
+                    setStatus("Fix the color codes and try again.", "error");
                     return;
                 }
 

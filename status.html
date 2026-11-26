@@ -36,7 +36,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true">&#8599;</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -584,6 +584,14 @@
                 return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
             }
 
+            function formatWindowLabel(date, period) {
+                if (period === "day") {
+                    return date.toLocaleDateString([], { month: "numeric", day: "numeric" }) + " " + date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+                }
+
+                return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
+            }
+
             function toNumber(value) {
                 var number = Number(value);
                 return Number.isFinite(number) ? number : null;
@@ -643,6 +651,10 @@
                 series.peak = series.total.map(function (value, index) {
                     return index === series.peakIndex ? value : null;
                 });
+
+                series.startLabel = samples.length ? formatWindowLabel(samples[0].date, period) : "";
+                series.endLabel = samples.length ? formatWindowLabel(samples[samples.length - 1].date, period) : "";
+                series.lastSampleLabel = samples.length ? formatLabel(samples[samples.length - 1].date, period) : "";
 
                 return series;
             }
@@ -970,7 +982,7 @@
                     if (status) {
                         status.textContent = result.fallback
                             ? "Longer range unavailable. Showing the last day."
-                            : rangeLabel(period) + " · " + series.labels.length + " samples";
+                            : rangeLabel(period) + " · " + series.labels.length + " samples · " + series.startLabel + " to " + series.endLabel + " · last sample " + series.lastSampleLabel;
                     }
                 }).catch(function (error) {
                     if (requestId !== config.requestId) {

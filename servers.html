@@ -35,7 +35,7 @@
                     <a class="categories" href="servers.html">Servers</a>
                     <a class="categories" href="status.html">Status</a>
                     <a class="categories" href="skin.html">Skin</a>
-                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot<span class="external-mark" aria-hidden="true">&#8599;</span></a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
             </nav>
 
@@ -75,7 +75,7 @@
                     <div class="filter-head-copy">
                         <p class="section-title" id="serverFiltersTitle">Filter servers</p>
                     </div>
-                    <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel">Filters</button>
+                    <button class="button ghost button-sm filter-toggle" type="button" id="filterToggle" aria-expanded="false" aria-controls="serverFilterPanel">Filters<span class="filter-count" id="filterCount" hidden>0</span></button>
                 </div>
 
                 <div class="filter-grid">
@@ -495,7 +495,15 @@
             }
 
             function serverMap(server) {
-                return server && server.map && server.map.name ? server.map.name : "";
+                if (!server || !server.map) {
+                    return "";
+                }
+
+                if (typeof server.map === "string") {
+                    return server.map;
+                }
+
+                return server.map.name || "";
             }
 
             function serverGameType(server) {
@@ -804,6 +812,7 @@
                 });
 
                 displayServers(filteredAndSortedServers);
+                updateFilterCount();
             }
 
             function displayServers(serversToDisplay) {
@@ -965,6 +974,45 @@
                 }
 
                 filterAndSortServers();
+            }
+
+            function updateFilterCount() {
+                var badge = document.getElementById("filterCount");
+
+                if (!badge) {
+                    return;
+                }
+
+                var count = 0;
+
+                if (dom.search.value.trim()) {
+                    count += 1;
+                }
+
+                if (dom.gameType.value) {
+                    count += 1;
+                }
+
+                if (dom.map.value) {
+                    count += 1;
+                }
+
+                var minimum = parseInt(dom.minPlayers.value, 10);
+
+                if (Number.isFinite(minimum) && minimum > 0) {
+                    count += 1;
+                }
+
+                if (dom.password.getAttribute("aria-pressed") === "true") {
+                    count += 1;
+                }
+
+                if (activeProtocol) {
+                    count += 1;
+                }
+
+                badge.textContent = String(count);
+                badge.hidden = count === 0;
             }
 
             function resetFilters() {

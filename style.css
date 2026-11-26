@@ -129,8 +129,8 @@
 
     /* Dark palette */
     --bg: #0a0a0a;
-    --surface: #111214;
-    --surface-2: #17181b;
+    --surface: #17181b;
+    --surface-2: #202126;
     --border: #3d424a;
     --border-strong: #555d68;
     --text: #f2f3f5;
@@ -462,7 +462,7 @@ button:disabled {
     display: block;
     width: auto;
     height: 44px;
-    filter: hue-rotate(180deg) saturate(1.15);
+    filter: saturate(1.15);
 }
 
 [data-theme="light"] .logo {
@@ -513,17 +513,6 @@ button:disabled {
     background: var(--surface-2);
     color: var(--text);
     text-decoration: none;
-}
-
-.external-mark {
-    display: inline-flex;
-    align-items: center;
-    color: var(--accent);
-    font-size: var(--text-xs);
-}
-
-.external-mark svg {
-    display: block;
 }
 
 .categories.is-active,
