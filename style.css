@@ -287,7 +287,7 @@
         --border-strong: #5f6670;
         --text: #14161a;
         --text-2: #3f444c;
-        --muted: #4b5563;
+        --muted: #39414d;
         --accent: #1d4ed8;
         --accent-hover: #1e40af;
         --accent-strong: #1d4ed8;
@@ -835,9 +835,7 @@ button:disabled {
 }
 
 .network-section .stat-source {
-    align-self: flex-end;
-    order: 1;
-    margin: 0 0 var(--space-3);
+    margin: 0;
 }
 
 .stat-source #statAsOf {
@@ -1720,6 +1718,10 @@ textarea.input {
         border-radius: 0;
     }
 
+    .stat-foot {
+        margin-top: var(--space-2);
+    }
+
     .grid.cols-3 {
         grid-template-columns: 1fr;
     }
@@ -1797,10 +1799,12 @@ textarea.input {
         order: 2;
     }
 
+    .network-section .section-head {
+        flex-wrap: wrap;
+    }
+
     .network-section .stat-source {
-        align-self: flex-start;
-        order: 1;
-        margin: 0 0 var(--space-4);
+        margin: 0;
         font-size: var(--text-xs);
         white-space: nowrap;
     }

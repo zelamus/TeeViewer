@@ -468,16 +468,12 @@
                 return name;
             }
 
-            function serverNameSuffix(server) {
-                var name = server && server.name ? server.name : "Unnamed server";
-
-                if (duplicateNameCount[name] > 1 && server && server.ip) {
-                    var parts = String(server.ip).split(".");
-                    var shortIp = parts.length >= 2 ? parts.slice(-2).join(".") : String(server.ip);
-                    return " (" + shortIp + ":" + server.port + ")";
+            function serverAddress(server) {
+                if (!server || !server.ip) {
+                    return "";
                 }
 
-                return "";
+                return server.ip + ":" + server.port;
             }
 
             function serverMap(server) {
@@ -870,7 +866,7 @@
                     : '<span class="muted">—</span>';
 
                 return '<tr class="server-row" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0" role="button" aria-label="Open server ' + escapeHtml(serverName(server)) + '">' +
-                    '<td class="server-name-cell"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(server.name || "Unnamed server") + '<span class="server-name-suffix">' + escapeHtml(serverNameSuffix(server)) + "</span></span>" + passwordIcon(server) + "</td>" +
+                    '<td class="server-name-cell"><span class="server-name-block"><span class="server-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(server.name || "Unnamed server") + '</span><span class="server-name-addr">' + escapeHtml(serverAddress(server)) + "</span></span>" + passwordIcon(server) + "</td>" +
                     "<td>" + mapCell + "</td>" +
                     "<td>" + (gameType ? escapeHtml(gameType) : "Unknown") + "</td>" +
                     '<td class="num"><span class="num-main">' + formatNumber(server.numPlayers) + ' / <span class="num-max">' + formatNumber(maxPlayers) + "</span></span></td>" +
@@ -888,7 +884,10 @@
 
                 return '<article class="server-card" data-ip="' + escapeHtml(server.ip) + '" data-port="' + escapeHtml(server.port) + '" tabindex="0" role="button" aria-label="Open server ' + escapeHtml(serverName(server)) + '">' +
                     '<div class="server-card-head">' +
-                        '<h3 class="server-card-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(serverName(server)) + "</h3>" +
+                        '<span class="server-card-title">' +
+                            '<h3 class="server-card-name" title="' + escapeHtml(serverName(server)) + '">' + escapeHtml(server.name || "Unnamed server") + "</h3>" +
+                            '<span class="server-card-addr">' + escapeHtml(serverAddress(server)) + "</span>" +
+                        "</span>" +
                         (server.hasPassword ? passwordIcon(server) : "") +
                     "</div>" +
                     '<p class="server-card-meta">' + mapMarkup + " · " + (gameType ? escapeHtml(gameType) : "Unknown") + "</p>" +
