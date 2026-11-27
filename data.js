@@ -102,28 +102,64 @@
       return Promise.resolve(stored.data);
     }
 
-    if (cache.has(url)) return cache.get(url);
-    var task = (async function () {
+    var cached = cache.get(url);
+
+    if (cached && cached.expires > Date.now()) {
+      return cached.promise;
+    }
+
+    if (cached) {
+      cache.delete(url);
+    }
+
+    var work = (async function () {
       for (var i = 0; i < RELAYS.length; i += 1) {
         try {
           var data = await getJSON(RELAYS[i].url(url), RELAYS[i].text);
           writeStored(url, data);
-          return data;
+          return { data: data, stale: false };
         } catch (relayError) {
           /* try the next relay */
         }
       }
       if (stored) {
         timestamps.set(url, stored.ts);
-        return stored.data;
+        return { data: stored.data, stale: true };
       }
       throw new Error('Live data unavailable');
     })();
-    cache.set(url, task);
-    task.catch(function () {
-      cache.delete(url);
+    var task = work.then(function (result) {
+      return result.data;
     });
+    var entry = { promise: task, expires: Infinity };
+
+    cache.set(url, entry);
+    work.then(function (result) {
+      if (cache.get(url) !== entry) return;
+
+      if (result.stale) {
+        cache.delete(url);
+      } else {
+        entry.expires = Date.now() + CACHE_TTL;
+      }
+    }, function () {
+      if (cache.get(url) === entry) {
+        cache.delete(url);
+      }
+    });
+
     return task;
+  };
+
+  window.invalidateJSON = function (url) {
+    cache.delete(url);
+    timestamps.delete(url);
+
+    try {
+      window.localStorage.removeItem(CACHE_PREFIX + url);
+    } catch (error) {
+      /* storage may be unavailable */
+    }
   };
 
   window.getCachedJSON = function (url) {

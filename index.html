@@ -150,6 +150,9 @@
                     <tbody id="topMapsBody"><tr><td colspan="3">Loading top maps.</td></tr></tbody>
                 </table>
             </div>
+            <div class="preview-more">
+                <a class="button ghost button-sm" href="maps.html">View all maps</a>
+            </div>
             <p class="visually-hidden" id="topMapsStatus" role="status">Loading top maps.</p>
         </section>
 
@@ -227,14 +230,23 @@
                 }
             }
 
+            function formatStamp(ts) {
+                var date = new Date(Number(ts));
+
+                if (!Number.isFinite(date.getTime())) {
+                    return "";
+                }
+
+                return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) + " " +
+                    date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+            }
+
             function markAsOf(ts) {
                 if (!asOfLine) {
                     return;
                 }
 
-                var label = typeof window.formatDataTime === "function"
-                    ? window.formatDataTime(ts)
-                    : "";
+                var label = formatStamp(ts);
 
                 if (!label) {
                     asOfLine.hidden = true;
@@ -437,8 +449,10 @@
                     render(config.bodyId, config.statusId, cacheRows, config.columns);
                     renderedCache = true;
 
-                    if (cached && typeof window.formatDataTime === "function") {
-                        setStatus(config.statusId, "Showing cached data from " + window.formatDataTime(cached.ts) + ".");
+                    var cachedStamp = cached ? formatStamp(cached.ts) : "";
+
+                    if (cachedStamp) {
+                        setStatus(config.statusId, "Showing cached data from " + cachedStamp + ".");
                     }
                 }
 

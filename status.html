@@ -182,7 +182,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
-                <p class="chart-note" id="player-chart-note" role="status">Peak and current count appear after data loads.</p>
+                <p class="chart-note" id="player-chart-note" role="status" hidden>Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="player-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -221,7 +221,7 @@
                     </div>
                 </div>
                 <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
-                <p class="chart-note" id="server-chart-note" role="status">Peak and current count appear after data loads.</p>
+                <p class="chart-note" id="server-chart-note" role="status" hidden>Peak and current count appear after data loads.</p>
 
                 <div class="state-card" id="server-chart-state" hidden>
                     <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
@@ -352,6 +352,7 @@
 
             var stale = 0;
             var overviewRequest = 0;
+            var healthRun = 0;
 
             var charts = {
                 players: {
@@ -500,12 +501,29 @@
                         return;
                     }
 
-                    fields.forEach(function (field) {
-                        setText(field.id, data ? formatValue(data[field.key]) : "—");
+                    var values = {};
+                    var usable = data && typeof data === "object" && fields.every(function (field) {
+                        var value = toNumber(data[field.key]);
+
+                        if (value === null) {
+                            return false;
+                        }
+
+                        values[field.key] = value;
+                        return true;
                     });
 
-                    overviewValues.players = data ? toNumber(data.numPlayers) : null;
-                    overviewValues.servers = data ? toNumber(data.numServers) : null;
+                    if (!usable) {
+                        fail();
+                        return;
+                    }
+
+                    fields.forEach(function (field) {
+                        setText(field.id, formatValue(values[field.key]));
+                    });
+
+                    overviewValues.players = values.numPlayers;
+                    overviewValues.servers = values.numServers;
                     refreshNotes();
 
                     if (grid) {
@@ -570,16 +588,16 @@
             }
 
             function formatStamp(date) {
-                return date.toLocaleDateString([], { month: "numeric", day: "numeric" }) + " " +
-                    date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+                return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) + " " +
+                    date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
             }
 
             function formatLabel(date, period) {
                 if (period === "day") {
-                    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+                    return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
                 }
 
-                return date.toLocaleDateString([], { month: "numeric", day: "numeric" });
+                return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
             }
 
             function formatWindowLabel(date) {
@@ -587,6 +605,10 @@
             }
 
             function toNumber(value) {
+                if (value === null || value === undefined || value === "" || typeof value === "boolean") {
+                    return null;
+                }
+
                 var number = Number(value);
                 return Number.isFinite(number) ? number : null;
             }
@@ -901,6 +923,17 @@
                 });
             }
 
+            function setChartNote(config, text) {
+                var note = config.noteId ? $(config.noteId) : null;
+
+                if (!note) {
+                    return;
+                }
+
+                note.textContent = text;
+                note.hidden = false;
+            }
+
             function updateChartNote(config, series) {
                 if (!config.noteId) {
                     return;
@@ -912,7 +945,7 @@
                 });
 
                 if (!values.length) {
-                    setText(config.noteId, "Peak and current count are unavailable.");
+                    setChartNote(config, "Peak and current count are unavailable.");
                     if (config.peakId) {
                         setText(config.peakId, "Peak n/a");
                     }
@@ -933,11 +966,11 @@
                 }
 
                 if (peak === current) {
-                    setText(config.noteId, label + ": " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
+                    setChartNote(config, label + ": " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
                     return;
                 }
 
-                setText(config.noteId, label + ": " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
+                setChartNote(config, label + ": " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
             }
 
             function loadChart(kind, period) {
@@ -957,6 +990,12 @@
                 }
 
                 showState(config.stateId, "", "", false);
+
+                var note = config.noteId ? $(config.noteId) : null;
+
+                if (note) {
+                    note.hidden = true;
+                }
 
                 if (status) {
                     status.textContent = "Loading " + config.noun + " data…";
@@ -1000,7 +1039,7 @@
                     if (status) {
                         status.textContent = result.fallback
                             ? "Longer range unavailable. Showing the last day."
-                            : rangeLabel(period) + " · " + series.labels.length + " samples · " + series.startLabel + " to " + series.endLabel + " · last sample " + series.lastSampleLabel + (series.stepLabel ? " · every " + series.stepLabel : "");
+                            : "Samples from " + series.startLabel + " to " + series.endLabel + (series.stepLabel ? ", every " + series.stepLabel : "") + ".";
                     }
                 }).catch(function (error) {
                     if (requestId !== config.requestId) {
@@ -1039,10 +1078,20 @@
                     if (config.peakId) {
                         setText(config.peakId, "Peak n/a");
                     }
+
+                    var note = config.noteId ? $(config.noteId) : null;
+
+                    if (note) {
+                        note.hidden = true;
+                    }
                 }
             }
 
-            function setHealthRow(key, state, label, value) {
+            function setHealthRow(key, state, label, value, run) {
+                if (run !== undefined && run !== healthRun) {
+                    return;
+                }
+
                 var rowIds = { status: "health-status-tw", ddstats: "health-ddstats" };
                 var valueIds = { status: "api-status-tw-stats", ddstats: "api-ddstats-tw-player" };
                 var row = $(rowIds[key]);
@@ -1060,11 +1109,11 @@
                 setText(valueIds[key], value);
             }
 
-            function checkStatusTw() {
-                setHealthRow("status", "loading", "Checking", "Checking…");
+            function checkStatusTw(run) {
+                setHealthRow("status", "loading", "Checking", "Checking…", run);
 
                 if (typeof window.fetchJSON !== "function") {
-                    setHealthRow("status", "error", "Unavailable", "—");
+                    setHealthRow("status", "error", "Unavailable", "—", run);
                     return Promise.resolve(false);
                 }
 
@@ -1072,17 +1121,17 @@
 
                 return window.fetchJSON(bust(STATS_URL)).then(function () {
                     var elapsed = Math.round(window.performance.now() - started);
-                    setHealthRow("status", "ok", "Online", "200 · " + elapsed + " ms");
+                    setHealthRow("status", "ok", "Online", "200 · " + elapsed + " ms", run);
                     return true;
                 }).catch(function () {
                     var elapsed = Math.round(window.performance.now() - started);
-                    setHealthRow("status", "error", "Unreachable", "ERR · " + elapsed + " ms");
+                    setHealthRow("status", "error", "Unreachable", "ERR · " + elapsed + " ms", run);
                     return false;
                 });
             }
 
-            function checkDDStats() {
-                setHealthRow("ddstats", "loading", "Checking", "Checking…");
+            function checkDDStats(run) {
+                setHealthRow("ddstats", "loading", "Checking", "Checking…", run);
 
                 var started = window.performance.now();
                 var controller = new AbortController();
@@ -1097,15 +1146,15 @@
                     var elapsed = Math.round(window.performance.now() - started);
 
                     if (response.ok) {
-                        setHealthRow("ddstats", "ok", "Online", response.status + " · " + elapsed + " ms");
+                        setHealthRow("ddstats", "ok", "Online", response.status + " · " + elapsed + " ms", run);
                         return true;
                     }
 
-                    setHealthRow("ddstats", "error", "Error", response.status + " · " + elapsed + " ms");
+                    setHealthRow("ddstats", "error", "Error", response.status + " · " + elapsed + " ms", run);
                     return false;
                 }).catch(function () {
                     var elapsed = Math.round(window.performance.now() - started);
-                    setHealthRow("ddstats", "error", "Unreachable", "ERR · " + elapsed + " ms");
+                    setHealthRow("ddstats", "error", "Unreachable", "ERR · " + elapsed + " ms", run);
                     return false;
                 }).finally(function () {
                     window.clearTimeout(timer);
@@ -1113,10 +1162,15 @@
             }
 
             function loadHealth() {
+                var run = ++healthRun;
                 showState("api-health-state", "", "", false);
                 setText("api-health-status", "Checking API health.");
 
-                Promise.all([checkStatusTw(), checkDDStats()]).then(function (results) {
+                Promise.all([checkStatusTw(run), checkDDStats(run)]).then(function (results) {
+                    if (run !== healthRun) {
+                        return;
+                    }
+
                     var healthy = results[0] || results[1];
 
                     if (!healthy) {

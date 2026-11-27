@@ -5,11 +5,11 @@
    ========================================================================== */
 
 :root {
-    --chart-fill: rgba(76, 141, 255, 0.34);
+    --chart-fill: rgba(255, 158, 42, 0.34);
 }
 
 [data-theme="light"] {
-    --chart-fill: rgba(29, 78, 216, 0.22);
+    --chart-fill: rgba(194, 96, 10, 0.22);
 }
 
 /* --------------------------------------------------------------------------
@@ -98,7 +98,6 @@
 }
 
 .status-overview .stat-tile {
-    min-height: 168px;
     padding: var(--space-5) var(--space-4);
     border: 0;
     border-radius: 0;
@@ -620,7 +619,6 @@ html.js .chart-card.is-loading .chart-box canvas {
 .skin-controls {
     display: flex;
     flex-direction: column;
-    align-self: flex-start;
 }
 
 .skin-preview-card .section-head,

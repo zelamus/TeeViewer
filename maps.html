@@ -709,7 +709,6 @@
                         });
                         populateTypeFilter(allMaps);
                         filterAndSortMaps();
-                        checkUrlParams();
                     })
                     .catch(function (error) {
                         console.error("Error loading maps:", error);
@@ -953,7 +952,7 @@
 
                 if (push !== false) {
                     var url = new URL(window.location);
-                    url.searchParams.set("map", encodeURIComponent(mapName));
+                    url.searchParams.set("map", mapName);
                     window.history.pushState({}, "", url);
                 }
 
@@ -1002,7 +1001,7 @@
                 var mapName = params.get("map");
 
                 if (mapName) {
-                    showIndividualMap(decodeURIComponent(mapName), null, false);
+                    showIndividualMap(mapName, null, false);
                 } else {
                     showMapsBrowser(false);
                 }
@@ -1262,13 +1261,18 @@
 
             function loadLiveMapServers(mapName, retry) {
                 var requestId = ++liveRequestId;
+                var canonicalUrl = "https://api.status.tw/map/name/" + encodeURIComponent(mapName);
                 dom.serverTotal.textContent = "Loading…";
                 dom.serverBody.innerHTML = skeletonRows(5, 3);
 
-                window.fetchJSON(withRetry("https://api.status.tw/map/name/" + encodeURIComponent(mapName), retry))
+                window.fetchJSON(withRetry(canonicalUrl, retry))
                     .then(function (liveData) {
                         if (requestId !== liveRequestId || currentMapName !== mapName) {
                             return;
+                        }
+
+                        if (retry && typeof window.invalidateJSON === "function") {
+                            window.invalidateJSON(canonicalUrl);
                         }
 
                         currentLiveServerData = liveData;
@@ -1366,7 +1370,7 @@
                         var rows = sorted.map(function (client) {
                             var afk = client.isAfk || client.afk;
                             var country = client.country || {};
-                            var identifier = country.identifier && country.identifier !== "default" ? String(country.identifier).toUpperCase() : "";
+                            var identifier = country.identifier && country.identifier !== "default" ? escapeHtml(String(country.identifier).toUpperCase()) : "";
                             var flag = country.iconUrl
                                 ? '<img class="flag" src="' + escapeHtml(country.iconUrl) + '" alt="" width="18" height="12" loading="lazy" onerror="this.onerror=null;this.src=\'https://cdn.status.tw/flags/default.png\';" />'
                                 : "";
@@ -1728,8 +1732,6 @@
                 var mapName = params.get("map");
 
                 if (mapName) {
-                    mapName = decodeURIComponent(mapName);
-
                     if (dom.modal.hidden || currentMapName !== mapName) {
                         showIndividualMap(mapName, null, false);
                     }
@@ -1767,6 +1769,7 @@
                 dom.stars.addEventListener("change", filterAndSortMaps);
                 dom.sort.addEventListener("change", filterAndSortMaps);
 
+                checkUrlParams();
                 loadMaps(false);
                 loadNetworkTotal();
             }

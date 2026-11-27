@@ -87,6 +87,11 @@
                     <button class="button primary" id="searchPlayerButton" type="submit">Search</button>
                 </div>
             </form>
+
+            <div class="compare-mobile">
+                <a class="button ghost" href="#playerComparisonSection">Compare two players</a>
+            </div>
+
             <div class="example-row">
                 <span class="example-label">Try</span>
                 <button class="chip" type="button" data-player-example="Nameless Tee">Nameless Tee</button>
@@ -94,10 +99,6 @@
                 <button class="chip" type="button" data-player-example="Silex">Silex</button>
             </div>
         </section>
-
-        <div class="compare-mobile">
-            <a class="button ghost" href="#playerComparisonSection">Compare two players</a>
-        </div>
 
         <div class="state-card" id="playerEmptyState">
             <span class="state-icon" aria-hidden="true">
@@ -505,6 +506,8 @@
             var currentTeeInstance = null;
             var currentTeeAssemblerString = null;
             var lastPlayerData = null;
+            var playerRequestId = 0;
+            var comparisonRequestId = 0;
             var onlineAttempts = {};
             var toastTimer = null;
             var numberFormat = new Intl.NumberFormat("en-US");
@@ -704,7 +707,7 @@
                 pointsChartInstance = null;
             }
 
-            async function fetchOnlineData(playerName) {
+            async function fetchOnlineData(playerName, profileRequestId) {
                 var onlineStatusElement = document.getElementById("onlineStatus");
                 var serverDetailsElement = document.getElementById("serverDetails");
                 var serverEmptyElement = document.getElementById("serverEmpty");
@@ -732,6 +735,10 @@
                     }
 
                     var data = await window.fetchJSON(statusUrl);
+
+                    if (profileRequestId !== playerRequestId || currentPlayerName !== playerName) {
+                        return;
+                    }
 
                     if (data.players && data.players.length > 0) {
                         var player = data.players[0];
@@ -771,6 +778,10 @@
                         serverEmptyElement.hidden = false;
                     }
                 } catch (error) {
+                    if (profileRequestId !== playerRequestId || currentPlayerName !== playerName) {
+                        return;
+                    }
+
                     onlineStatusElement.textContent = "Unavailable";
                     onlineStatusElement.dataset.state = "unknown";
                     serverDetailsElement.hidden = true;
@@ -787,6 +798,7 @@
                     return;
                 }
 
+                var requestId = ++playerRequestId;
                 currentPlayerName = playerName;
                 playerEmptyState.hidden = true;
                 playerStatsContainer.hidden = true;
@@ -822,16 +834,26 @@
                         throw new Error("No detailed data is available for \"" + playerName + "\".");
                     }
 
+                    if (requestId !== playerRequestId || currentPlayerName !== playerName) {
+                        return;
+                    }
+
                     displayPlayerData(playerData);
-                    fetchOnlineData(playerName);
-                    loadTopRanksForPlayer(playerName);
+                    renderTopRanks(playerData);
+                    fetchOnlineData(playerName, requestId);
                 } catch (error) {
+                    if (requestId !== playerRequestId || currentPlayerName !== playerName) {
+                        return;
+                    }
+
                     var message = error instanceof TypeError
                         ? "The player service did not answer. Check your connection and try again."
                         : error.message || "The player service did not answer. Try again.";
                     displayError(message);
                 } finally {
-                    loadingIndicator.hidden = true;
+                    if (requestId === playerRequestId) {
+                        loadingIndicator.hidden = true;
+                    }
                 }
             }
 
@@ -1339,11 +1361,7 @@
                 }
             }
 
-            async function loadTopRanksForPlayer(playerName) {
-                if (!playerName) {
-                    return;
-                }
-
+            function renderTopRanks(playerData) {
                 var recentBody = document.getElementById("recentTop10sTable").getElementsByTagName("tbody")[0];
                 var rankBody = document.getElementById("rankDistributionTable").getElementsByTagName("tbody")[0];
                 var allBody = document.getElementById("allTop10sTable").getElementsByTagName("tbody")[0];
@@ -1357,79 +1375,62 @@
                     cell.textContent = message;
                 }
 
-                try {
-                    var response = await fetch("https://ddstats.tw/player/json?player=" + encodeURIComponent(playerName));
+                if (!playerData || !playerData.recent_top_10s) {
+                    tableMessage(recentBody, 6, "No recent top 10s found.");
+                    tableMessage(rankBody, 2, "No rank distribution found.");
+                    allBody.innerHTML = "";
+                    return;
+                }
 
-                    if (!response.ok) {
-                        tableMessage(recentBody, 6, "Top 10 data is unavailable for this player.");
-                        tableMessage(rankBody, 2, "Rank distribution is unavailable.");
-                        allBody.innerHTML = "";
-                        return;
-                    }
+                recentBody.innerHTML = "";
+                var recentTop10s = playerData.recent_top_10s;
+                var allTop10s = playerData.all_top_10s || recentTop10s;
 
-                    var playerData = await response.json();
-
-                    if (!playerData || !playerData.recent_top_10s) {
-                        tableMessage(recentBody, 6, "No recent top 10s found.");
-                        tableMessage(rankBody, 2, "No rank distribution found.");
-                        allBody.innerHTML = "";
-                        return;
-                    }
-
-                    recentBody.innerHTML = "";
-                    var recentTop10s = playerData.recent_top_10s;
-                    var allTop10s = playerData.all_top_10s || recentTop10s;
-
-                    if (recentTop10s.length > 0) {
-                        recentTop10s.slice(0, 10).forEach(function (item) {
-                            var row = recentBody.insertRow();
-                            row.insertCell().textContent = item.rank_type;
-                            row.insertCell().textContent = item.map;
-                            row.insertCell().textContent = item.rank;
-                            row.cells[2].className = "num";
-                            row.insertCell().textContent = formatTime(item.time);
-                            row.cells[3].className = "num";
-                            row.insertCell().textContent = item.server;
-                            row.insertCell().textContent = formatDate(item.timestamp);
-                        });
-                    } else {
-                        tableMessage(recentBody, 6, "No recent top 10s found.");
-                    }
-
-                    rankBody.innerHTML = "";
-                    var rankCounts = {};
-
-                    allTop10s.forEach(function (item) {
-                        rankCounts[item.rank] = (rankCounts[item.rank] || 0) + 1;
+                if (recentTop10s.length > 0) {
+                    recentTop10s.slice(0, 10).forEach(function (item) {
+                        var row = recentBody.insertRow();
+                        row.insertCell().textContent = item.rank_type;
+                        row.insertCell().textContent = item.map;
+                        row.insertCell().textContent = item.rank;
+                        row.cells[2].className = "num";
+                        row.insertCell().textContent = formatTime(item.time);
+                        row.cells[3].className = "num";
+                        row.insertCell().textContent = item.server;
+                        row.insertCell().textContent = formatDate(item.timestamp);
                     });
+                } else {
+                    tableMessage(recentBody, 6, "No recent top 10s found.");
+                }
 
-                    for (var rank = 1; rank <= 10; rank += 1) {
-                        var row = rankBody.insertRow();
-                        row.insertCell().textContent = getOrdinalSuffix(rank);
-                        row.insertCell().textContent = formatCount(rankCounts[rank] || 0);
+                rankBody.innerHTML = "";
+                var rankCounts = {};
+
+                allTop10s.forEach(function (item) {
+                    rankCounts[item.rank] = (rankCounts[item.rank] || 0) + 1;
+                });
+
+                for (var rank = 1; rank <= 10; rank += 1) {
+                    var row = rankBody.insertRow();
+                    row.insertCell().textContent = getOrdinalSuffix(rank);
+                    row.insertCell().textContent = formatCount(rankCounts[rank] || 0);
+                    row.cells[1].className = "num";
+                }
+
+                allBody.innerHTML = "";
+
+                if (playerData.all_top_10s && playerData.all_top_10s.length > 0) {
+                    playerData.all_top_10s.forEach(function (item) {
+                        var row = allBody.insertRow();
+                        row.insertCell().textContent = item.map.map;
+                        row.insertCell().textContent = item.rank;
                         row.cells[1].className = "num";
-                    }
-
-                    allBody.innerHTML = "";
-
-                    if (playerData.all_top_10s && playerData.all_top_10s.length > 0) {
-                        playerData.all_top_10s.forEach(function (item) {
-                            var row = allBody.insertRow();
-                            row.insertCell().textContent = item.map.map;
-                            row.insertCell().textContent = item.rank;
-                            row.cells[1].className = "num";
-                            row.insertCell().textContent = formatTime(item.time);
-                            row.cells[2].className = "num";
-                            row.insertCell().textContent = item.map.server;
-                            row.insertCell().textContent = formatDate(item.map.timestamp);
-                        });
-                    } else {
-                        tableMessage(allBody, 5, "No top 10s found.");
-                    }
-                } catch (error) {
-                    tableMessage(recentBody, 6, "Top 10 data is unavailable for this player.");
-                    tableMessage(rankBody, 2, "Rank distribution is unavailable.");
-                    allBody.innerHTML = "";
+                        row.insertCell().textContent = formatTime(item.time);
+                        row.cells[2].className = "num";
+                        row.insertCell().textContent = item.map.server;
+                        row.insertCell().textContent = formatDate(item.map.timestamp);
+                    });
+                } else {
+                    tableMessage(allBody, 5, "No top 10s found.");
                 }
             }
 
@@ -1474,6 +1475,7 @@
             }
 
             async function comparePlayers() {
+                var requestId = ++comparisonRequestId;
                 var player1Name = player1SearchInput.value.trim();
                 var player2Name = player2SearchInput.value.trim();
 
@@ -1512,8 +1514,16 @@
                         throw new Error("\"" + player2Name + "\" was not found.");
                     }
 
+                    if (requestId !== comparisonRequestId) {
+                        return;
+                    }
+
                     displayComparisonResults(playerData1, playerData2);
                 } catch (error) {
+                    if (requestId !== comparisonRequestId) {
+                        return;
+                    }
+
                     comparisonResults.innerHTML = "";
                     renderState(
                         comparisonErrorMessage,

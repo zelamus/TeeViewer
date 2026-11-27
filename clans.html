@@ -268,6 +268,7 @@
             var currentSort = { column: "members", direction: "desc" };
             var clanToExpand = null;
             var loadAttempt = 0;
+            var listState = "idle";
             var clanPageSize = 50;
             var currentClanPage = 1;
 
@@ -356,6 +357,7 @@
                 clansLoading.hidden = !loading;
 
                 if (loading) {
+                    listState = "loading";
                     clansError.hidden = true;
                     clansEmpty.hidden = true;
                     clansResults.hidden = true;
@@ -365,6 +367,7 @@
             }
 
             function showError() {
+                listState = "error";
                 clansLoading.hidden = true;
                 clansEmpty.hidden = true;
                 clansResults.hidden = true;
@@ -404,6 +407,7 @@
                         });
                     });
 
+                    listState = "ready";
                     applyFiltersAndSort();
 
                     if (clanToExpand) {
@@ -429,7 +433,7 @@
                 var sortValue = currentSort.column;
 
                 filteredAndSortedClans = allClans.filter(function (clan) {
-                    if (isTestClan(clan)) {
+                    if (isTestClan(clan) && !(clanToExpand && String(clan.name || "").toLowerCase() === clanToExpand.toLowerCase())) {
                         return false;
                     }
 
@@ -478,9 +482,14 @@
                     return result || String(a.name || "").localeCompare(String(b.name || ""));
                 });
 
+                if (listState !== "ready") {
+                    return;
+                }
+
                 clanCount.textContent = filteredAndSortedClans.length + " of " + allClans.length + " loaded clans";
                 currentClanPage = 1;
-                displayClans(filteredAndSortedClans);            }
+                displayClans(filteredAndSortedClans);
+            }
 
             function displayClans(clans) {
                 clansTableBody.innerHTML = "";
@@ -542,10 +551,15 @@
                     rankCell.textContent = rank;
 
                     var nameCell = document.createElement("td");
-                    var name = document.createElement("span");
-                    name.className = "clan-name";
+                    var name = document.createElement("button");
+                    name.type = "button";
+                    name.className = "clan-name clan-name-button";
                     name.dir = "auto";
                     name.textContent = label;
+                    name.setAttribute("aria-haspopup", "dialog");
+                    name.addEventListener("click", function () {
+                        openClanDialog(index);
+                    });
                     nameCell.appendChild(name);
 
                     var membersCell = document.createElement("td");
@@ -560,16 +574,12 @@
                     row.appendChild(nameCell);
                     row.appendChild(membersCell);
                     row.appendChild(createdCell);
-                    row.tabIndex = 0;
-                    row.setAttribute("aria-label", "Open clan " + label);
-                    row.addEventListener("click", function () {
-                        openClanDialog(index);
-                    });
-                    row.addEventListener("keydown", function (event) {
-                        if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault();
-                            openClanDialog(index);
+                    row.addEventListener("click", function (event) {
+                        if (event.target.closest("button, a")) {
+                            return;
                         }
+
+                        openClanDialog(index);
                     });
 
                     clansTableBody.appendChild(row);
@@ -581,8 +591,16 @@
                     cardHead.className = "clan-card-head";
                     var cardName = document.createElement("h3");
                     cardName.className = "clan-card-name";
-                    cardName.dir = "auto";
-                    cardName.textContent = label;
+                    var cardAction = document.createElement("button");
+                    cardAction.type = "button";
+                    cardAction.className = "clan-name-button";
+                    cardAction.dir = "auto";
+                    cardAction.textContent = label;
+                    cardAction.setAttribute("aria-haspopup", "dialog");
+                    cardAction.addEventListener("click", function () {
+                        openClanDialog(index);
+                    });
+                    cardName.appendChild(cardAction);
                     var cardRank = document.createElement("span");
                     cardRank.className = "clan-card-rank";
                     cardRank.textContent = "#" + rank;
@@ -612,20 +630,15 @@
                     cardMeta.appendChild(membersPill);
                     cardMeta.appendChild(createdPill);
 
-                    card.tabIndex = 0;
-                    card.setAttribute("aria-label", "Open clan " + label);
-                    card.addEventListener("click", function () {
-                        openClanDialog(index);
-                    });
-                    card.addEventListener("keydown", function (event) {
-                        if (event.key === "Enter" || event.key === " ") {
-                            event.preventDefault();
-                            openClanDialog(index);
-                        }
-                    });
-
                     card.appendChild(cardHead);
                     card.appendChild(cardMeta);
+                    card.addEventListener("click", function (event) {
+                        if (event.target.closest("button, a")) {
+                            return;
+                        }
+
+                        openClanDialog(index);
+                    });
                     clanCards.appendChild(card);
                 });
             }

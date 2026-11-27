@@ -1052,6 +1052,20 @@
     unicode-bidi: isolate;
 }
 
+.clan-name-button {
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.clan-name-button:hover {
+    color: var(--accent);
+}
+
 .clan-count {
     color: var(--text);
     font-family: var(--font-mono);
@@ -1421,7 +1435,11 @@
 
     .compare-mobile {
         display: block;
-        margin: 0 0 var(--space-4);
+        margin: 0;
+    }
+
+    .compare-mobile .button {
+        width: 100%;
     }
 
     .toolbar {

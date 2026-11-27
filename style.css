@@ -136,13 +136,13 @@
     --text: #f2f3f5;
     --text-2: #e6e9ef;
     --muted: #dfe5ee;
-    --accent: #4c8dff;
-    --accent-hover: #6ba0ff;
-    --accent-strong: #2563eb;
-    --accent-strong-hover: #1d4ed8;
-    --on-accent: #ffffff;
-    --accent-soft: rgba(76, 141, 255, 0.14);
-    --accent-border: rgba(76, 141, 255, 0.42);
+    --accent: #ff9e2a;
+    --accent-hover: #ffb454;
+    --accent-strong: #e8590c;
+    --accent-strong-hover: #c2410c;
+    --on-accent: #1a1200;
+    --accent-soft: rgba(255, 158, 42, 0.14);
+    --accent-border: rgba(255, 158, 42, 0.42);
     --success: #3fb950;
     --warning: #d29922;
     --star-filled: #ffb900;
@@ -153,12 +153,12 @@
     --tier-moderate: #6cb6ff;
     --tier-brutal: #e3b341;
     --tier-insane: #ff7b72;
-    --tier-extreme: #ffd43b;
+    --tier-extreme: #d2a8ff;
     --topbar-bg: rgba(10, 10, 10, 0.82);
     --overlay: rgba(0, 0, 0, 0.6);
-    --selection: rgba(76, 141, 255, 0.3);
-    --hero-glow: rgba(76, 141, 255, 0.14);
-    --hero-glow-fade: rgba(76, 141, 255, 0);
+    --selection: rgba(255, 158, 42, 0.3);
+    --hero-glow: rgba(255, 158, 42, 0.14);
+    --hero-glow-fade: rgba(255, 158, 42, 0);
     --skeleton-shine: rgba(255, 255, 255, 0.055);
 
     /* Shadows */
@@ -247,13 +247,13 @@
     --text: #14161a;
     --text-2: #2e333b;
     --muted: #39414d;
-    --accent: #1d4ed8;
-    --accent-hover: #1e40af;
-    --accent-strong: #1d4ed8;
-    --accent-strong-hover: #1e40af;
+    --accent: #c2600a;
+    --accent-hover: #a04e07;
+    --accent-strong: #b45508;
+    --accent-strong-hover: #a04e07;
     --on-accent: #ffffff;
-    --accent-soft: rgba(29, 78, 216, 0.08);
-    --accent-border: rgba(29, 78, 216, 0.32);
+    --accent-soft: rgba(194, 96, 10, 0.1);
+    --accent-border: rgba(194, 96, 10, 0.38);
     --success: #1a7f37;
     --warning: #966400;
     --danger: #cf222e;
@@ -263,12 +263,12 @@
     --tier-moderate: #1d4ed8;
     --tier-brutal: #966400;
     --tier-insane: #cf222e;
-    --tier-extreme: #9a6700;
+    --tier-extreme: #8250df;
     --topbar-bg: #f4f5f7;
     --overlay: rgba(20, 22, 26, 0.4);
-    --selection: rgba(29, 78, 216, 0.18);
-    --hero-glow: rgba(29, 78, 216, 0.06);
-    --hero-glow-fade: rgba(29, 78, 216, 0);
+    --selection: rgba(194, 96, 10, 0.18);
+    --hero-glow: rgba(194, 96, 10, 0.06);
+    --hero-glow-fade: rgba(194, 96, 10, 0);
     --skeleton-shine: rgba(20, 22, 26, 0.045);
 
     --shadow-1: 0 1px 2px rgba(16, 24, 40, 0.06);
@@ -288,13 +288,13 @@
         --text: #14161a;
         --text-2: #3f444c;
         --muted: #39414d;
-        --accent: #1d4ed8;
-        --accent-hover: #1e40af;
-        --accent-strong: #1d4ed8;
-        --accent-strong-hover: #1e40af;
+        --accent: #c2600a;
+        --accent-hover: #a04e07;
+        --accent-strong: #b45508;
+        --accent-strong-hover: #a04e07;
         --on-accent: #ffffff;
-        --accent-soft: rgba(29, 78, 216, 0.08);
-        --accent-border: rgba(29, 78, 216, 0.32);
+        --accent-soft: rgba(194, 96, 10, 0.1);
+        --accent-border: rgba(194, 96, 10, 0.38);
         --success: #1a7f37;
         --warning: #966400;
         --danger: #cf222e;
@@ -302,9 +302,9 @@
         --on-danger: #ffffff;
         --topbar-bg: #f4f5f7;
         --overlay: rgba(20, 22, 26, 0.4);
-        --selection: rgba(29, 78, 216, 0.18);
-        --hero-glow: rgba(29, 78, 216, 0.06);
-        --hero-glow-fade: rgba(29, 78, 216, 0);
+        --selection: rgba(194, 96, 10, 0.18);
+        --hero-glow: rgba(194, 96, 10, 0.06);
+        --hero-glow-fade: rgba(194, 96, 10, 0);
         --skeleton-shine: rgba(20, 22, 26, 0.045);
 
         --shadow-1: 0 1px 2px rgba(16, 24, 40, 0.06);
@@ -882,6 +882,12 @@ button:disabled {
     --table-sticky-top: 0;
 }
 
+.preview-more {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: var(--space-3);
+}
+
 .stat-grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -893,7 +899,6 @@ button:disabled {
 .stat-tile {
     display: flex;
     flex-direction: column;
-    min-height: 120px;
     padding: var(--space-4);
     border-left: 1px solid var(--border);
     color: var(--text);
@@ -1703,7 +1708,6 @@ textarea.input {
     }
 
     .stat-tile {
-        min-height: 104px;
         padding: var(--space-4);
         border: 0;
         border-radius: 0;
@@ -1909,7 +1913,6 @@ textarea.input {
     }
 
     .stat-tile {
-        min-height: 148px;
         padding: var(--space-3);
     }
 

@@ -1091,6 +1091,7 @@
 }
 
 .client-table-shell {
+    overflow-x: auto;
     border-radius: var(--radius-3);
 }
 
