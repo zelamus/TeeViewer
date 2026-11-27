@@ -1,799 +1,1356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DDNet Status</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
-    <!-- Link to the external style.css file for consistent design -->
+    <title>Network status — TeeViewer</title>
+    <meta name="description" content="Live Teeworlds network status: players, servers, clans, maps, trends, and API health.">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Custom styles for status.html layout adjustments -->
-    <style>
-        /* Ensuring body styling from style.css is applied, but re-affirming for clarity */
-        body {
-            font-family: 'SF Pro Rounded', sans-serif;
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
-
-        /* Topbar styling to ensure it goes full width */
-        .topbar {
-            width: 99%;
-        }
-
-        .topbar .categories {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .topbar .categories:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-2px);
-        }
-        
-
-        /* Main content container, mimicking player-container structure */
-        .status-main-content {
-            max-width: 1200px; /* Max width consistent with players.html */
-            margin: 20px auto; /* Center content with vertical margins */
-            padding: 0 20px; /* Horizontal padding for responsiveness */
-            display: flex;
-            flex-direction: column; /* Stack sections vertically by default */
-            gap: 30px; /* Spacing between main sections */
-            width: 100%; /* Occupy full width within max-width */
-        }
-
-        /* Grouping for Region and Ping sections */
-        .top-status-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px; /* Gap between the two cards */
-        }
-
-        /* General section card styling (most of this should come from style.css) */
-        .section-card {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 30px; /* Consistent padding */
-            text-align: center;
-            color: var(--text-color);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
-            display: flex;
-            flex-direction: column; /* Ensures content within card stacks vertically */
-        }
-
-        .section-card h2 {
-            text-align: center;
-            color: var(--primary-color);
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-        .section-card p {
-            color: var(--text-color);
-            margin-bottom: 20px;
-            font-size: 1em;
-        }
-
-        /* Styles for stat items within the overall stats grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.05); /* Lighter background for consistency with players.html cards */
-            border: 1px solid rgba(255, 255, 255, 0.1); /* Consistent border */
-            border-radius: 10px; /* Consistent border-radius */
-            padding: 20px; /* Consistent padding */
-            text-align: center;
-        }
-
-        .stat-item .value {
-            font-size: 2em; /* Consistent with players.html stat cards */
-            font-weight: bold;
-            color: var(--primary-color);
-            margin-bottom: 5px;
-        }
-
-        .stat-item .label {
-            font-size: 0.9em;
-            color: var(--text-color); /* Use text-color for consistency */
-        }
-
-        /* List styles for pings and API responses */
-        .ping-list, .api-response-list {
-            list-style: none;
-            padding: 0;
-            text-align: left;
-        }
-
-        .ping-list li, .api-response-list li {
-            background: rgba(255, 255, 255, 0.03); /* Keep subtle background */
-            border: 1px solid rgba(255, 255, 255, 0.08); /* Keep subtle border */
-            border-radius: 8px;
-            margin-bottom: 10px;
-            padding: 10px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.95em;
-            color: var(--text-color); /* Ensure list text is readable */
-        }
-
-        .ping-list li strong, .api-response-list li strong {
-            color: var(--primary-color);
-        }
-
-        /* Chart container and buttons */
-        .chart-container {
-            width: 100%;
-            height: 350px; /* Fixed height for charts */
-            background: rgba(255, 255, 255, 0.03); /* Background from servers.html for charts */
-            border-radius: 8px; /* Border-radius from servers.html for charts */
-            padding: 10px; /* Padding from servers.html for charts */
-            margin-top: 20px; /* Consistent with other sections */
-            position: relative;
-        }
-        .chart-container canvas {
-            display: block;
-            width: 100% !important;
-            height: 100% !important;
-        }
-
-
-        .chart-buttons {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .chart-buttons button {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 8px 15px;
-            border: none;
-            border-radius: 8px; /* Consistent border-radius with other buttons */
-            cursor: pointer;
-            font-size: 1em; /* Consistent font size with other buttons */
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .chart-buttons button:hover {
-            background-color: var(--accent-color);
-            transform: translateY(-1px);
-        }
-
-        .chart-buttons button.active {
-            background-color: #007bff; /* A different color for active button */
-            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
-        }
-
-        /* Custom Alert Modal Styling - consistent with players.html */
-        #customAlertModal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10001;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
-        }
-
-        #customAlertModal > div {
-            background: var(--glass-bg);
-            backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            color: var(--primary-color);
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-            position: relative;
-        }
-
-        #customAlertModal button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        #customAlertModal button:hover {
-            background-color: var(--accent-color);
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 768px) {
-            .status-main-content {
-                padding: 0 15px; /* Adjust padding for smaller screens */
-            }
-            .top-status-grid {
-                grid-template-columns: 1fr; /* Stack items vertically on small screens */
-            }
-            /* Topbar adjustments from players.html */
-            .topbar {
-                flex-direction: column;
-                gap: 10px;
-                padding: 15px 10px;
-                width: 100%; /* Ensure it behaves responsively */
-            }
-            .nav-buttons {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="status.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
 </head>
 <body>
-    <div class="topbar">
-        <img onclick="navigateToPage('index.html')" class="logo" src="logo.png" alt="DDNet Logo">
-        <div class="nav-buttons">
-            <button onclick="navigateToPage('players.html')" class="categories" id="players">Players</button>
-            <button onclick="navigateToPage('clans.html')" class="categories" id="clans">Clans</button>
-            <button onclick="navigateToPage('maps.html')" class="categories" id="maps">Maps</button>
-            <button onclick="navigateToPage('servers.html')" class="categories" id="servers">Servers</button>
-            <button onclick="window.location.href='https://discord.com/oauth2/authorize?client_id=1391161122714943528&permissions=117760&scope=bot+applications.commands'" class="categories" id="servers">Discord Bot</button>
-            <button class="categories" id="status">Status</button>
-        </div>
-    </div>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Main content container, consistent with players.html's playerStatsContainer -->
-    <div class="status-main-content">
-        <!-- Grouping for Region Data and Server Pings -->
-        <div class="top-status-grid">
-            <!-- Website Region Data Section -->
-            <div class="section-card">
-                <h2>Your Current Region</h2>
-                <p>Fetching your location based on your IP address.</p>
-                <ul id="region-data" class="ping-list">
-                    
-                    <li><strong>Country:</strong> <span id="country">Loading...</span></li>
-                    <li><strong>City:</strong> <span id="city">Loading...</span></li>
-                </ul>
-            </div>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html" aria-label="TeeViewer home">
+                <img class="logo" src="logo.png" alt="TeeViewer" width="863" height="330">
+            </a>
 
-            <!-- Server Pings Section -->
-            <div class="section-card">
-                <h2>Server Pings</h2>
-                <p>Measuring response times for key DDNet servers.</p>
-                <ul id="server-pings" class="ping-list">
-                    <li><strong>master1.ddnet.org:</strong> <span id="ping-master1">Loading...</span></li>
-                    <li><strong>master2.ddnet.org:</strong> <span id="ping-master2">Loading...</span></li>
-                    <li><strong>ddnet.org:</strong> <span id="ping-ddnet">Loading...</span></li>
-                    <li><strong>forum.ddnet.org:</strong> <span id="ping-forum">Loading...</span></li>
-                    <li><strong>wiki.ddnet.org:</strong> <span id="ping-wiki">Loading...</span></li>
-                    <li><strong>codedoc.ddnet.org:</strong> <span id="ping-codedoc">Loading...</span></li>
-                    <li><strong>kog.tw:</strong> <span id="ping-kog">Loading...</span></li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Overall Statistics Section - now full width within main content -->
-        <div class="section-card">
-            <h2>Overall DDNet Statistics</h2>
-            <p>Current aggregated statistics from the DDNet network.</p>
-            <div id="overall-stats" class="stats-grid">
-                <div class="stat-item">
-                    <div class="value" id="stat-players">Loading...</div>
-                    <div class="label">Total Players</div>
+            <nav class="nav" id="site-nav" aria-label="Primary">
+                <div class="nav-buttons">
+                    <a class="categories" href="index.html">Home</a>
+                    <a class="categories" href="players.html">Players</a>
+                    <a class="categories" href="clans.html">Clans</a>
+                    <a class="categories" href="maps.html">Maps</a>
+                    <a class="categories" href="servers.html">Servers</a>
+                    <a class="categories" href="status.html">Status</a>
+                    <a class="categories" href="skin.html">Skin</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
                 </div>
-                <div class="stat-item">
-                    <div class="value" id="stat-servers">Loading...</div>
-                    <div class="label">Total Servers</div>
+            </nav>
+
+            <div class="topbar-actions">
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
+                    </svg>
+                </button>
+                <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
+                    <span class="menu-bars" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="page status-page" id="main">
+        <header class="page-head status-page-head">
+            <div>
+                <h1 class="page-title">Status</h1>
+                <p class="page-sub">Live health, load, and history for the Teeworlds network.</p>
+            </div>
+            <div class="status-actions">
+                <span class="status-pill" id="network-pill" data-state="loading" role="status">
+                    <span class="status-dot" aria-hidden="true"></span>
+                    <span id="network-pill-text">Checking</span>
+                </span>
+                <button class="button ghost" id="refresh-status" type="button">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                        <path d="M21 3v6h-6"></path>
+                    </svg>
+                    Refresh
+                </button>
+                <span class="status-updated">Updated <time id="last-updated">—</time></span>
+            </div>
+        </header>
+
+        <section aria-labelledby="overview-title">
+            <div class="section-head">
+                <p class="section-title" id="overview-title">Overview</p>
+                <p class="section-note">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            </div>
+
+            <div class="stat-grid status-overview is-loading" id="overall-stats" aria-busy="true">
+                <article class="stat-tile">
+                    <span class="stat-kicker">Players</span>
+                    <span class="stat-value">
+                        <span class="stat-number" id="stat-players">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-label">Online now</span>
+                </article>
+
+                <article class="stat-tile">
+                    <span class="stat-kicker">Servers</span>
+                    <span class="stat-value">
+                        <span class="stat-number" id="stat-servers">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-label">Connected</span>
+                </article>
+
+                <article class="stat-tile">
+                    <span class="stat-kicker">Clans</span>
+                    <span class="stat-value">
+                        <span class="stat-number" id="stat-clans">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-label">Tracked</span>
+                </article>
+
+                <article class="stat-tile">
+                    <span class="stat-kicker">Maps</span>
+                    <span class="stat-value">
+                        <span class="stat-number" id="stat-maps">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-label">Available</span>
+                </article>
+
+                <article class="stat-tile">
+                    <span class="stat-kicker">Game types</span>
+                    <span class="stat-value">
+                        <span class="stat-number" id="stat-gametypes">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-label">Server modes</span>
+                </article>
+
+                <article class="stat-tile">
+                    <span class="stat-kicker">Versions</span>
+                    <span class="stat-value">
+                        <span class="stat-number" id="stat-versions">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-label">Client builds</span>
+                </article>
+            </div>
+            <p class="visually-hidden" id="overview-status" role="status">Loading network statistics.</p>
+
+            <div class="state-card" id="overview-state" hidden>
+                <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path>
+                    <path d="M12 9v4"></path>
+                    <path d="M12 17h.01"></path>
+                </svg>
+                <p class="state-title">Statistics unavailable</p>
+                <p class="state-text">The status API did not respond. Check your connection and try again.</p>
+                <button class="button ghost" type="button" data-retry="overview">Retry</button>
+            </div>
+        </section>
+
+        <section aria-labelledby="player-chart-title">
+            <div class="card chart-card is-loading" id="player-chart-card" aria-busy="true">
+                <div class="chart-head">
+                    <div class="chart-head-text">
+                        <p class="chart-title" id="player-chart-title">Total players in the last 24 hours</p>
+                        <p class="chart-axis-title">Players online</p>
+                    </div>
+                    <div class="chart-buttons" id="player-buttons" role="group" aria-label="Player trend range">
+                        <button type="button" id="player-day-btn" class="active" data-period="day" aria-pressed="true">Day</button>
+                        <button type="button" id="player-week-btn" data-period="week" aria-pressed="false">Week</button>
+                        <button type="button" id="player-month-btn" data-period="month" aria-pressed="false">Month</button>
+                    </div>
                 </div>
-                <div class="stat-item">
-                    <div class="value" id="stat-clans">Loading...</div>
-                    <div class="label">Total Clans</div>
+                <div class="chart-legend">
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total players</span>
+                    <span class="legend-item"><span class="legend-swatch is-peak"></span><span id="player-peak-label">Peak sample</span></span>
                 </div>
-                <div class="stat-item">
-                    <div class="value" id="stat-maps">Loading...</div>
-                    <div class="label">Total Maps</div>
+                <div class="chart-box">
+                    <canvas id="playerStatsChart" role="img" aria-label="Total players over time"></canvas>
+                    <div class="chart-skeleton" aria-hidden="true">
+                        <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
+                    </div>
+                </div>
+                <p class="chart-status" id="player-chart-status" role="status">Loading player data…</p>
+                <p class="chart-note" id="player-chart-note" role="status" hidden>Peak and current count appear after data loads.</p>
+
+                <div class="state-card" id="player-chart-state" hidden>
+                    <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path>
+                        <path d="M12 9v4"></path>
+                        <path d="M12 17h.01"></path>
+                    </svg>
+                    <p class="state-title">Trend data unavailable</p>
+                    <p class="state-text">The status API did not return player history.</p>
+                    <button class="button ghost" type="button" data-retry="players">Retry</button>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Player Statistics Graph Section - full width -->
-        <div class="section-card">
-            <h2>Player Statistics Over Time</h2>
-            <div class="chart-buttons" id="player-buttons">
-                <button id="player-day-btn" class="active">Day</button>
-                <button id="player-week-btn">Week</button>
-                <button id="player-month-btn">Month</button>
-            </div>
-            <div class="chart-container">
-                <canvas id="playerStatsChart"></canvas>
-            </div>
-            <p id="player-chart-status">Loading player data...</p>
-        </div>
+        <section aria-labelledby="server-chart-title">
+            <div class="card chart-card is-loading" id="server-chart-card" aria-busy="true">
+                <div class="chart-head">
+                    <div class="chart-head-text">
+                        <p class="chart-title" id="server-chart-title">Total servers in the last 7 days</p>
+                        <p class="chart-axis-title">Servers online</p>
+                    </div>
+                    <div class="chart-buttons" id="server-buttons" role="group" aria-label="Server trend range">
+                        <button type="button" id="server-day-btn" data-period="day" aria-pressed="false">Day</button>
+                        <button type="button" id="server-week-btn" class="active" data-period="week" aria-pressed="true">Week</button>
+                        <button type="button" id="server-month-btn" data-period="month" aria-pressed="false">Month</button>
+                    </div>
+                </div>
+                <div class="chart-legend">
+                    <span class="legend-item"><span class="legend-swatch is-total"></span>Total servers</span>
+                    <span class="legend-item"><span class="legend-swatch is-peak"></span><span id="server-peak-label">Peak sample</span></span>
+                </div>
+                <div class="chart-box">
+                    <canvas id="serverStatsChart" role="img" aria-label="Total servers over time"></canvas>
+                    <div class="chart-skeleton" aria-hidden="true">
+                        <span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span><span class="skeleton"></span>
+                    </div>
+                </div>
+                <p class="chart-status" id="server-chart-status" role="status">Loading server data…</p>
+                <p class="chart-note" id="server-chart-note" role="status" hidden>Peak and current count appear after data loads.</p>
 
-        <!-- Server Statistics Graph Section - full width -->
-        <div class="section-card">
-            <h2>Server Statistics Over Time</h2>
-            <div class="chart-buttons" id="server-buttons">
-                <button id="server-week-btn" class="active">Week</button>
-                <button id="server-month-btn">Month</button>
+                <div class="state-card" id="server-chart-state" hidden>
+                    <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path>
+                        <path d="M12 9v4"></path>
+                        <path d="M12 17h.01"></path>
+                    </svg>
+                    <p class="state-title">Trend data unavailable</p>
+                    <p class="state-text">The status API did not return server history.</p>
+                    <button class="button ghost" type="button" data-retry="servers">Retry</button>
+                </div>
             </div>
-            <div class="chart-container">
-                <canvas id="serverStatsChart"></canvas>
+        </section>
+
+        <section aria-labelledby="api-health-title">
+            <div class="section-head">
+                <p class="section-title" id="api-health-title">API health</p>
+                <p class="section-note">status.tw checks use a CORS relay</p>
             </div>
-            <p id="server-chart-status">Loading server data...</p>
-        </div>
 
-        <!-- API Response Codes Section - full width -->
-        <div class="section-card">
-            <h2>API Response Codes</h2>
-            <p>Checking the status of the API endpoints.</p>
-            <ul id="api-responses" class="api-response-list">
-                <li><strong>https://api.status.tw/:</strong> <span id="api-status-tw-stats">Loading...</span></li>
-                <li><strong>https://ddstats.tw/:</strong> <span id="api-ddstats-tw-player">Loading...</span></li>
-            </ul>
-        </div>
-    </div>
+            <div class="card health-card">
+                <table class="table health-table">
+                    <caption class="visually-hidden">API endpoint health checks</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col">Endpoint</th>
+                            <th scope="col">Status</th>
+                            <th scope="col" class="num">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody id="api-responses">
+                        <tr class="health-row" id="health-status-tw" data-state="loading">
+                            <td>
+                                <span class="health-endpoint">api.status.tw</span>
+                                <span class="health-path">/stats</span>
+                            </td>
+                            <td>
+                                <span class="health-state">
+                                    <span class="status-dot" aria-hidden="true"></span>
+                                    <span class="health-state-text">Checking</span>
+                                </span>
+                            </td>
+                            <td class="num"><span class="health-value" id="api-status-tw-stats">Checking…</span></td>
+                        </tr>
+                        <tr class="health-row" id="health-ddstats" data-state="loading">
+                            <td>
+                                <span class="health-endpoint">ddstats.tw</span>
+                                <span class="health-path">/player/json?player=DDNet</span>
+                            </td>
+                            <td>
+                                <span class="health-state">
+                                    <span class="status-dot" aria-hidden="true"></span>
+                                    <span class="health-state-text">Checking</span>
+                                </span>
+                            </td>
+                            <td class="num"><span class="health-value" id="api-ddstats-tw-player">Checking…</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="visually-hidden" id="api-health-status" role="status">Checking API health.</p>
 
-    <!-- Custom Alert Modal -->
-    <div id="customAlertModal">
-        <div>
-            <p id="modal-message"></p>
-            <button onclick="document.getElementById('customAlertModal').style.opacity = '0'; document.getElementById('customAlertModal').style.visibility = 'hidden';">OK</button>
+                <div class="state-card" id="api-health-state" hidden>
+                    <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path>
+                        <path d="M12 9v4"></path>
+                        <path d="M12 17h.01"></path>
+                    </svg>
+                    <p class="state-title">Health checks failed</p>
+                    <p class="state-text">Neither API responded. Check your connection and retry the checks.</p>
+                    <button class="button ghost" type="button" data-retry="health">Retry checks</button>
+                </div>
+            </div>
+        </section>
+
+        <details class="card diagnostics" id="diagnostics">
+            <summary class="diagnostics-summary">
+                <span class="diagnostics-title">Local diagnostics</span>
+                <span class="diagnostics-hint">Region and server ping checks</span>
+                <svg class="diagnostics-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                    <path d="m6 9 6 6 6-6"></path>
+                </svg>
+            </summary>
+            <div class="diagnostics-body">
+                <div class="diagnostics-grid">
+                    <section aria-labelledby="region-title">
+                        <p class="section-title" id="region-title">Your region</p>
+                        <ul id="region-data" class="kv-list">
+                            <li><span class="kv-key">Country</span><span class="kv-value" id="country">Not checked</span></li>
+                            <li><span class="kv-key">City</span><span class="kv-value" id="city">Not checked</span></li>
+                        </ul>
+                    </section>
+
+                    <section aria-labelledby="ping-title">
+                        <p class="section-title" id="ping-title">Server pings</p>
+                        <ul id="server-pings" class="kv-list">
+                            <li><span class="kv-key">master1.ddnet.org</span><span class="kv-value" id="ping-master1">Not checked</span></li>
+                            <li><span class="kv-key">master2.ddnet.org</span><span class="kv-value" id="ping-master2">Not checked</span></li>
+                            <li><span class="kv-key">ddnet.org</span><span class="kv-value" id="ping-ddnet">Not checked</span></li>
+                            <li><span class="kv-key">forum.ddnet.org</span><span class="kv-value" id="ping-forum">Not checked</span></li>
+                            <li><span class="kv-key">wiki.ddnet.org</span><span class="kv-value" id="ping-wiki">Not checked</span></li>
+                            <li><span class="kv-key">codedoc.ddnet.org</span><span class="kv-value" id="ping-codedoc">Not checked</span></li>
+                            <li><span class="kv-key">kog.tw</span><span class="kv-value" id="ping-kog">Not checked</span></li>
+                        </ul>
+                    </section>
+                </div>
+            </div>
+        </details>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            <p class="footer-note">© 2026 TeeViewer</p>
         </div>
-    </div>
+    </footer>
 
     <script>
-        // Navigation function (from players.html)
-        function navigateToPage(url) {
-            document.body.style.transform = 'translateX(-100%)';
-            document.body.style.transition = 'transform 0.5s ease-in-out';
-            setTimeout(() => {
-                window.location.href = url;
-            }, 250);
-        }
+        (function () {
+            "use strict";
 
-        // Custom Modal Function
-        function showCustomModal(message) {
-            const modal = document.getElementById('customAlertModal');
-            document.getElementById('modal-message').textContent = message;
-            modal.style.opacity = '1';
-            modal.style.visibility = 'visible';
-        }
+            var STATS_URL = "https://api.status.tw/stats";
+            var numberFormat = new Intl.NumberFormat("en-US");
+            var overviewValues = {};
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            // --- Fetch Website Region Data ---
-            async function fetchRegionData() {
-                try {
-                    const response = await fetch('https://ipapi.co/json/');
-                    const data = await response.json();
-                    document.getElementById('country').textContent = data.country_name || 'N/A';
-                    document.getElementById('city').textContent = data.city || 'N/A';
-
-                } catch (error) {
-                    console.error('Error fetching region data:', error);
-                    document.getElementById('region-data').innerHTML = '<li><strong>Error:</strong> Could not fetch region data.</li>';
-                }
-            }
-            fetchRegionData();
-
-            // --- Simulate Server Pings ---
-            const serversToPing = [
-                { host: 'master1.ddnet.org', id: 'ping-master1' },
-                { host: 'master2.ddnet.org', id: 'ping-master2' },
-                { host: 'ddnet.org', id: 'ping-ddnet' },
-                { host: 'forum.ddnet.org', id: 'ping-forum' },
-                { host: 'wiki.ddnet.org', id: 'ping-wiki' },
-                { host: 'codedoc.ddnet.org', id: 'ping-codedoc' },
-                { host: 'kog.tw', id: 'ping-kog' },
-            ];
-
-            async function pingServer(host, elementId) {
-                const startTime = performance.now();
-                try {
-                    // Using a HEAD request for lower overhead, but CORS might block
-                    // Fallback to GET with a small timeout
-                    const response = await fetch(`https://${host}`, {
-                        method: 'HEAD',
-                        mode: 'no-cors', // To avoid CORS errors, but also prevents reading response status
-                        cache: 'no-store'
-                    });
-                    const endTime = performance.now();
-                    const latency = (endTime - startTime).toFixed(2);
-                    // For no-cors, we can't check response.ok, so we assume success if fetch doesn't throw.
-                    document.getElementById(elementId).textContent = `${latency} ms (Online)`;
-                    document.getElementById(elementId).style.color = 'lightgreen';
-                } catch (error) {
-                    const endTime = performance.now();
-                    const latency = (endTime - startTime).toFixed(2); // Still show time taken before error
-                    console.error(`Error pinging ${host}:`, error);
-                    document.getElementById(elementId).textContent = `Offline (${latency} ms)`;
-                    document.getElementById(elementId).style.color = 'red';
-                }
+            if (typeof window.Chart !== "undefined") {
+                window.Chart.defaults.font.size = 13;
             }
 
-            serversToPing.forEach(server => pingServer(server.host, server.id));
+            var stale = 0;
+            var overviewRequest = 0;
+            var healthRun = 0;
 
-            // --- Fetch Overall Stats ---
-            async function fetchOverallStats() {
-                try {
-                    const response = await fetch('https://api.status.tw/stats');
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const data = await response.json();
-                    document.getElementById('stat-players').textContent = data.numPlayers.toLocaleString();
-                    document.getElementById('stat-servers').textContent = data.numServers.toLocaleString();
-                    document.getElementById('stat-clans').textContent = data.numClans.toLocaleString();
-                    document.getElementById('stat-maps').textContent = data.numMaps.toLocaleString();
-                } catch (error) {
-                    console.error('Error fetching overall stats:', error);
-                    document.getElementById('overall-stats').innerHTML = '<p style="color:red;">Error loading overall stats.</p>';
+            var charts = {
+                players: {
+                    period: "day",
+                    cardId: "player-chart-card",
+                    statusId: "player-chart-status",
+                    stateId: "player-chart-state",
+                    buttonsId: "player-buttons",
+                    canvasId: "playerStatsChart",
+                    chart: null,
+                    data: null,
+                    endpoints: {
+                        day: "https://api.status.tw/stats/players/day",
+                        week: "https://api.status.tw/stats/players/week",
+                        month: "https://api.status.tw/stats/players/month"
+                    },
+                    totalKey: "totalPlayers",
+                    unit: "players",
+                    noun: "player",
+                    overviewId: "stat-players",
+                    titleId: "player-chart-title",
+                    noteId: "player-chart-note",
+                    peakId: "player-peak-label"
+                },
+                servers: {
+                    period: "week",
+                    cardId: "server-chart-card",
+                    statusId: "server-chart-status",
+                    stateId: "server-chart-state",
+                    buttonsId: "server-buttons",
+                    canvasId: "serverStatsChart",
+                    chart: null,
+                    data: null,
+                    endpoints: {
+                        day: "https://api.status.tw/stats/servers/day",
+                        week: "https://api.status.tw/stats/servers/week",
+                        month: "https://api.status.tw/stats/servers/month"
+                    },
+                    totalKey: "totalServers",
+                    unit: "servers",
+                    noun: "server",
+                    overviewId: "stat-servers",
+                    titleId: "server-chart-title",
+                    noteId: "server-chart-note",
+                    peakId: "server-peak-label"
                 }
-            }
-            fetchOverallStats();
-
-            // --- Player Statistics Line Graph ---
-            let playerStatsChart;
-            const playerChartCtx = document.getElementById('playerStatsChart').getContext('2d');
-            const playerApiEndpoints = {
-                day: 'https://api.status.tw/stats/players/day',
-                week: 'https://api.status.tw/stats/players/week',
-                month: 'https://api.status.tw/stats/players/month'
             };
 
-            async function fetchPlayerStats(period) {
-                document.getElementById('player-chart-status').textContent = `Loading player data for ${period}...`;
-                try {
-                    const response = await fetch(playerApiEndpoints[period]);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const data = await response.json();
+            function $(id) {
+                return document.getElementById(id);
+            }
 
-                    // Sort data by timestamp ascending
-                    data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-                    const labels = [];
-                    const avgPlayers = []; 
-                    const totalPlayers = [];
-                    const maxPlayers = [];
-                    const minPlayers = [];
-
-                    data.forEach(item => {
-                        const date = new Date(item.timestamp);
-                        if (period === 'day') {
-                            labels.push(date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
-                        } else if (period === 'week') {
-                            labels.push(date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }));
-                        } else if (period === 'month') {
-                            labels.push(date.toLocaleDateString([], { month: 'short', day: 'numeric' }));
-                        }
-                        avgPlayers.push(item.avgPlayers);
-                        totalPlayers.push(item.totalPlayers);
-                        maxPlayers.push(item.maxPlayers);
-                        minPlayers.push(item.minPlayers);
-                    });
-
-                    if (playerStatsChart) {
-                        playerStatsChart.destroy();
-                    }
-
-                    playerStatsChart = new Chart(playerChartCtx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Average Players',
-                                data: avgPlayers,
-                                borderColor: '#ff891b56', // Consistent color with servers.html
-                                backgroundColor: '#ff891b56', // Consistent color with servers.html
-                                fill: true,
-                                tension: 0.3,
-                                pointRadius: 0, /* Make graph points invisible */
-                                pointHoverRadius: 5 // Display dots on hover
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    labels: {
-                                        color: 'white',
-                                        font: {
-                                            family: 'SF Pro Rounded, sans-serif'
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false,
-                                    callbacks: {
-                                        title: function(context) {
-                                            return `Time: ${context[0].label}`;
-                                        },
-                                        label: function(context) {
-                                            const index = context.dataIndex;
-                                            const avg = avgPlayers[index];
-                                            const total = totalPlayers[index];
-                                            const max = maxPlayers[index];
-                                            const min = minPlayers[index];
-                                            return [
-                                                `Avg: ${avg.toFixed(2)}`,
-                                                `Max: ${max}`,
-                                                `Min: ${min}`
-                                            ];
-                                        }
-                                    },
-                                    bodyFont: {
-                                        family: 'SF Pro Rounded, sans-serif'
-                                    },
-                                    titleFont: {
-                                        family: 'SF Pro Rounded, sans-serif'
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.1)'
-                                    },
-                                    ticks: {
-                                        color: 'white',
-                                        maxRotation: 45,
-                                        minRotation: 0,
-                                        autoSkip: true,
-                                        autoSkipPadding: 10,
-                                        callback: function(value, index, ticks) {
-                                            if (period === 'day') {
-                                                const hourMinute = this.getLabelForValue(value);
-                                                const minutes = parseInt(hourMinute.split(':')[1]);
-                                                if (minutes !== 0) {
-                                                    return null;
-                                                }
-                                            }
-                                            return this.getLabelForValue(value);
-                                        }
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.1)'
-                                    },
-                                    ticks: {
-                                        color: 'white',
-                                        precision: 0
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    document.getElementById('player-chart-status').textContent = '';
-                } catch (error) {
-                    console.error(`Error fetching player stats for ${period}:`, error);
-                    document.getElementById('player-chart-status').textContent = `Error loading player data for ${period}.`;
-                    if (playerStatsChart) playerStatsChart.destroy();
+            function setText(id, text) {
+                var node = $(id);
+                if (node) {
+                    node.textContent = text;
                 }
             }
 
-            document.getElementById('player-day-btn').addEventListener('click', () => {
-                fetchPlayerStats('day');
-                toggleActiveClass('player-buttons', 'player-day-btn');
-            });
-            document.getElementById('player-week-btn').addEventListener('click', () => {
-                fetchPlayerStats('week');
-                toggleActiveClass('player-buttons', 'player-week-btn');
-            });
-            document.getElementById('player-month-btn').addEventListener('click', () => {
-                fetchPlayerStats('month');
-                toggleActiveClass('player-buttons', 'player-month-btn');
-            });
-
-            // Initial load for player stats
-            fetchPlayerStats('day');
-
-            // --- Server Statistics Line Graph ---
-            let serverStatsChart;
-            const serverChartCtx = document.getElementById('serverStatsChart').getContext('2d');
-            const serverApiEndpoints = {
-                week: 'https://api.status.tw/stats/servers/week',
-                month: 'https://api.status.tw/stats/servers/month'
-            };
-
-            async function fetchServerStats(period) {
-                document.getElementById('server-chart-status').textContent = `Loading server data for ${period}...`;
-                try {
-                    const response = await fetch(serverApiEndpoints[period]);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const data = await response.json();
-
-                    // Sort data by timestamp ascending
-                    data.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-                    const labels = [];
-                    const avgServers = [];
-                    const totalServers = [];
-                    const maxServers = [];
-                    const minServers = [];
-
-                    data.forEach(item => {
-                        const date = new Date(item.timestamp);
-                        if (period === 'week') {
-                            labels.push(date.toLocaleDateString([], { weekday: 'short', month: 'short', day: 'numeric' }));
-                        } else if (period === 'month') {
-                            labels.push(date.toLocaleDateString([], { month: 'short', day: 'numeric' }));
-                        }
-                        avgServers.push(item.avgServers);
-                        totalServers.push(item.totalServers);
-                        maxServers.push(item.maxServers);
-                        minServers.push(item.minServers);
-                    });
-
-                    if (serverStatsChart) {
-                        serverStatsChart.destroy();
-                    }
-
-                    serverStatsChart = new Chart(serverChartCtx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: [{
-                                label: 'Average Servers',
-                                data: avgServers,
-                                borderColor: '#ff891b56', // Consistent color with servers.html
-                                backgroundColor: '#ff891b56', // Consistent color with servers.html
-                                fill: true,
-                                tension: 0.3,
-                                pointRadius: 0, /* Make graph points invisible */
-                                pointHoverRadius: 5 // Display dots on hover
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    labels: {
-                                        color: 'white',
-                                        font: {
-                                            family: 'SF Pro Rounded, sans-serif'
-                                        }
-                                    }
-                                },
-                                tooltip: {
-                                    mode: 'index',
-                                    intersect: false,
-                                    callbacks: {
-                                        title: function(context) {
-                                            return `Time: ${context[0].label}`;
-                                        },
-                                        label: function(context) {
-                                            const index = context.dataIndex;
-                                            const avg = avgServers[index];
-                                            const total = totalServers[index];
-                                            const max = maxServers[index];
-                                            const min = minServers[index];
-                                            return [
-                                                `Avg: ${avg.toFixed(2)}`,
-                                                `Max: ${max}`,
-                                                `Min: ${min}`
-                                            ];
-                                        }
-                                    },
-                                    bodyFont: {
-                                        family: 'SF Pro Rounded, sans-serif'
-                                    },
-                                    titleFont: {
-                                        family: 'SF Pro Rounded, sans-serif'
-                                    }
-                                }
-                            },
-                            scales: {
-                                x: {
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.1)'
-                                    },
-                                    ticks: {
-                                        color: 'white',
-                                        maxRotation: 45,
-                                        minRotation: 0,
-                                        autoSkip: true,
-                                        autoSkipPadding: 10
-                                    }
-                                },
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: 'rgba(255, 255, 255, 0.1)'
-                                    },
-                                    ticks: {
-                                        color: 'white',
-                                        precision: 0
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    document.getElementById('server-chart-status').textContent = '';
-                } catch (error) {
-                    console.error(`Error fetching server stats for ${period}:`, error);
-                    document.getElementById('server-chart-status').textContent = `Error loading server data for ${period}.`;
-                    if (serverStatsChart) serverStatsChart.destroy();
+            function bust(url) {
+                if (!stale) {
+                    return url;
                 }
+
+                return url + (url.indexOf("?") === -1 ? "?" : "&") + "t=" + stale;
             }
 
-            document.getElementById('server-week-btn').addEventListener('click', () => {
-                fetchServerStats('week');
-                toggleActiveClass('server-buttons', 'server-week-btn');
-            });
-            document.getElementById('server-month-btn').addEventListener('click', () => {
-                fetchServerStats('month');
-                toggleActiveClass('server-buttons', 'server-month-btn');
-            });
-
-            // Initial load for server stats
-            fetchServerStats('week');
-
-            // Function to toggle active class on buttons
-            function toggleActiveClass(parentClass, activeBtnId) {
-                const buttonContainer = document.getElementById(parentClass); // Changed to getElementById
-                if (buttonContainer) {
-                    buttonContainer.querySelectorAll('button').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    document.getElementById(activeBtnId).classList.add('active');
+            function setPill(state, text) {
+                var pill = $("network-pill");
+                if (pill) {
+                    pill.setAttribute("data-state", state);
                 }
+                setText("network-pill-text", text);
             }
-            
-            // --- Fetch API Response Codes ---
-            async function fetchApiStatusCodes() {
-                const apiEndpoints = [
-                    { url: 'https://api.status.tw/stats', id: 'api-status-tw-stats' },
-                    { url: 'https://ddstats.tw/player/json?player=DDNet', id: 'api-ddstats-tw-player' }
+
+            function setUpdated(url) {
+                var time = $("last-updated");
+                if (!time) {
+                    return;
+                }
+
+                var ts = url && typeof window.getJSONUpdatedAt === "function"
+                    ? window.getJSONUpdatedAt(url)
+                    : null;
+                var date = ts ? new Date(ts) : new Date();
+
+                time.setAttribute("datetime", date.toISOString());
+                time.textContent = formatStamp(date);
+            }
+
+            function showState(id, title, message, visible) {
+                var state = $(id);
+                if (!state) {
+                    return;
+                }
+
+                var titleNode = state.querySelector(".state-title");
+                var textNode = state.querySelector(".state-text");
+
+                if (titleNode) {
+                    titleNode.textContent = title;
+                }
+                if (textNode) {
+                    textNode.textContent = message;
+                }
+
+                state.hidden = !visible;
+            }
+
+            function formatValue(value) {
+                var number = Number(value);
+                return Number.isFinite(number) ? numberFormat.format(number) : "—";
+            }
+
+            function loadOverview() {
+                var grid = $("overall-stats");
+                overviewRequest += 1;
+                var requestId = overviewRequest;
+                var fields = [
+                    { id: "stat-players", key: "numPlayers" },
+                    { id: "stat-servers", key: "numServers" },
+                    { id: "stat-clans", key: "numClans" },
+                    { id: "stat-maps", key: "numMaps" },
+                    { id: "stat-gametypes", key: "numGameTypes" },
+                    { id: "stat-versions", key: "numVersions" }
                 ];
 
-                for (const api of apiEndpoints) {
-                    try {
-                        const response = await fetch(api.url);
-                        document.getElementById(api.id).textContent = `Status: ${response.status}`;
-                        if (response.ok) {
-                            document.getElementById(api.id).style.color = 'lightgreen';
-                        } else {
-                            document.getElementById(api.id).style.color = 'orange';
+                if (grid) {
+                    grid.classList.add("is-loading");
+                    grid.setAttribute("aria-busy", "true");
+                }
+
+                showState("overview-state", "", "", false);
+                setPill("loading", "Checking");
+                setText("overview-status", "Loading network statistics.");
+
+                if (typeof window.fetchJSON !== "function") {
+                    fail();
+                    return;
+                }
+
+                var statsUrl = bust(STATS_URL);
+
+                window.fetchJSON(statsUrl).then(function (data) {
+                    if (requestId !== overviewRequest) {
+                        return;
+                    }
+
+                    var values = {};
+                    var usable = data && typeof data === "object" && fields.every(function (field) {
+                        var value = toNumber(data[field.key]);
+
+                        if (value === null) {
+                            return false;
                         }
-                    } catch (error) {
-                        console.error(`Error fetching API status for ${api.url}:`, error);
-                        document.getElementById(api.id).textContent = 'Status: Failed to reach API';
-                        document.getElementById(api.id).style.color = 'red';
+
+                        values[field.key] = value;
+                        return true;
+                    });
+
+                    if (!usable) {
+                        fail();
+                        return;
+                    }
+
+                    fields.forEach(function (field) {
+                        setText(field.id, formatValue(values[field.key]));
+                    });
+
+                    overviewValues.players = values.numPlayers;
+                    overviewValues.servers = values.numServers;
+                    refreshNotes();
+
+                    if (grid) {
+                        grid.classList.remove("is-loading");
+                        grid.setAttribute("aria-busy", "false");
+                    }
+
+                    setPill("live", "Live");
+                    setUpdated(statsUrl);
+                    setText("overview-status", "Network statistics loaded.");
+                }).catch(fail);
+
+                function fail() {
+                    if (requestId !== overviewRequest) {
+                        return;
+                    }
+
+                    fields.forEach(function (field) {
+                        setText(field.id, "—");
+                    });
+
+                    overviewValues.players = null;
+                    overviewValues.servers = null;
+                    refreshNotes();
+
+                    if (grid) {
+                        grid.classList.remove("is-loading");
+                        grid.setAttribute("aria-busy", "false");
+                    }
+
+                    setPill("offline", "Offline");
+                    showState(
+                        "overview-state",
+                        "Statistics unavailable",
+                        "The status API did not respond. Check your connection and try again.",
+                        true
+                    );
+                    setText("overview-status", "Network statistics are unavailable.");
+                }
+            }
+
+            function rangeLabel(period) {
+                if (period === "week") {
+                    return "Last 7 days";
+                }
+                if (period === "month") {
+                    return "Last 30 days";
+                }
+                return "Last 24 hours";
+            }
+
+            function peakTitle(period, unit) {
+                var label = unit || "players";
+
+                if (period === "week") {
+                    return "Total " + label + " in the last 7 days";
+                }
+                if (period === "month") {
+                    return "Total " + label + " in the last 30 days";
+                }
+                return "Total " + label + " in the last 24 hours";
+            }
+
+            function formatStamp(date) {
+                return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) + " " +
+                    date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+            }
+
+            function formatLabel(date, period) {
+                if (period === "day") {
+                    return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+                }
+
+                return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+            }
+
+            function formatWindowLabel(date) {
+                return formatStamp(date);
+            }
+
+            function toNumber(value) {
+                if (value === null || value === undefined || value === "" || typeof value === "boolean") {
+                    return null;
+                }
+
+                var number = Number(value);
+                return Number.isFinite(number) ? number : null;
+            }
+
+            function buildSeries(config, rows, period) {
+                var samples = [];
+
+                rows.forEach(function (item) {
+                    if (!item || !item.timestamp) {
+                        return;
+                    }
+
+                    var date = new Date(String(item.timestamp).replace(" ", "T"));
+
+                    if (isNaN(date.getTime())) {
+                        return;
+                    }
+
+                    samples.push({
+                        date: date,
+                        total: toNumber(item[config.totalKey])
+                    });
+                });
+
+                samples.sort(function (a, b) {
+                    return a.date - b.date;
+                });
+
+                if (samples.length > 2) {
+                    var last = samples[samples.length - 1];
+                    var previous = samples[samples.length - 2];
+
+                    if (previous.total && last.total !== null && last.total < previous.total * 0.85) {
+                        samples.pop();
+                    }
+                }
+
+                var series = { labels: [], total: [], peak: [], peakIndex: -1, peakValue: null };
+
+                samples.forEach(function (sample) {
+                    series.labels.push(formatLabel(sample.date, period));
+                    series.total.push(sample.total);
+                });
+
+                series.total.forEach(function (value, index) {
+                    if (typeof value !== "number" || !isFinite(value)) {
+                        return;
+                    }
+
+                    if (series.peakValue === null || value > series.peakValue) {
+                        series.peakValue = value;
+                        series.peakIndex = index;
+                    }
+                });
+
+                series.peak = series.total.map(function (value, index) {
+                    return index === series.peakIndex ? value : null;
+                });
+
+                series.startLabel = samples.length ? formatWindowLabel(samples[0].date) : "";
+                series.endLabel = samples.length ? formatWindowLabel(samples[samples.length - 1].date) : "";
+                series.lastSampleLabel = samples.length ? formatStamp(samples[samples.length - 1].date) : "";
+                series.stepLabel = stepLabel(samples);
+
+                return series;
+            }
+
+            function stepLabel(samples) {
+                if (samples.length < 2) {
+                    return "";
+                }
+
+                var minutes = Math.round((samples[samples.length - 1].date - samples[0].date) / 60000 / (samples.length - 1));
+
+                if (minutes < 1) {
+                    return "";
+                }
+                if (minutes < 60) {
+                    return minutes + " min";
+                }
+                if (minutes < 1440) {
+                    return Math.round(minutes / 60) + " h";
+                }
+                return Math.round(minutes / 1440) + " d";
+            }
+
+            function token(name) {
+                return window.getComputedStyle(document.documentElement)
+                    .getPropertyValue(name)
+                    .trim();
+            }
+
+            function drawChart(kind) {
+                var config = charts[kind];
+                var canvas = $(config.canvasId);
+
+                if (!canvas || !config.data || typeof window.Chart === "undefined") {
+                    return;
+                }
+
+                if (config.chart) {
+                    config.chart.destroy();
+                }
+
+                var colors = {
+                    accent: token("--accent"),
+                    accentSoft: token("--chart-fill"),
+                    warning: token("--warning"),
+                    success: token("--success"),
+                    text: token("--text"),
+                    text2: token("--text-2"),
+                    muted: token("--muted"),
+                    border: token("--border"),
+                    surface: token("--surface-2")
+                };
+
+                var tickLimit = canvas.clientWidth < 520 ? 3 : (canvas.clientWidth < 900 ? 4 : 6);
+
+                var peakLabelPlugin = {
+                    id: "peakLabel",
+                    afterDatasetsDraw: function (chart) {
+                        var meta = chart.getDatasetMeta(1);
+                        if (!meta || !meta.data || !meta.data.length) {
+                            return;
+                        }
+                        var raw = chart.data.datasets[1].data;
+                        var idx = -1;
+                        for (var i = 0; i < raw.length; i += 1) {
+                            if (raw[i] !== null && raw[i] !== undefined) {
+                                idx = i;
+                                break;
+                            }
+                        }
+                        if (idx === -1) {
+                            return;
+                        }
+                        var point = meta.data[idx];
+                        if (!point) {
+                            return;
+                        }
+                        var ctx = chart.ctx;
+                        var text = numberFormat.format(raw[idx]);
+                        ctx.save();
+                        ctx.font = "600 12px Inter, sans-serif";
+                        ctx.fillStyle = colors.text;
+                        ctx.textAlign = "center";
+                        ctx.textBaseline = "bottom";
+                        ctx.fillText(text, point.x, point.y - 8);
+                        ctx.restore();
+                    }
+                };
+
+                config.chart = new window.Chart(canvas.getContext("2d"), {
+                    type: "line",
+                    data: {
+                        labels: config.data.labels,
+                        datasets: [
+                            {
+                                label: "Total",
+                                data: config.data.total,
+                                borderColor: colors.accent,
+                                backgroundColor: colors.accentSoft,
+                                borderWidth: 2,
+                                pointRadius: 0,
+                                pointHoverRadius: 4,
+                                pointHoverBackgroundColor: colors.accent,
+                                tension: 0.3,
+                                fill: true,
+                                clip: false,
+                                borderCapStyle: "round",
+                                borderJoinStyle: "round",
+                                yAxisID: "y"
+                            },
+                            {
+                                label: "Peak",
+                                data: config.data.peak,
+                                borderWidth: 0,
+                                backgroundColor: colors.warning,
+                                borderColor: colors.warning,
+                                pointRadius: 5,
+                                pointHoverRadius: 6,
+                                pointBorderColor: colors.surface,
+                                pointBorderWidth: 2,
+                                showLine: false,
+                                yAxisID: "y"
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: { padding: { top: 4, right: 8, bottom: 4 } },
+                        backgroundColor: "transparent",
+                        animation: { duration: 300 },
+                        interaction: { mode: "index", intersect: false },
+                        plugins: [peakLabelPlugin],
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                backgroundColor: colors.surface,
+                                titleColor: colors.text,
+                                bodyColor: colors.text2,
+                                borderColor: colors.border,
+                                borderWidth: 1,
+                                padding: 10,
+                                callbacks: {
+                                    label: function (context) {
+                                        return " " + context.dataset.label + ": " + numberFormat.format(context.parsed.y);
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                border: { color: colors.border },
+                                grid: { display: false, drawBorder: false },
+                                afterBuildTicks: function (axis) {
+                                    var labels = axis.chart.data.labels;
+                                    var count = labels.length;
+                                    if (count === 0) {
+                                        return;
+                                    }
+                                    var limit = Math.max(2, tickLimit);
+
+                                    if (count > 1 && count <= 8) {
+                                        limit = count;
+                                    }
+                                    var ticks = [];
+                                    for (var i = 0; i < limit; i += 1) {
+                                        var index = Math.round((count - 1) * (i / (limit - 1)));
+                                        if (ticks.length && ticks[ticks.length - 1].value === index) {
+                                            continue;
+                                        }
+                                        ticks.push({ value: index });
+                                    }
+                                    axis.ticks = ticks;
+                                },
+                                ticks: {
+                                    color: colors.muted,
+                                    maxRotation: 0,
+                                    minRotation: 0,
+                                    autoSkip: false,
+                                    font: { size: 12 }
+                                }
+                            },
+                            y: {
+                                min: 0,
+                                beginAtZero: true,
+                                border: { display: false },
+                                grid: { color: colors.border, drawBorder: false },
+                                ticks: {
+                                    color: colors.muted,
+                                    precision: 0,
+                                    maxTicksLimit: tickLimit,
+                                    font: { size: 13 },
+                                    callback: function (value) {
+                                        return numberFormat.format(value);
+                                    }
+                                },
+                                title: {
+                                    display: false,
+                                    text: config.unit,
+                                    color: colors.muted,
+                                    font: { size: 13 }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function fetchSeries(kind, period) {
+                var config = charts[kind];
+
+                return window.fetchJSON(bust(config.endpoints[period])).then(function (rows) {
+                    return { rows: rows, fallback: false };
+                }).catch(function (error) {
+                    if (period === "day") {
+                        throw error;
+                    }
+
+                    return window.fetchJSON(bust(config.endpoints.day)).then(function (rows) {
+                        return { rows: rows, fallback: true };
+                    });
+                });
+            }
+
+            function updateButtons(kind) {
+                var config = charts[kind];
+                var group = $(config.buttonsId);
+
+                if (!group) {
+                    return;
+                }
+
+                var buttons = group.querySelectorAll("button[data-period]");
+
+                for (var i = 0; i < buttons.length; i += 1) {
+                    var active = buttons[i].getAttribute("data-period") === config.period;
+                    buttons[i].classList.toggle("active", active);
+                    buttons[i].setAttribute("aria-pressed", active ? "true" : "false");
+                }
+
+                setText(config.titleId, peakTitle(config.period, config.unit));
+            }
+
+            function refreshNotes() {
+                Object.keys(charts).forEach(function (kind) {
+                    if (charts[kind].data) {
+                        updateChartNote(charts[kind]);
+                    }
+                });
+            }
+
+            function setChartNote(config, text) {
+                var note = config.noteId ? $(config.noteId) : null;
+
+                if (!note) {
+                    return;
+                }
+
+                note.textContent = text;
+                note.hidden = false;
+            }
+
+            function updateChartNote(config, series) {
+                if (!config.noteId) {
+                    return;
+                }
+
+                series = series || config.data;
+                var values = series.total.filter(function (value) {
+                    return typeof value === "number" && isFinite(value);
+                });
+
+                if (!values.length) {
+                    setChartNote(config, "Peak and current count are unavailable.");
+                    if (config.peakId) {
+                        setText(config.peakId, "Peak n/a");
+                    }
+                    return;
+                }
+
+                var peak = Math.max.apply(null, values);
+                var current = overviewValues[config.overviewId === "stat-players" ? "players" : "servers"];
+                var live = typeof current === "number" && Number.isFinite(current);
+                var label = peakTitle(config.period);
+
+                if (config.peakId) {
+                    setText(config.peakId, "Peak " + numberFormat.format(peak) + " " + config.unit);
+                }
+
+                if (!live) {
+                    current = values[values.length - 1];
+                }
+
+                if (peak === current) {
+                    setChartNote(config, label + ": " + numberFormat.format(peak) + " " + config.unit + ", the same as now.");
+                    return;
+                }
+
+                setChartNote(config, label + ": " + numberFormat.format(peak) + " " + config.unit + " · Current " + numberFormat.format(current) + " " + config.unit + " · " + numberFormat.format(peak - current) + " below the peak.");
+            }
+
+            function loadChart(kind, period) {
+                var config = charts[kind];
+                var card = $(config.cardId);
+                var status = $(config.statusId);
+
+                config.requestId = (config.requestId || 0) + 1;
+                var requestId = config.requestId;
+                config.period = period;
+                updateButtons(kind);
+
+                if (card) {
+                    card.classList.add("is-loading");
+                    card.classList.remove("has-state");
+                    card.setAttribute("aria-busy", "true");
+                }
+
+                showState(config.stateId, "", "", false);
+
+                var note = config.noteId ? $(config.noteId) : null;
+
+                if (note) {
+                    note.hidden = true;
+                }
+
+                if (status) {
+                    status.textContent = "Loading " + config.noun + " data…";
+                }
+
+                if (typeof window.fetchJSON !== "function") {
+                    fail("Trend data unavailable", "The live data helper did not load.");
+                    return;
+                }
+
+                fetchSeries(kind, period).then(function (result) {
+                    if (requestId !== config.requestId) {
+                        return;
+                    }
+
+                    var rows = result.rows;
+
+                    if (!Array.isArray(rows)) {
+                        throw new Error("empty");
+                    }
+
+                    var series = buildSeries(config, rows, period);
+
+                    if (!series.labels.length) {
+                        throw new Error("empty");
+                    }
+
+                    if (typeof window.Chart === "undefined") {
+                        throw new Error("chart");
+                    }
+
+                    config.data = series;
+                    updateChartNote(config, series);
+                    drawChart(kind);
+
+                    if (card) {
+                        card.classList.remove("is-loading");
+                        card.setAttribute("aria-busy", "false");
+                    }
+
+                    if (status) {
+                        status.textContent = result.fallback
+                            ? "Longer range unavailable. Showing the last day."
+                            : "Samples from " + series.startLabel + " to " + series.endLabel + (series.stepLabel ? ", every " + series.stepLabel : "") + ".";
+                    }
+                }).catch(function (error) {
+                    if (requestId !== config.requestId) {
+                        return;
+                    }
+
+                    if (error && error.message === "empty") {
+                        fail("No samples in this range", "The API returned no timestamped samples. Try another range.");
+                    } else if (error && error.message === "chart") {
+                        fail("Chart library unavailable", "The chart library did not load. Reload the page to try again.");
+                    } else {
+                        fail("Trend data unavailable", "The status API did not return " + config.noun + " history.");
+                    }
+                });
+
+                function fail(title, message) {
+                    config.data = null;
+
+                    if (config.chart) {
+                        config.chart.destroy();
+                        config.chart = null;
+                    }
+
+                    if (card) {
+                        card.classList.remove("is-loading");
+                        card.classList.add("has-state");
+                        card.setAttribute("aria-busy", "false");
+                    }
+
+                    showState(config.stateId, title, message, true);
+
+                    if (status) {
+                        status.textContent = title + ".";
+                    }
+
+                    if (config.peakId) {
+                        setText(config.peakId, "Peak n/a");
+                    }
+
+                    var note = config.noteId ? $(config.noteId) : null;
+
+                    if (note) {
+                        note.hidden = true;
                     }
                 }
             }
-            fetchApiStatusCodes();
-        });
+
+            function setHealthRow(key, state, label, value, run) {
+                if (run !== undefined && run !== healthRun) {
+                    return;
+                }
+
+                var rowIds = { status: "health-status-tw", ddstats: "health-ddstats" };
+                var valueIds = { status: "api-status-tw-stats", ddstats: "api-ddstats-tw-player" };
+                var row = $(rowIds[key]);
+
+                if (row) {
+                    row.setAttribute("data-state", state);
+
+                    var stateText = row.querySelector(".health-state-text");
+
+                    if (stateText) {
+                        stateText.textContent = label;
+                    }
+                }
+
+                setText(valueIds[key], value);
+            }
+
+            function checkStatusTw(run) {
+                setHealthRow("status", "loading", "Checking", "Checking…", run);
+
+                if (typeof window.fetchJSON !== "function") {
+                    setHealthRow("status", "error", "Unavailable", "—", run);
+                    return Promise.resolve(false);
+                }
+
+                var started = window.performance.now();
+
+                return window.fetchJSON(bust(STATS_URL)).then(function () {
+                    var elapsed = Math.round(window.performance.now() - started);
+                    setHealthRow("status", "ok", "Online", "200 · " + elapsed + " ms", run);
+                    return true;
+                }).catch(function () {
+                    var elapsed = Math.round(window.performance.now() - started);
+                    setHealthRow("status", "error", "Unreachable", "ERR · " + elapsed + " ms", run);
+                    return false;
+                });
+            }
+
+            function checkDDStats(run) {
+                setHealthRow("ddstats", "loading", "Checking", "Checking…", run);
+
+                var started = window.performance.now();
+                var controller = new AbortController();
+                var timer = window.setTimeout(function () {
+                    controller.abort();
+                }, 10000);
+
+                return fetch("https://ddstats.tw/player/json?player=DDNet", {
+                    cache: "no-store",
+                    signal: controller.signal
+                }).then(function (response) {
+                    var elapsed = Math.round(window.performance.now() - started);
+
+                    if (response.ok) {
+                        setHealthRow("ddstats", "ok", "Online", response.status + " · " + elapsed + " ms", run);
+                        return true;
+                    }
+
+                    setHealthRow("ddstats", "error", "Error", response.status + " · " + elapsed + " ms", run);
+                    return false;
+                }).catch(function () {
+                    var elapsed = Math.round(window.performance.now() - started);
+                    setHealthRow("ddstats", "error", "Unreachable", "ERR · " + elapsed + " ms", run);
+                    return false;
+                }).finally(function () {
+                    window.clearTimeout(timer);
+                });
+            }
+
+            function loadHealth() {
+                var run = ++healthRun;
+                showState("api-health-state", "", "", false);
+                setText("api-health-status", "Checking API health.");
+
+                Promise.all([checkStatusTw(run), checkDDStats(run)]).then(function (results) {
+                    if (run !== healthRun) {
+                        return;
+                    }
+
+                    var healthy = results[0] || results[1];
+
+                    if (!healthy) {
+                        showState(
+                            "api-health-state",
+                            "Health checks failed",
+                            "Neither API responded. Check your connection and retry the checks.",
+                            true
+                        );
+                    }
+
+                    setText(
+                        "api-health-status",
+                        healthy ? "API health checks finished." : "API health checks failed."
+                    );
+                });
+            }
+
+            function loadDiagnostics() {
+                setText("country", "Checking…");
+                setText("city", "Checking…");
+
+                var regionController = new AbortController();
+                var regionTimer = window.setTimeout(function () {
+                    regionController.abort();
+                }, 8000);
+
+                fetch("https://ipapi.co/json/", {
+                    cache: "no-store",
+                    signal: regionController.signal
+                }).then(function (response) {
+                    if (!response.ok) {
+                        throw new Error("region");
+                    }
+
+                    return response.json();
+                }).then(function (data) {
+                    setText("country", data && data.country_name ? data.country_name : "Unavailable");
+                    setText("city", data && data.city ? data.city : "Unavailable");
+                }).catch(function () {
+                    setText("country", "Unavailable");
+                    setText("city", "Unavailable");
+                }).finally(function () {
+                    window.clearTimeout(regionTimer);
+                });
+
+                var hosts = [
+                    { host: "master1.ddnet.org", id: "ping-master1" },
+                    { host: "master2.ddnet.org", id: "ping-master2" },
+                    { host: "ddnet.org", id: "ping-ddnet" },
+                    { host: "forum.ddnet.org", id: "ping-forum" },
+                    { host: "wiki.ddnet.org", id: "ping-wiki" },
+                    { host: "codedoc.ddnet.org", id: "ping-codedoc" },
+                    { host: "kog.tw", id: "ping-kog" }
+                ];
+
+                hosts.forEach(function (item) {
+                    var started = window.performance.now();
+                    var controller = new AbortController();
+                    var timer = window.setTimeout(function () {
+                        controller.abort();
+                    }, 6000);
+
+                    setText(item.id, "Checking…");
+
+                    fetch("https://" + item.host, {
+                        method: "HEAD",
+                        mode: "no-cors",
+                        cache: "no-store",
+                        signal: controller.signal
+                    }).then(function () {
+                        setText(item.id, Math.round(window.performance.now() - started) + " ms");
+                    }).catch(function () {
+                        setText(item.id, "Offline");
+                    }).finally(function () {
+                        window.clearTimeout(timer);
+                    });
+                });
+            }
+
+            function loadAll() {
+                loadHealth();
+                loadOverview();
+                loadChart("players", charts.players.period);
+                loadChart("servers", charts.servers.period);
+            }
+
+            function initButtons() {
+                Object.keys(charts).forEach(function (kind) {
+                    var group = $(charts[kind].buttonsId);
+
+                    if (!group) {
+                        return;
+                    }
+
+                    var buttons = group.querySelectorAll("button[data-period]");
+
+                    for (var i = 0; i < buttons.length; i += 1) {
+                        buttons[i].addEventListener("click", function () {
+                            stale = Date.now();
+                            loadChart(kind, this.getAttribute("data-period"));
+                        });
+                    }
+                });
+
+                var refresh = $("refresh-status");
+
+                if (refresh) {
+                    refresh.addEventListener("click", function () {
+                        stale = Date.now();
+                        loadAll();
+                    });
+                }
+
+                document.addEventListener("click", function (event) {
+                    var target = event.target && typeof event.target.closest === "function"
+                        ? event.target.closest("[data-retry]")
+                        : null;
+
+                    if (!target) {
+                        return;
+                    }
+
+                    stale = Date.now();
+
+                    var what = target.getAttribute("data-retry");
+
+                    if (what === "overview") {
+                        loadOverview();
+                    } else if (what === "players") {
+                        loadChart("players", charts.players.period);
+                    } else if (what === "servers") {
+                        loadChart("servers", charts.servers.period);
+                    } else if (what === "health") {
+                        loadHealth();
+                    }
+                });
+            }
+
+            function initDiagnostics() {
+                var details = $("diagnostics");
+                var loaded = false;
+
+                if (!details) {
+                    return;
+                }
+
+                details.addEventListener("toggle", function () {
+                    if (!details.open || loaded) {
+                        return;
+                    }
+
+                    loaded = true;
+                    loadDiagnostics();
+                });
+            }
+
+            function initThemeSync() {
+                if (!window.MutationObserver) {
+                    return;
+                }
+
+                new window.MutationObserver(function () {
+                    if (charts.players.data) {
+                        drawChart("players");
+                    }
+                    if (charts.servers.data) {
+                        drawChart("servers");
+                    }
+                }).observe(document.documentElement, {
+                    attributes: true,
+                    attributeFilter: ["data-theme"]
+                });
+            }
+
+            initButtons();
+            initDiagnostics();
+            initThemeSync();
+            loadAll();
+        })();
     </script>
 </body>
 </html>

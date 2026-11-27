@@ -1,389 +1,277 @@
-import { COUNTRY_CODES } from './country_codes.js';
+/* TeeViewer API helpers.
+   Loaded by players.html and any page that needs getStatus or searchPlayer.
+   Reads window.COUNTRY_CODES from country_codes.js and window.fetchJSON from
+   data.js. Every DOM lookup is optional, so a missing element never throws. */
 
+(function () {
+    "use strict";
 
+    var myTee = null;
 
-console.log("api.js loaded");
-
-window.navigateToPage = function(page) {
-    window.location.href = page;
-};
-
-let myTee;
-
-
-
-const formatTimestamp = (timestamp) => {
-
-    if (!timestamp) return 'N/A';
-
-    try {
-
-        const date = new Date(timestamp);
-
-        return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric'});
-
-    } catch (e) {
-
-        return 'Invalid Date';
-
+    function byId(id) {
+        return document.getElementById(id);
     }
 
-};
+    function setText(id, value) {
+        var node = byId(id);
 
-
-
-window.getStatus = async function() {
-
-    console.log("getStatus function called");
-
-    try {
-
-        const response = await fetch("https://api.status.tw/stats");
-
-        console.log("API response status:", response.status);
-
-        if (!response.ok) {
-
-            throw new Error(`HTTP error! status: ${response.status}`);
-
+        if (node) {
+            node.textContent = value;
         }
-
-        const data = await response.json();
-
-        console.log("API data received:", data);
-
-
-
-        const numPlayers = data.numPlayers;
-
-        const numServers = data.numServers;
-
-        const numClans = data.numClans;
-
-        const numMaps = data.numMaps;
-
-
-
-        const onlinePlayerCountElement = document.getElementById('onlineplayercount');
-
-        const numServersElement = document.getElementById('numServers');
-
-        const numClansElement = document.getElementById('numClans');
-
-        const numMapsElement = document.getElementById('numMaps');
-
-        
-
-        if (onlinePlayerCountElement) {
-
-            onlinePlayerCountElement.innerHTML = "Players Online: <br>" + numPlayers;
-
-            console.log("onlineplayercount updated:", onlinePlayerCountElement.innerHTML);
-
-        } else {
-
-            console.warn("Element with ID 'onlineplayercount' not found.");
-
-        }
-
-        if (numServersElement) {
-
-            numServersElement.innerHTML = "Servers Online: <br>" + numServers;
-
-            console.log("numServers updated:", numServersElement.innerHTML);
-
-        } else {
-
-            console.warn("Element with ID 'numServers' not found.");
-
-        }
-
-        if (numClansElement) {
-
-            numClansElement.innerHTML = "Clans: <br>" + numClans;
-
-            console.log("numClans updated:", numClansElement.innerHTML);
-
-        } else {
-
-            console.warn("Element with ID 'numClans' not found.");
-
-        }
-
-        if (numMapsElement) {
-
-            numMapsElement.innerHTML = "Maps: <br>" + numMaps;
-
-            console.log("numMaps updated:", numMapsElement.innerHTML);
-
-        } else {
-
-            console.warn("Element with ID 'numMaps' not found.");
-
-        }
-
-
-
-    } catch (error) {
-
-        console.error("Error fetching status:", error);
-
-        const onlinePlayerCountElement = document.getElementById('onlineplayercount');
-
-        const numServersElement = document.getElementById('numServers');
-
-        const numClansElement = document.getElementById('numClans');
-
-        const numMapsElement = document.getElementById('numMaps');
-
-
-
-        if (onlinePlayerCountElement) onlinePlayerCountElement.innerHTML = "Players Online: <br> N/A";
-
-        if (numServersElement) numServersElement.innerHTML = "Servers Online: <br> N/A";
-
-        if (numClansElement) numClansElement.innerHTML = "Clans: <br> N/A";
-
-        if (numMapsElement) numMapsElement.innerHTML = "Clans: <br> N/A"; // Fixed typo here (was "Clans: <br> N/A" twice)
-
     }
 
-}
+    function formatTimestamp(timestamp) {
+        if (!timestamp) {
+            return "N/A";
+        }
 
+        try {
+            var date = new Date(timestamp);
 
-
-getStatus();
-
-
-
-window.searchPlayer = async function() {
-
-    const playerNameInput = document.getElementById('playerSearch');
-
-    const playerName = playerNameInput.value.trim();
-
-    const playerInfoDiv = document.getElementById('playerInfo');
-
-
-
-    if (playerInfoDiv) playerInfoDiv.innerHTML = "<p>Loading player data...</p>";
-
-    document.getElementById('name').innerHTML = "";
-
-    document.getElementById('playtime').innerHTML = "";
-
-    document.getElementById('joindate').innerHTML = "";
-
-    document.getElementById('country').innerHTML = "";
-
-    document.getElementById('clan').innerHTML = "";
-
-    document.getElementById('points').innerHTML = "";
-
-    document.getElementById('lastseen').innerHTML = "";
-
-    
-
-    if (typeof myTee !== 'undefined' && myTee !== null) {
-
-        myTee.api.functions.unbindContainer();
-
-        myTee = null;
-
-        document.querySelector('.teeassembler-tee').innerHTML = '';
-
-    }
-
-
-
-    if (!playerName) {
-
-        if (playerInfoDiv) playerInfoDiv.innerHTML = "<p>Please enter a player name.</p>";
-
-        return;
-
-    }
-
-
-
-    try {
-
-        const apiUrl = `https://ddstats.tw/player/json?player=${encodeURIComponent(playerName)}`;
-
-        const response = await fetch(apiUrl);
-
-
-
-        if (!response.ok) {
-
-            const errorText = await response.text();
-
-            if (errorText.includes("player not found")) {
-
-                if (playerInfoDiv) playerInfoDiv.innerHTML = "";
-
-                document.getElementById('name').innerHTML = `Player "${playerName}" not found.`;
-
-                return;
-
+            if (isNaN(date.getTime())) {
+                return "Invalid Date";
             }
 
-            throw new Error(`Could not fetch resource: ${response.status} ${response.statusText} - ${errorText}`);
+            return date.toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "long",
+                day: "numeric"
+            });
+        } catch (error) {
+            return "Invalid Date";
+        }
+    }
 
+    function countryLabel(code) {
+        var table = window.COUNTRY_CODES || {};
+        var name = table[code];
+
+        if (!name) {
+            return code === undefined || code === null
+                ? "Unknown"
+                : "Unknown (Code: " + code + ")";
         }
 
+        if (name === "default") {
+            return "Default";
+        }
 
+        if (/^[A-Za-z]{2}$/.test(name)) {
+            try {
+                return new Intl.DisplayNames(["en"], { type: "region" }).of(name.toUpperCase());
+            } catch (error) {
+                return name;
+            }
+        }
 
-        const data = await response.json();
+        return name;
+    }
 
-        if (playerInfoDiv) playerInfoDiv.innerHTML = "";
+    function clearPlayerFields() {
+        setText("name", "");
+        setText("playtime", "");
+        setText("joindate", "");
+        setText("country", "");
+        setText("clan", "");
+        setText("points", "");
+        setText("lastseen", "");
+    }
 
-
-
-        const playtimeSeconds = data.general_activity.total_seconds_played;
-
-        const points = data.profile.points;
-
-        const countryCodeNumeric = data.recent_player_info[0].country;
-
-        const clan = data.profile.clan || 'N/A';
-
-        const joindateRaw = data.general_activity.start_of_playtime;
-
-        const lastseenRaw = data.recent_player_info[0].last_seen;
-
-        const skinbodyColor = data.recent_player_info[0].skin_color_body;
-
-        const skinfeetColor = data.recent_player_info[0].skin_color_feet;
-
-        const skinName = data.recent_player_info[0].skin_name;
-
-        const name = data.profile.name;
-
-
-
-        const playtimeHours = Math.trunc(playtimeSeconds / 3600);
-
-
-
-        const countryName = COUNTRY_CODES[countryCodeNumeric] || `Unknown (Code: ${countryCodeNumeric})`;
-
-        const regionNames = new Intl.DisplayNames(
-
-        ['en'], {type: 'region'}
-
-        );
-
-        const joindateFormatted = formatTimestamp(joindateRaw);
-
-        const lastseenFormatted = formatTimestamp(lastseenRaw);
-
-        document.getElementById('playtime').innerHTML = `${playtimeHours} Hours`;
-
-        document.getElementById('joindate').innerHTML = joindateFormatted;
-
-        document.getElementById('country').innerHTML = countryName === "default" ? "Default" : regionNames.of(countryName);
-
-        document.getElementById('clan').innerHTML = clan;
-
-        document.getElementById('points').innerHTML = points;
-
-        document.getElementById('lastseen').innerHTML = lastseenFormatted;
-
-        document.getElementById('name').innerHTML = name;
-
-        console.log(data);
-
-        document.getElementById('CountryFlag').src = "/TeeViewer/countryflags/" + countryName + ".png";
-
-        const effectiveBodyColor = skinbodyColor !== null ? skinbodyColor.toString() : '';
-
-        const effectiveFeetColor = skinfeetColor !== null ? skinfeetColor.toString() : '';
-
-
-
-        const myTeeOptions = {
-
-            container: document.querySelector('.teeassembler-tee'),
-
-            imageLink: `https://ddstats.tw/skins/${skinName}.png`,
-
-            bodyColor: effectiveBodyColor,
-
-            feetColor: effectiveFeetColor,
-
-            colorFormat: 'code'
-
-        };
-
-
-
-        if (typeof TeeAssembler !== 'undefined' && TeeAssembler.Tee) {
-
-            if (myTee) {
-
+    function teardownTee() {
+        if (myTee) {
+            try {
                 myTee.api.functions.unbindContainer();
-
+            } catch (error) {
+                // The renderer may never have bound a container.
             }
-
-            myTee = new TeeAssembler.Tee(myTeeOptions);
-
-            myTee.api.functions.lookAtCursor();
-
-        } else {
-
-            console.warn("TeeAssembler library not loaded or not found.");
-
-            document.querySelector('.teeassembler-tee').innerHTML = 'Tee preview not available.';
-
-        }
-
-
-
-        playerNameInput.value = '';
-
-    } catch (error) {
-
-        console.error("Error in searchPlayer:", error);
-
-        if (playerInfoDiv) playerInfoDiv.innerHTML = `<p style="color: red;">An error occurred while fetching player data: ${error.message}. Please try again.</p>`;
-
-        document.getElementById('playtime').innerHTML = "";
-
-        document.getElementById('joindate').innerHTML = "";
-
-        document.getElementById('country').innerHTML = "";
-
-        document.getElementById('clan').innerHTML = "";
-
-        document.getElementById('points').innerHTML = "";
-
-        document.getElementById('lastseen').innerHTML = "";
-
-        document.getElementById('name').innerHTML = "";
-
-        if (typeof myTee !== 'undefined' && myTee !== null) {
-
-            myTee.api.functions.unbindContainer();
 
             myTee = null;
-
-            document.querySelector('.teeassembler-tee').innerHTML = '';
-
         }
 
+        var container = document.querySelector(".teeassembler-tee");
+
+        if (container) {
+            container.replaceChildren();
+        }
     }
 
-}
+    window.navigateToPage = function (page) {
+        window.location.href = page;
+    };
 
+    window.getStatus = async function () {
+        if (typeof window.fetchJSON !== "function") {
+            return;
+        }
 
+        var targets = [
+            { id: "onlineplayercount", key: "numPlayers" },
+            { id: "numServers", key: "numServers" },
+            { id: "numClans", key: "numClans" },
+            { id: "numMaps", key: "numMaps" },
+            { id: "numGameTypes", key: "numGameTypes" },
+            { id: "numVersions", key: "numVersions" }
+        ];
 
-document.getElementById('playerSearch').addEventListener('keypress', function(event) {
+        try {
+            var data = await window.fetchJSON("https://api.status.tw/stats");
 
-    if (event.key === 'Enter') {
+            targets.forEach(function (target) {
+                var node = byId(target.id);
 
-        window.searchPlayer();
+                if (!node) {
+                    return;
+                }
 
+                var value = Number(data && data[target.key]);
+
+                node.textContent = Number.isFinite(value)
+                    ? value.toLocaleString("en-US")
+                    : "—";
+            });
+        } catch (error) {
+            targets.forEach(function (target) {
+                var node = byId(target.id);
+
+                if (node) {
+                    node.textContent = "—";
+                }
+            });
+        }
+    };
+
+    window.searchPlayer = async function () {
+        var playerNameInput = byId("playerSearch");
+        var playerInfoDiv = byId("playerInfo");
+        var playerName = playerNameInput ? playerNameInput.value.trim() : "";
+
+        if (playerInfoDiv) {
+            playerInfoDiv.textContent = "Loading player data...";
+        }
+
+        clearPlayerFields();
+        teardownTee();
+
+        if (!playerName) {
+            if (playerInfoDiv) {
+                playerInfoDiv.textContent = "Please enter a player name.";
+            }
+
+            return;
+        }
+
+        try {
+            var response = await fetch(
+                "https://ddstats.tw/player/json?player=" + encodeURIComponent(playerName)
+            );
+
+            if (!response.ok) {
+                var errorText = await response.text();
+
+                if (errorText.indexOf("player not found") !== -1) {
+                    if (playerInfoDiv) {
+                        playerInfoDiv.textContent = "";
+                    }
+
+                    setText("name", 'Player "' + playerName + '" not found.');
+                    return;
+                }
+
+                throw new Error(
+                    "Could not fetch resource: " + response.status + " " + response.statusText
+                );
+            }
+
+            var data = await response.json();
+            var general = data && data.general_activity ? data.general_activity : {};
+            var profile = data && data.profile ? data.profile : {};
+            var recent = data && data.recent_player_info && data.recent_player_info[0]
+                ? data.recent_player_info[0]
+                : {};
+
+            var playtimeSeconds = Number(general.total_seconds_played);
+            var playtimeHours = Number.isFinite(playtimeSeconds)
+                ? Math.trunc(playtimeSeconds / 3600)
+                : null;
+
+            if (playerInfoDiv) {
+                playerInfoDiv.textContent = "";
+            }
+
+            setText("playtime", playtimeHours === null ? "—" : playtimeHours + " Hours");
+            setText("joindate", formatTimestamp(general.start_of_playtime));
+            setText("country", countryLabel(recent.country));
+            setText("clan", profile.clan || "N/A");
+            setText("points", profile.points === undefined ? "—" : profile.points);
+            setText("lastseen", formatTimestamp(recent.last_seen));
+            setText("name", profile.name || playerName);
+
+            var flag = byId("CountryFlag");
+            var table = window.COUNTRY_CODES || {};
+            var flagCode = table[recent.country];
+
+            if (flag && flagCode && flagCode !== "default") {
+                flag.src = "/TeeViewer/countryflags/" + flagCode + ".png";
+            }
+
+            var container = document.querySelector(".teeassembler-tee");
+
+            if (container && typeof TeeAssembler !== "undefined" && TeeAssembler.Tee) {
+                try {
+                    myTee = new TeeAssembler.Tee({
+                        container: container,
+                        imageLink: "https://ddstats.tw/skins/" + (recent.skin_name || "default") + ".png",
+                        bodyColor: recent.skin_color_body !== null && recent.skin_color_body !== undefined
+                            ? String(recent.skin_color_body)
+                            : "",
+                        feetColor: recent.skin_color_feet !== null && recent.skin_color_feet !== undefined
+                            ? String(recent.skin_color_feet)
+                            : "",
+                        colorFormat: "code"
+                    });
+
+                    myTee.api.functions.lookAtCursor();
+                } catch (error) {
+                    container.textContent = "Tee preview not available.";
+                }
+            } else if (container) {
+                container.textContent = "Tee preview not available.";
+            }
+
+            if (playerNameInput) {
+                playerNameInput.value = "";
+            }
+        } catch (error) {
+            if (playerInfoDiv) {
+                playerInfoDiv.textContent =
+                    "An error occurred while fetching player data. Please try again.";
+            }
+
+            clearPlayerFields();
+            teardownTee();
+        }
+    };
+
+    function init() {
+        var playerNameInput = byId("playerSearch");
+
+        if (playerNameInput) {
+            playerNameInput.addEventListener("keypress", function (event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    window.searchPlayer();
+                }
+            });
+        }
+
+        if (typeof window.fetchJSON === "function") {
+            window.getStatus();
+        }
     }
 
-});
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init, { once: true });
+    } else {
+        init();
+    }
+})();

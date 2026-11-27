@@ -3,145 +3,634 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teeworlds Dynamic Skin Renderer</title>
-    
-    <link href="TeeAssembler/css/teejquery.css" rel="stylesheet">
-    <link href="TeeAssembler/css/teeassembler.css" rel="stylesheet">
-    <link href="TeeAssembler/css/slider.css" rel="stylesheet">
-
-    <style>
-        body {
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            color: #333;
-        }
-        h1 {
-            color: #2c3e50;
-            margin-bottom: 20px;
-        }
-        #skin-display-container {
-            border: 2px solid #3498db;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        #skin-display-container .teeassembler-tee {
-            /* TeeAssembler will put the canvas here */
-            display: inline-block; /* To center it */
-            vertical-align: middle;
-        }
-        #status {
-            margin-top: 10px;
-            font-style: italic;
-            color: #555;
-        }
-        .instructions {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #e9ecef;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 600px;
-            text-align: left;
-        }
-        .instructions code {
-            background-color: #e0e0e0;
-            padding: 2px 4px;
-            border-radius: 3px;
-            font-family: monospace;
-        }
-    </style>
+    <title>Skin preview — TeeViewer</title>
+    <meta name="description" content="Preview a Teeworlds skin with custom body and feet colors, then download the recolored image.">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="TeeAssembler/css/Tee.css">
+    <link rel="stylesheet" href="status.css">
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
 </head>
 <body>
-    <h1>Your Custom Teeworlds Skin</h1>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <div id="skin-display-container">
-        <div class="teeassembler-tee"></div>
-        <p id="status">Loading skin...</p>
-    </div>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html" aria-label="TeeViewer home">
+                <img class="logo" src="logo.png" alt="TeeViewer" width="863" height="330">
+            </a>
 
-    <div class="instructions">
-        <h2>How to Use:</h2>
-        <p>You can change the skin and colors by modifying the URL parameters:</p>
-        <ul>
-            <li><code>skinname=</code>: The name of the skin (e.g., <code>default</code>, <code>chinese_by_whis</code>).</li>
-            <li><code>color_body=</code>: Teeworlds integer color code for the body (e.g., <code>13149440</code> for a specific blue).</li>
-            <li><code>color_feet=</code>: Teeworlds integer color code for the feet (e.g., <code>323531</code> for a specific red).</li>
-        </ul>
-        <p>Example URL:</p>
-        <p><code>https://YOUR_GITHUB_USERNAME.github.io/YOUR_REPO_NAME/skin.html?skinname=chinese_by_whis&color_body=13149440&color_feet=323531</code></p>
-        <p>If no colors are specified, the default Teeworlds colors will be used.</p>
-    </div>
+            <nav class="nav" id="site-nav" aria-label="Primary">
+                <div class="nav-buttons">
+                    <a class="categories" href="index.html">Home</a>
+                    <a class="categories" href="players.html">Players</a>
+                    <a class="categories" href="clans.html">Clans</a>
+                    <a class="categories" href="maps.html">Maps</a>
+                    <a class="categories" href="servers.html">Servers</a>
+                    <a class="categories" href="status.html">Status</a>
+                    <a class="categories" href="skin.html">Skin</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                </div>
+            </nav>
 
-    <script src="TeeAssembler/js/lib.js"></script>
+            <div class="topbar-actions">
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
+                    </svg>
+                </button>
+                <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
+                    <span class="menu-bars" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="page skin-page" id="main">
+        <header class="page-head">
+            <div>
+                <h1 class="page-title">Skin</h1>
+                <p class="page-sub">Preview a Teeworlds skin with your colors, then download the recolored skin image.</p>
+            </div>
+        </header>
+
+        <div class="skin-layout">
+            <section class="card skin-preview-card" aria-labelledby="preview-title" aria-busy="true">
+                <div class="section-head">
+                    <p class="section-title" id="preview-title">Preview</p>
+                    <p class="skin-status" id="status" role="status">Loading skin…</p>
+                </div>
+
+                <div class="skin-stage" id="skin-display-container">
+                    <div class="skin-preview-frame">
+                        <div class="teeassembler-tee" id="teeContainer"></div>
+                    </div>
+                    <div class="skin-skeleton" aria-hidden="true">
+                        <span class="skeleton"></span>
+                    </div>
+
+                    <div class="state-card" id="skin-state" hidden>
+                        <svg class="state-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                            <path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"></path>
+                            <path d="M12 9v4"></path>
+                            <path d="M12 17h.01"></path>
+                        </svg>
+                        <p class="state-title" id="skin-state-title">Preview unavailable</p>
+                        <p class="state-text" id="skin-state-text">The skin renderer did not load.</p>
+                        <button class="button ghost" type="button" id="skin-retry">Retry</button>
+                    </div>
+                </div>
+
+                <div class="skin-preview-foot">
+                    <div class="skin-swatches" aria-label="Selected colors">
+                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-body-swatch"></span>Body</span>
+                        <span class="skin-swatch-item"><span class="skin-swatch" id="skin-feet-swatch"></span>Feet</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="card skin-controls" aria-labelledby="controls-title">
+                <div class="section-head">
+                    <p class="section-title" id="controls-title">Controls</p>
+                </div>
+
+                <form class="skin-form" id="skin-form" novalidate>
+                    <div class="field">
+                        <label for="skinName">Skin name</label>
+                        <input class="input" type="text" id="skinName" name="skinname" value="default" autocomplete="off" spellcheck="false" placeholder="default">
+                        <p class="field-hint">Name of the skin file on ddnet.org.</p>
+                    </div>
+
+                    <div class="field">
+                        <label for="bodyColor">Body color, decimal code</label>
+                        <div class="color-row">
+                            <input class="input" type="text" id="bodyColor" name="color_body" value="65535" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
+                            <input class="color-picker" type="color" id="bodyColorPicker" value="#0000ff" aria-label="Pick body color">
+                            <output class="color-hex" id="bodyHex" for="bodyColor" aria-label="Body color hex value">Hex #0000ff</output>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="feetColor">Feet color, decimal code</label>
+                        <div class="color-row">
+                            <input class="input" type="text" id="feetColor" name="color_feet" value="16711680" inputmode="numeric" pattern="[0-9]*" autocomplete="off" aria-describedby="color-help">
+                            <input class="color-picker" type="color" id="feetColorPicker" value="#ff0000" aria-label="Pick feet color">
+                            <output class="color-hex" id="feetHex" for="feetColor" aria-label="Feet color hex value">Hex #ff0000</output>
+                        </div>
+                    </div>
+
+                    <p class="field-hint" id="color-help">Use Teeworlds color codes from 0 to 16777215. Each code stores hue, saturation, and lightness.</p>
+                    <p class="field-hint is-error" id="color-error" hidden>Enter whole numbers from 0 to 16777215 for both color codes.</p>
+
+                    <div class="skin-actions">
+                        <button class="button primary" type="submit" id="skin-submit">Apply changes</button>
+                        <button class="button ghost" type="button" id="resetSkin">Reset</button>
+                        <a class="button ghost" id="downloadSkin" download="tee-skin.png" hidden>Download skin</a>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <p class="footer-note">© 2026 TeeViewer</p>
+        </div>
+    </footer>
+
     <script src="TeeAssembler/js/color.js"></script>
-    <script src="TeeAssembler/js/skins.js"></script>
     <script src="TeeAssembler/js/TeeAssembler.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const statusElement = document.getElementById('status');
-            const urlParams = new URLSearchParams(window.location.search);
+        (function () {
+            "use strict";
 
-            // Get parameters from URL, with defaults if not present
-            const skinname = urlParams.get('skinname') || 'default'; // Default skin if none specified
-            const colorBodyParam = urlParams.get('color_body');
-            const colorFeetParam = urlParams.get('color_feet');
+            var SKIN_BASE = "https://ddnet.org/skins/skin/";
+            var DEFAULTS = { name: "default", body: "65535", feet: "16711680" };
+            var MAX_CODE = 16777215;
+            var tee = null;
+            var renderToken = 0;
+            var stateMode = "error";
 
-            // Teeworlds default colors (blue body, red feet)
-            const DEFAULT_BODY_COLOR_CODE = 65535; // Blue
-            const DEFAULT_FEET_COLOR_CODE = 16711680; // Red
-
-            // Parse colors as integers, use defaults if parsing fails or not provided
-            const bodyColor = colorBodyParam ? parseInt(colorBodyParam, 10) : DEFAULT_BODY_COLOR_CODE;
-            const feetColor = colorFeetParam ? parseInt(colorFeetParam, 10) : DEFAULT_FEET_COLOR_CODE;
-
-            // Base URL for skins. TeeAssembler usually fetches from ddnet.org or similar.
-            const SKIN_BASE_URL = "https://ddnet.org/skins/skin/";
-
-            try {
-                // Initialize TeeAssembler.Tee with the retrieved parameters
-                // The container is the div where TeeAssembler will place the canvas
-                const teeContainer = document.querySelector('.teeassembler-tee');
-                
-                // TeeAssembler.Tee expects string representations of colors for the API calls
-                const tee = new TeeAssembler.Tee({
-                    container: teeContainer,
-                    imageLink: SKIN_BASE_URL + skinname + '.png',
-                    bodyColor: bodyColor.toString(),
-                    feetColor: feetColor.toString(),
-                    colorFormat: 'code' // Specify the color format
-                });
-
-                // Render the tee. TeeAssembler handles the image loading and drawing.
-                // It's asynchronous, but the TeeAssembler.Tee constructor handles the render
-                // internally. We just need to wait for it to be ready.
-                tee.onReady(function() {
-                    statusElement.textContent = `Skin: ${skinname}, Body: ${bodyColor}, Feet: ${feetColor}`;
-                });
-
-                // Handle potential errors during image loading by TeeAssembler
-                // (This might require looking into TeeAssembler's error handling, 
-                // but generally it will just fail to draw the image if link is bad)
-                tee.onError(function(error) {
-                    statusElement.textContent = `Error loading or rendering skin: ${error.message || error}`;
-                    console.error("TeeAssembler Error:", error);
-                });
-
-            } catch (error) {
-                statusElement.textContent = `Initialization Error: ${error.message}`;
-                console.error("TeeAssembler Initialization Failed:", error);
+            function $(id) {
+                return document.getElementById(id);
             }
-        });
+
+            function skinRGB(value) {
+                var code = Number(value) >>> 0;
+                return [(code >> 16) & 255, (code >> 8) & 255, code & 255];
+            }
+
+            function skinColor(value) {
+                return "#" + skinRGB(value).map(function (part) {
+                    return part.toString(16).padStart(2, "0");
+                }).join("");
+            }
+
+            function hexToCode(hex) {
+                return parseInt(String(hex).replace("#", ""), 16);
+            }
+
+            function setText(id, text) {
+                var node = $(id);
+                if (node) {
+                    node.textContent = text;
+                }
+            }
+
+            function setStatus(text, tone) {
+                var node = $("status");
+                if (!node) {
+                    return;
+                }
+                node.textContent = text;
+                node.setAttribute("data-tone", tone || "idle");
+            }
+
+            function updateBadge(name) {
+                var node = $("status");
+                if (!node) {
+                    return;
+                }
+                node.textContent = name ? "Preview ready" : "No skin selected";
+                node.setAttribute("data-tone", name ? "ready" : "idle");
+            }
+
+            function setBusy(busy) {
+                var card = document.querySelector(".skin-preview-card");
+                if (card) {
+                    card.setAttribute("aria-busy", busy ? "true" : "false");
+                }
+            }
+
+            function parseCode(value) {
+                var text = String(value == null ? "" : value).trim();
+
+                if (!/^[0-9]+$/.test(text)) {
+                    return null;
+                }
+
+                var number = Number(text);
+                return number >= 0 && number <= MAX_CODE ? number : null;
+            }
+
+            function readState() {
+                var nameInput = $("skinName");
+                var bodyInput = $("bodyColor");
+                var feetInput = $("feetColor");
+
+                return {
+                    name: nameInput ? nameInput.value.trim() : "",
+                    body: bodyInput ? parseCode(bodyInput.value) : null,
+                    feet: feetInput ? parseCode(feetInput.value) : null,
+                    bodyInput: bodyInput,
+                    feetInput: feetInput
+                };
+            }
+
+            function syncForm(state) {
+                if ($("skinName")) {
+                    $("skinName").value = state.name;
+                }
+                if ($("bodyColor")) {
+                    $("bodyColor").value = state.body;
+                }
+                if ($("feetColor")) {
+                    $("feetColor").value = state.feet;
+                }
+                if ($("bodyColorPicker")) {
+                    $("bodyColorPicker").value = skinColor(state.body);
+                }
+                if ($("feetColorPicker")) {
+                    $("feetColorPicker").value = skinColor(state.feet);
+                }
+                setText("bodyHex", "Hex " + skinColor(state.body));
+                setText("feetHex", "Hex " + skinColor(state.feet));
+            }
+
+            function applyUrl(state) {
+                try {
+                    var params = new URLSearchParams();
+                    params.set("skinname", state.name);
+                    params.set("color_body", state.body);
+                    params.set("color_feet", state.feet);
+
+                    window.history.replaceState(
+                        null,
+                        "",
+                        window.location.pathname + "?" + params.toString() + window.location.hash
+                    );
+                } catch (error) {
+                    // Keep the preview working when history is unavailable.
+                }
+            }
+
+            function hideState() {
+                var state = $("skin-state");
+                if (state) {
+                    state.hidden = true;
+                }
+            }
+
+            function showState(mode, title, text, action) {
+                stateMode = mode;
+
+                var state = $("skin-state");
+                var container = $("teeContainer");
+
+                if (container) {
+                    container.hidden = true;
+                }
+
+                setText("skin-state-title", title);
+                setText("skin-state-text", text);
+
+                var retry = $("skin-retry");
+                if (retry) {
+                    retry.textContent = action;
+                }
+
+                if (state) {
+                    state.hidden = false;
+                }
+            }
+
+            function hideDownload() {
+                var link = $("downloadSkin");
+                if (link) {
+                    link.hidden = true;
+                    link.removeAttribute("href");
+                }
+            }
+
+            function destroyTee() {
+                if (!tee) {
+                    return;
+                }
+
+                try {
+                    if (tee.api && tee.api.image && tee.api.image.url) {
+                        URL.revokeObjectURL(tee.api.image.url);
+                    }
+                } catch (error) {
+                    // The image URL may be absent.
+                }
+
+                try {
+                    if (tee.api && tee.api.functions && typeof tee.api.functions.unbindContainer === "function") {
+                        tee.api.functions.unbindContainer();
+                    }
+                } catch (error) {
+                    // The container may never have been bound.
+                }
+
+                tee = null;
+            }
+
+            function updateMeta(state) {
+                var bodySwatch = $("skin-body-swatch");
+                var feetSwatch = $("skin-feet-swatch");
+
+                if (bodySwatch) {
+                    bodySwatch.style.backgroundColor = skinColor(state.body);
+                }
+                if (feetSwatch) {
+                    feetSwatch.style.backgroundColor = skinColor(state.feet);
+                }
+            }
+
+            function updateDownload(instance, name) {
+                var link = $("downloadSkin");
+                var url = instance && instance.api && instance.api.image ? instance.api.image.url : "";
+
+                if (!link || !url) {
+                    hideDownload();
+                    return;
+                }
+
+                link.href = url;
+                link.setAttribute("download", (name || "tee") + ".png");
+                link.hidden = false;
+            }
+
+            function showError(message) {
+                destroyTee();
+                hideDownload();
+                setBusy(false);
+                setStatus("Preview unavailable.", "error");
+                showState("error", "Preview unavailable", message, "Retry");
+            }
+
+            function showEmpty() {
+                destroyTee();
+                hideDownload();
+                setBusy(false);
+                setStatus("No skin selected.", "idle");
+                showState("empty", "No skin selected", "Enter a skin name or reset to the default skin.", "Use default");
+            }
+
+            function buildTee(state, imageLink, token) {
+                var container = $("teeContainer");
+
+                if (!container || typeof TeeAssembler === "undefined" || !TeeAssembler.Tee) {
+                    showError("The skin renderer did not load. Reload the page to try again.");
+                    return;
+                }
+
+                try {
+                    var instance = new TeeAssembler.Tee({
+                        imageLink: imageLink,
+                        bodyColor: skinRGB(state.body).join(","),
+                        feetColor: skinRGB(state.feet).join(","),
+                        colorFormat: "rgb"
+                    });
+
+                    tee = instance;
+
+                    instance.api.functions.setContainer(container).then(function () {
+                        if (token !== renderToken || tee !== instance) {
+                            return;
+                        }
+
+                        try {
+                            instance.api.functions.lookAtCursor();
+                        } catch (error) {
+                            // The preview still works without eye tracking.
+                        }
+
+                        var containerNode = $("teeContainer");
+                        if (containerNode) {
+                            containerNode.hidden = false;
+                        }
+
+                        hideState();
+                        hideDownload();
+                        setBusy(false);
+                        setStatus("Preview ready", "ready");
+                        updateMeta(state);
+                        updateDownload(instance, state.name);
+                    }).catch(function () {
+                        if (token !== renderToken) {
+                            return;
+                        }
+
+                        showError("The skin could not be rendered. Check the skin name and try again.");
+                    });
+                } catch (error) {
+                    showError("The skin renderer failed to start. Reload the page and try again.");
+                }
+            }
+
+            function render(state) {
+                renderToken += 1;
+
+                var token = renderToken;
+                var container = $("teeContainer");
+
+                destroyTee();
+                hideState();
+                hideDownload();
+                setBusy(true);
+                setStatus("Loading skin…", "busy");
+
+                if (container) {
+                    container.replaceChildren();
+                    container.hidden = false;
+                }
+
+                if (!state.name) {
+                    showEmpty();
+                    return;
+                }
+
+                updateBadge(state.name);
+                updateMeta(state);
+
+                var imageLink = SKIN_BASE + encodeURIComponent(state.name) + ".png";
+                var probe = new Image();
+
+                probe.onload = function () {
+                    if (token !== renderToken) {
+                        return;
+                    }
+
+                    buildTee(state, imageLink, token);
+                };
+
+                probe.onerror = function () {
+                    if (token !== renderToken) {
+                        return;
+                    }
+
+                    showError("The skin image could not be loaded. Check the skin name and try again.");
+                };
+
+                probe.src = imageLink;
+            }
+
+            function clearInvalid() {
+                var bodyInput = $("bodyColor");
+                var feetInput = $("feetColor");
+                var error = $("color-error");
+
+                if (bodyInput) {
+                    bodyInput.removeAttribute("aria-invalid");
+                }
+                if (feetInput) {
+                    feetInput.removeAttribute("aria-invalid");
+                }
+                if (error) {
+                    error.hidden = true;
+                }
+            }
+
+            function onSubmit(event) {
+                if (event) {
+                    event.preventDefault();
+                }
+
+                var state = readState();
+                var invalid = state.body === null || state.feet === null;
+                var error = $("color-error");
+
+                if (state.bodyInput) {
+                    state.bodyInput.setAttribute("aria-invalid", state.body === null ? "true" : "false");
+                }
+                if (state.feetInput) {
+                    state.feetInput.setAttribute("aria-invalid", state.feet === null ? "true" : "false");
+                }
+
+                if (invalid) {
+                    if (error) {
+                        error.hidden = false;
+                    }
+                    setStatus("Fix the color codes and try again.", "error");
+                    return;
+                }
+
+                if (error) {
+                    error.hidden = true;
+                }
+
+                var normalized = {
+                    name: state.name,
+                    body: String(state.body),
+                    feet: String(state.feet)
+                };
+
+                syncForm(normalized);
+
+                if (!normalized.name) {
+                    window.history.replaceState(
+                        null,
+                        "",
+                        window.location.pathname + window.location.hash
+                    );
+                    showEmpty();
+                    return;
+                }
+
+                applyUrl(normalized);
+                render(normalized);
+            }
+
+            function onReset() {
+                clearInvalid();
+                syncForm(DEFAULTS);
+                applyUrl(DEFAULTS);
+                render(DEFAULTS);
+            }
+
+            function onRetry() {
+                if (stateMode === "empty") {
+                    clearInvalid();
+                    syncForm(DEFAULTS);
+                    applyUrl(DEFAULTS);
+                    render(DEFAULTS);
+                } else {
+                    onSubmit();
+                }
+            }
+
+            function readUrlState() {
+                var params = new URLSearchParams(window.location.search);
+                var name = (params.get("skinname") || DEFAULTS.name).trim();
+                var body = parseCode(params.get("color_body") || DEFAULTS.body);
+                var feet = parseCode(params.get("color_feet") || DEFAULTS.feet);
+
+                return {
+                    name: name,
+                    body: String(body === null ? DEFAULTS.body : body),
+                    feet: String(feet === null ? DEFAULTS.feet : feet)
+                };
+            }
+
+            var form = $("skin-form");
+            if (form) {
+                form.addEventListener("submit", onSubmit);
+            }
+
+            var reset = $("resetSkin");
+            if (reset) {
+                reset.addEventListener("click", onReset);
+            }
+
+            var retry = $("skin-retry");
+            if (retry) {
+                retry.addEventListener("click", onRetry);
+            }
+
+            var previewTimer = null;
+
+            function schedulePreview() {
+                window.clearTimeout(previewTimer);
+                previewTimer = window.setTimeout(onSubmit, 200);
+            }
+
+            ["bodyColor", "feetColor"].forEach(function (id) {
+                var input = $(id);
+                if (input) {
+                    input.addEventListener("input", function () {
+                        clearInvalid();
+                        schedulePreview();
+                    });
+                }
+            });
+
+            [["bodyColor", "bodyColorPicker", "bodyHex"], ["feetColor", "feetColorPicker", "feetHex"]].forEach(function (ids) {
+                var picker = $(ids[1]);
+
+                if (picker) {
+                    picker.addEventListener("input", function () {
+                        $(ids[0]).value = hexToCode(picker.value);
+                        $(ids[2]).textContent = "Hex " + picker.value.toLowerCase();
+                        clearInvalid();
+                        onSubmit();
+                    });
+                }
+            });
+
+            var initial = readUrlState();
+            syncForm(initial);
+            updateBadge(initial.name);
+            updateMeta(initial);
+            render(initial);
+        })();
     </script>
 </body>
 </html>

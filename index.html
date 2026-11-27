@@ -2,113 +2,525 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TeeViewer</title>
+    <title>TeeViewer — Teeworlds stats, clans, maps, and servers</title>
+    <meta name="description" content="Live Teeworlds statistics for players, clans, maps, and servers.">
+    <meta name="color-scheme" content="dark light">
+    <meta name="theme-color" content="#0a0a0a">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+    <script src="data.js"></script>
+    <script src="nav.js"></script>
 </head>
 <body>
-    <div class="topbar">
-        <img onclick="navigateToPage('index.html')" class="logo" src="logo.png" alt="DDNet Logo">
-        <div class="nav-buttons">
-            <button onclick="navigateToPage('players.html')" class="categories" id="players">Players</button>
-            <button onclick="navigateToPage('clans.html')" class="categories" id="clans">Clans</button>
-            <button onclick="navigateToPage('maps.html')" class="categories" id="maps">Maps</button>
-            <button onclick="navigateToPage('servers.html')" class="categories" id="servers">Servers</button>
-            <button onclick="window.location.href='https://discord.com/oauth2/authorize?client_id=1391161122714943528&permissions=117760&scope=bot+applications.commands'" class="categories" id="servers">Discord Bot</button>
-            <button onclick="navigateToPage('status.html')" class="categories" id="status">Status</button>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html" aria-label="TeeViewer home">
+                <img class="logo" src="logo.png" alt="TeeViewer" width="863" height="330">
+            </a>
+
+            <nav class="nav" id="site-nav" aria-label="Primary">
+                <div class="nav-buttons">
+                    <a class="categories" href="index.html">Home</a>
+                    <a class="categories" href="players.html">Players</a>
+                    <a class="categories" href="clans.html">Clans</a>
+                    <a class="categories" href="maps.html">Maps</a>
+                    <a class="categories" href="servers.html">Servers</a>
+                    <a class="categories" href="status.html">Status</a>
+                    <a class="categories" href="skin.html">Skin</a>
+                    <a class="categories" href="https://discord.com/oauth2/authorize?client_id=1391161122714943528&amp;permissions=117760&amp;scope=bot+applications.commands" target="_blank" rel="noopener noreferrer">Discord Bot</a>
+                </div>
+            </nav>
+
+            <div class="topbar-actions">
+                <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch theme" title="Switch theme">
+                    <svg class="icon-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true" focusable="false">
+                        <circle cx="12" cy="12" r="4"></circle>
+                        <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+                    </svg>
+                    <svg class="icon-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M20.2 14.4A8.5 8.5 0 0 1 9.6 3.8 8.5 8.5 0 1 0 20.2 14.4Z"></path>
+                    </svg>
+                </button>
+                <button class="menu-toggle" type="button" data-menu-toggle aria-controls="site-nav" aria-expanded="false" aria-label="Open navigation">
+                    <span class="menu-bars" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </span>
+                </button>
+            </div>
         </div>
+    </header>
+
+    <main class="page home" id="main">
+        <section class="hero" aria-labelledby="hero-title">
+            <div class="hero-inner">
+                <div class="hero-copy">
+                    <h1 class="hero-title" id="hero-title">Your Teeworlds journey, <span class="accent">visualized</span>.</h1>
+                    <div class="hero-subrow">
+                        <p class="hero-sub">Track players, clans, maps, and live servers across Teeworlds in one place.</p>
+                        <div class="hero-actions">
+                            <a class="button primary" href="players.html">Find a player</a>
+                            <a class="button ghost" href="servers.html">Browse servers</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stat-section network-section" aria-labelledby="live-stats-title">
+            <div class="section-head">
+                <h2 id="live-stats-title">Live network</h2>
+                <p class="section-note stat-source">Source: <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a> · <span id="statAsOf" hidden></span></p>
+            </div>
+
+            <div class="stat-grid is-loading" id="statGrid" aria-busy="true">
+                <a class="stat-tile" href="players.html">
+                    <span class="stat-kicker">Players</span>
+                    <span class="stat-value">
+                        <span class="stat-number" data-stat="players">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-foot">Online now</span>
+                </a>
+
+                <a class="stat-tile" href="servers.html">
+                    <span class="stat-kicker">Servers</span>
+                    <span class="stat-value">
+                        <span class="stat-number" data-stat="servers">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-foot">Public servers</span>
+                </a>
+
+                <a class="stat-tile" href="clans.html">
+                    <span class="stat-kicker">Clans</span>
+                    <span class="stat-value">
+                        <span class="stat-number" data-stat="clans">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-foot">Tracked teams</span>
+                </a>
+
+                <a class="stat-tile" href="maps.html">
+                    <span class="stat-kicker">Maps</span>
+                    <span class="stat-value">
+                        <span class="stat-number" data-stat="maps">—</span>
+                        <span class="skeleton stat-skeleton" aria-hidden="true"></span>
+                    </span>
+                    <span class="stat-foot">Across game types</span>
+                </a>
+            </div>
+            <p class="visually-hidden" id="statStatus" role="status">Loading live network statistics.</p>
+        </section>
+
+        <section class="stat-section preview-section" aria-labelledby="live-servers-title">
+            <div class="section-head">
+                <h2 id="live-servers-title">Live servers</h2>
+                <p class="section-note">Top five by players</p>
+            </div>
+            <div class="table-wrap">
+                <table class="table preview-table live-servers-table">
+                    <thead>
+                        <tr><th scope="col">Server</th><th scope="col">Map</th><th scope="col" data-align="right">Players</th></tr>
+                    </thead>
+                    <tbody id="liveServersBody"><tr><td colspan="3">Loading live servers.</td></tr></tbody>
+                </table>
+            </div>
+            <p class="visually-hidden" id="liveServersStatus" role="status">Loading live servers.</p>
+        </section>
+
+        <section class="stat-section preview-section" aria-labelledby="top-maps-title">
+            <div class="section-head">
+                <h2 id="top-maps-title">Top maps</h2>
+                <p class="section-note">Highest points</p>
+            </div>
+            <div class="table-wrap">
+                <table class="table preview-table">
+                    <thead>
+                        <tr><th scope="col">Map</th><th scope="col">Stars</th><th scope="col" data-align="right">Points</th></tr>
+                    </thead>
+                    <tbody id="topMapsBody"><tr><td colspan="3">Loading top maps.</td></tr></tbody>
+                </table>
+            </div>
+            <div class="preview-more">
+                <a class="button ghost button-sm" href="maps.html">View all maps</a>
+            </div>
+            <p class="visually-hidden" id="topMapsStatus" role="status">Loading top maps.</p>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <p class="footer-note">Live data from <a href="https://status.tw" target="_blank" rel="noopener noreferrer">status.tw</a></p>
+            <p class="footer-note">© 2026 TeeViewer</p>
+        </div>
+    </footer>
+
+    <!--
+        api.js uses these IDs on pages that load it. Keep them hidden on the
+        home page so a future api.js include can update them without changing
+        the visible design.
+    -->
+    <div hidden aria-hidden="true">
+        <span id="onlineplayercount"></span>
+        <span id="numServers"></span>
+        <span id="numClans"></span>
+        <span id="numMaps"></span>
+        <input type="hidden" id="playerSearch" value="">
     </div>
 
-    <div class="hero">
-        <div class="hero-left">
-            <img class="hero-logo" src="logo.png" alt="TeeViewer Logo">
-            <div class="slogan">Your Teeworlds Journey, Visualized.</div>
-        </div>
-        
-        <div class="stats-container">
-            <div class="stats" id="onlineplayercount">
-                <div class="loading"></div> Loading Players...
-            </div>
-            <div class="stats" id="numServers">
-                <div class="loading"></div> Loading Servers...
-            </div>
-            <div class="stats" id="numClans">
-                <div class="loading"></div> Loading Clans...
-            </div>
-            <div class="stats" id="numMaps">
-                <div class="loading"></div> Loading Maps...
-            </div>
-        </div>
-    </div>
-
-    <script src='TeeAssembler/js/color.js'></script>
-    <script src='TeeAssembler/js/TeeAssembler.js'></script>
-    <script src="api.js" type="module"></script>
     <script>
-        // Page navigation with slide animation
-        function navigateToPage(url) {
-            document.body.style.transform = 'translateX(-100%)';
-            document.body.style.transition = 'transform 0.5s ease-in-out';
-            
-            setTimeout(() => {
-                window.location.href = url;
-            }, 250);
-        }
+        (function () {
+            "use strict";
 
-        // Simulate loading stats data
-        function loadStats() {
-            const stats = [
-                { id: 'onlineplayercount', value: '1,247', label: 'Online Players' },
-                { id: 'numServers', value: '156', label: 'Active Servers' },
-                { id: 'numClans', value: '423', label: 'Registered Clans' },
-                { id: 'numMaps', value: '2,891', label: 'Available Maps' }
-            ];
+            var grid = document.getElementById("statGrid");
 
-            stats.forEach((stat, index) => {
-                setTimeout(() => {
-                    const element = document.getElementById(stat.id);
-                    element.innerHTML = `<div style="font-size: 32px; margin-bottom: 8px;">${stat.value}</div><div style="font-size: 14px; opacity: 0.7; font-weight: normal;">${stat.label}</div>`;
-                }, (index + 1) * 600);
-            });
-        }
-
-        // Navigation button functionality
-        document.getElementById('clans').addEventListener('click', () => {
-            console.log('Navigate to Clans');
-        });
-
-        document.getElementById('maps').addEventListener('click', () => {
-            console.log('Navigate to Maps');
-        });
-
-        document.getElementById('servers').addEventListener('click', () => {
-            console.log('Navigate to Servers');
-        });
-
-        // Load stats when page loads
-        window.addEventListener('load', () => {
-            document.body.classList.add('page-transition');
-            loadStats();
-        });
-
-        // Add some interactivity to stats
-        document.querySelectorAll('.stats').forEach(stat => {
-            stat.addEventListener('click', () => {
-                stat.style.transform = 'scale(0.98)';
-                setTimeout(() => {
-                    stat.style.transform = '';
-                }, 150);
-            });
-        });
-
-        // Page load animation
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) {
-                document.body.style.transform = 'translateX(0)';
-                document.body.style.transition = 'transform 0.5s ease-in-out';
+            if (!grid) {
+                return;
             }
-        });
+
+            var STATS_URL = "https://api.status.tw/stats";
+            var fields = [
+                { key: "players", source: "numPlayers" },
+                { key: "servers", source: "numServers" },
+                { key: "clans", source: "numClans" },
+                { key: "maps", source: "numMaps" }
+            ];
+            var numberFormat = new Intl.NumberFormat("en-US");
+            var statusLine = document.getElementById("statStatus");
+            var asOfLine = document.getElementById("statAsOf");
+            var settled = false;
+            var watchdog = window.setTimeout(function () {
+                if (!settled) {
+                    settle("Live network statistics did not load in time.");
+                }
+            }, 15000);
+
+            function writeValue(key, value) {
+                var target = grid.querySelector('[data-stat="' + key + '"]');
+
+                if (!target) {
+                    return;
+                }
+
+                var number = Number(value);
+
+                target.textContent = Number.isFinite(number)
+                    ? numberFormat.format(number)
+                    : "—";
+            }
+
+            function settle(message) {
+                settled = true;
+                window.clearTimeout(watchdog);
+                grid.classList.remove("is-loading");
+                grid.setAttribute("aria-busy", "false");
+
+                if (statusLine) {
+                    statusLine.textContent = message;
+                }
+            }
+
+            function formatStamp(ts) {
+                var date = new Date(Number(ts));
+
+                if (!Number.isFinite(date.getTime())) {
+                    return "";
+                }
+
+                return date.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) + " " +
+                    date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
+            }
+
+            function markAsOf(ts) {
+                if (!asOfLine) {
+                    return;
+                }
+
+                var label = formatStamp(ts);
+
+                if (!label) {
+                    asOfLine.hidden = true;
+                    return;
+                }
+
+                asOfLine.textContent = "Updated " + label;
+                asOfLine.hidden = false;
+            }
+
+            function paint(data, ts) {
+                fields.forEach(function (field) {
+                    writeValue(field.key, data ? data[field.source] : null);
+                });
+                markAsOf(ts);
+            }
+
+            var cached = typeof window.getCachedJSON === "function"
+                ? window.getCachedJSON(STATS_URL)
+                : null;
+
+            if (cached) {
+                paint(cached.data, cached.ts);
+                settle("Showing cached network statistics.");
+            }
+
+            if (typeof window.fetchJSON !== "function") {
+                paint(null);
+                settle("Live network statistics are unavailable.");
+                return;
+            }
+
+            window.fetchJSON(STATS_URL)
+                .then(function (data) {
+                    paint(data, window.getJSONUpdatedAt(STATS_URL));
+                    settle("Live network statistics loaded.");
+                })
+                .catch(function () {
+                    if (cached) {
+                        settle("Live update unavailable. Showing cached network statistics.");
+                    } else {
+                        paint(null);
+                        settle("Live network statistics are unavailable.");
+                    }
+                });
+        })();
+    </script>
+
+    <script>
+        (function () {
+            "use strict";
+
+            var numberFormat = new Intl.NumberFormat("en-US");
+            var hasFetch = typeof window.fetchJSON === "function";
+
+            function setStatus(statusId, message) {
+                var status = document.getElementById(statusId);
+
+                if (status) {
+                    status.textContent = message;
+                }
+            }
+
+            function render(bodyId, statusId, rows, columns) {
+                var body = document.getElementById(bodyId);
+
+                if (!body) {
+                    return;
+                }
+
+                body.textContent = "";
+
+                if (!rows.length) {
+                    var emptyRow = document.createElement("tr");
+                    var emptyCell = document.createElement("td");
+                    emptyCell.colSpan = columns.length;
+                    emptyCell.className = "table-state-cell";
+                    emptyCell.textContent = "No entries are available.";
+                    emptyRow.appendChild(emptyCell);
+                    body.appendChild(emptyRow);
+                    setStatus(statusId, "No entries are available.");
+                    return;
+                }
+
+                var headers = [];
+                var table = body.closest("table");
+
+                if (table) {
+                    var cells = table.querySelectorAll("thead th");
+
+                    for (var i = 0; i < cells.length; i += 1) {
+                        headers.push(cells[i].textContent.trim());
+                    }
+                }
+
+                rows.forEach(function (row) {
+                    var tr = document.createElement("tr");
+
+                    columns.forEach(function (column, index) {
+                        var td = document.createElement("td");
+                        td.textContent = column(row);
+
+                        if (headers[index]) {
+                            td.setAttribute("data-label", headers[index]);
+                        }
+
+                        if (index === columns.length - 1) {
+                            td.className = "num";
+                        }
+
+                        tr.appendChild(td);
+                    });
+
+                    body.appendChild(tr);
+                });
+
+                setStatus(statusId, "Loaded " + rows.length + " entries.");
+            }
+
+            function showMessage(bodyId, statusId, message, columns, config) {
+                var body = document.getElementById(bodyId);
+
+                if (!body) {
+                    return;
+                }
+
+                body.textContent = "";
+
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+                var wrap = document.createElement("div");
+                var text = document.createElement("span");
+
+                td.colSpan = columns.length;
+                td.className = "table-state-cell";
+                wrap.className = "table-state";
+                text.textContent = message;
+                wrap.appendChild(text);
+
+                if (config) {
+                    var retry = document.createElement("button");
+                    retry.className = "button ghost button-sm";
+                    retry.type = "button";
+                    retry.textContent = "Retry";
+                    retry.addEventListener("click", function () {
+                        load(config);
+                    });
+                    wrap.appendChild(retry);
+                }
+
+                td.appendChild(wrap);
+                tr.appendChild(td);
+                body.appendChild(tr);
+                setStatus(statusId, message);
+            }
+
+            function fetchWithRetry(url) {
+                return window.fetchJSON(url).catch(function () {
+                    var retryUrl = url + (url.indexOf("?") === -1 ? "?" : "&") + "retry=" + Date.now();
+                    return window.fetchJSON(retryUrl);
+                });
+            }
+
+            function prepareRows(config, data) {
+                if (!Array.isArray(data)) {
+                    return [];
+                }
+
+                return config.prepare(data);
+            }
+
+            function load(config) {
+                var body = document.getElementById(config.bodyId);
+
+                if (!body) {
+                    return;
+                }
+
+                var cached = typeof window.getCachedJSON === "function"
+                    ? window.getCachedJSON(config.url)
+                    : null;
+                var cacheRows = cached ? prepareRows(config, cached.data) : [];
+                var renderedCache = false;
+                var finished = false;
+                var watchdog = window.setTimeout(function () {
+                    if (finished) {
+                        return;
+                    }
+
+                    finished = true;
+
+                    if (renderedCache) {
+                        setStatus(config.statusId, "Live update is slow. Showing cached data.");
+                    } else {
+                        showMessage(config.bodyId, config.statusId, "The data source is slow. Retry to try again.", config.columns, config);
+                    }
+                }, 15000);
+
+                if (cacheRows.length) {
+                    render(config.bodyId, config.statusId, cacheRows, config.columns);
+                    renderedCache = true;
+
+                    var cachedStamp = cached ? formatStamp(cached.ts) : "";
+
+                    if (cachedStamp) {
+                        setStatus(config.statusId, "Showing cached data from " + cachedStamp + ".");
+                    }
+                }
+
+                if (!hasFetch) {
+                    finished = true;
+                    window.clearTimeout(watchdog);
+
+                    if (!renderedCache) {
+                        showMessage(config.bodyId, config.statusId, "The live data helper did not load.", config.columns, null);
+                    }
+                    return;
+                }
+
+                fetchWithRetry(config.url)
+                    .then(function (data) {
+                        finished = true;
+                        window.clearTimeout(watchdog);
+                        var rows = prepareRows(config, data);
+                        render(config.bodyId, config.statusId, rows, config.columns);
+                    })
+                    .catch(function () {
+                        finished = true;
+                        window.clearTimeout(watchdog);
+
+                        if (renderedCache) {
+                            setStatus(config.statusId, "Live update unavailable. Showing cached data.");
+                        } else {
+                            showMessage(config.bodyId, config.statusId, config.errorMessage, config.columns, config);
+                        }
+                    });
+            }
+
+            load({
+                url: "https://api.status.tw/server/list",
+                bodyId: "liveServersBody",
+                statusId: "liveServersStatus",
+                columns: [
+                    function (s) { return s.name || "Unnamed server"; },
+                    function (s) { return s.map && s.map.name ? s.map.name : "Unknown"; },
+                    function (s) {
+                        return (Number(s.numPlayers) || 0) + " / " + (Number(s.maxPlayers) || 0);
+                    }
+                ],
+                prepare: function (data) {
+                    return data.slice().sort(function (a, b) {
+                        return (Number(b.numPlayers) || 0) - (Number(a.numPlayers) || 0);
+                    }).slice(0, 5);
+                },
+                errorMessage: "Live servers are unavailable."
+            });
+
+            load({
+                url: "https://ddstats.tw/maps/json",
+                bodyId: "topMapsBody",
+                statusId: "topMapsStatus",
+                columns: [
+                    function (m) { return m.map || "Unnamed map"; },
+                    function (m) { return String(Number(m.stars) || 0); },
+                    function (m) { return numberFormat.format(Number(m.points) || 0); }
+                ],
+                prepare: function (data) {
+                    return data.slice().sort(function (a, b) {
+                        return (Number(b.points) || 0) - (Number(a.points) || 0);
+                    }).slice(0, 5);
+                },
+                errorMessage: "Top maps are unavailable."
+            });
+        })();
     </script>
 </body>
 </html>
